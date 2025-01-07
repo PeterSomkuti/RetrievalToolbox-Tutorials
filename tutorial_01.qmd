@@ -1,0 +1,67 @@
+---
+title: "Tutorial 1: Spectroscopy and Gases"
+---
+
+# Introduction
+
+Arguably, one of the most fundamental quantities in a retrieval algorithm is the gas spectroscopy. Spectroscopy characterizes the absorption of light due to the various gas species for a given spectral interval and atmospheric conditions (mostly temperature and pressure).
+
+As a reminder, we often want to calculate the optical depth due to gas absorption, and thus need to evaluate expressions such as this:
+$$
+\tau(\lambda) \approx \int_{p_1}^{p_2} k(\lambda, p) \; N_{\mathrm{dry}} \; \mathrm{d}p,
+$$
+where $p_1$ and $p_2$ are two pressure values, usually the boundaries of some pressure layer, $N_{\mathrm{dry}}$ is the total number of dry air molecules. $k$ is the **absorption coefficient** for some gas, here written as a function of both wavelength $\lambda$ and pressure $p$.
+
+
+# Reading ABSCO Tables
+
+In many retrieval applications, the algorithms make use of *pre-calculated* absorptions coefficients, since they can generally be efficiently and accurately evaluated at arbitrary coordinates given the pre-evaluated points via some interpolation scheme. Using pre-calculated tables reduces some of the computational effort at the cost of memory, as now a large table of pre-computed values has to be loaded up-front.
+
+In this tutorial, we make use of so-called **ABSCO** files (ABSorption COefficient tables) which contain these pre-calculated gas cross sections. These files can be on the order of a few hundred MB, depending on the desired spectral coverage. Here we use a small table file, with restricted spectral coverage, to demonstrate how they are used withi G3RT.
+
+We can start by reading in the full table file located in `data/o2_spectroscopy_demo.h5`.
+
+::: {.callout-note}
+Currently, only the NASA JPL-type ABSCO data format is accepted. To learn more about ABSCO tables, visit <https://disc.gsfc.nasa.gov/information/glossary?title=OCO-2%20ABSCO>.
+:::
+
+```{julia}
+
+using G3RT
+
+absco_o2 = G3RT.load_ABSCO_spectroscopy(joinpath("data", "o2_spectroscopy_demo.h5"))
+```
+
+The function `load_ABSCO_spectroscopy` takes a single mandatory function argument, which is the path to the data file, and loads the contents of the table into a `ABSCOSpectroscopy4D` object. The object itself prints out some noteworthy information, such as the path to the underlying data file along with the number of levels for each of the axes. In our example case, we have a 4-dimensional table, meaning that this data file contains pre-computed gas absorption cross sections for four axes: spectral, temperature, pressure and water vapor broadener. G3RT also has support for ABSCO tables that do not contain a broadener dimension.
+
+::: {.callout-note}
+In this example, the underlying spectral axis is automatically converted to wavelength, however the underlying spectral information is given in wavenumbers.
+:::
+
+With the object available in memory, we can now easily interrogate some of the contents. For example, if we would like see what the data points along the broadener dimension are, we can type the following.
+
+```{julia}
+absco_o2.broadener_vmrs
+```
+
+This shows us that the broadener dimension (water vapor volume mixing ratio in this case) contains three points, and those grid points (points at which the gas cross sections were pre-calculated) are printed.
+
+# The ABSCO object
+
+First, we will look at the ABSCO object more closely and understand how it relates to the equation at the beginning of this tutorial.
+
+In order to obtain the gas absorption optical depth between two vertical levels in the atmosphere, denoted by pressures $p_1$ and $p_2$, we take into account how the gas cross section $k$ varies with pressure. Notably, $k$ also depends on the temperature as well, along with the aformentioned water vapor mixing ratio. $k$ really is $k(\lambda,p,T,\mathrm{H}_2\mathrm{O})$.
+
+The variable `absco_o2` is of type `ABSCOSpectroscopy4D`, and its documentation can be accessed in a Julia console simply by typing `?G3RT.ABSCOSpectroscopy4D`:
+
+::: {.callout-note title="ABSCOSpectroscopy4D"}
+```{julia}
+#| echo: false
+@doc G3RT.ABSCOSpectroscopy4D
+```
+:::
+
+The above documentation of the type `ABSCOSpectroscopy4D` lists the so-called *type fields* that are attached to `absco_o2`. It also conveniently lists the respective type of each type field. This is useful information if users want to instantiate an ABSCO object manually, without using the convience function `load_ABSCO_spectroscopy`.
+
+The first item, `file_name` simply refers to the underlying ABSCO data path, mostly for bookkeeping so that it can always be known wich file was used to construct a particular ABSCO object. Its type is simply `String`. Similarly, a string-type `gas_name` field is required, it can be used to note the name of the gas whose cross section data this object is describing.
+
