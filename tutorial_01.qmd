@@ -36,6 +36,7 @@ using Pkg
 Pkg.activate("/Users/psomkuti/Work/G3RT.jl")
 using G3RT
 using Plots
+using Unitful
 
 default(fontfamily="Times")
 
@@ -181,7 +182,7 @@ Being aware of this behavior is crucial to making functions in Julia highly perf
 Explicit array slicing in expressions, of either full (e.g. `[:,:,:]`) or partial subsets (e.g. `[1:3,:,5:10]`) of arrays via the bracket-column notation, will likely spawn new copies of arrays and result in dramatic performance loss as well as unnecessary memory usage and garbage collector strain.
 :::
 
-# ABSCO object dimensions {#sec-ABSCO-dimensions}
+## ABSCO object dimensions {#sec-ABSCO-dimensions}
 
 The four axes of the absorption cross sections are accessed via `absco_o2.temperature`, `absco_o2.pressure`, `absco_o2.broadener_vmrs` and `absco_o2.wavelength`.
 
@@ -349,3 +350,135 @@ xlims!(0.76461, 0.76465)
 # Needed to display the resulting plot since we used `plot!` inside a loop
 current()
 ```
+
+# The gas object
+
+In the previous section, we explored ABSCO objects in G3RT, which in our example was an object of type `ABSCOSpectroscopy4D`. Those objects, or more generally speaking, an object of a type that belongs to the super-type `AbstractSpectroscopy`, represent something very tangible in the greater scheme of a trace gas algorithm, namely the underlying gas spectroscopy which we ultimately require to compute optical properties that feed into the calculation of a spectrum.
+
+By itself, these spectroscopy objects do not achieve much, and within G3RT, we want to attach them to a gas object, called `GasAbsorber`:
+
+::: {.callout-note title="GasAbsorber"}
+```{julia}
+#| echo: false
+@doc G3RT.GasAbsorber
+```
+:::
+
+We can see in the fields of `GasAbsorber`, that it requires an `AbstractSpectroscopy` object.
+
+![Relationship between `GasAbsorber` and the underlying spectroscopy.](./fig_gas_spec.svg){#fig-gas-spectroscopy-struct}
+
+Conceptually, the idea behind this formulation is simple: in the end we want to be able to describe a gaseous absorber in our model atmosphere, that gas must have a name and a volume mixing ratio profile associated with it. But in order to compute spectra, we must also attach some spectroscopic information which will be called up when the optical properties are computed.
+
+It is much more straightforward to instantiate a new object of type `GasAbsorber`, so a convience function is not provided. We can create the object manually, so to speak. In Julia, a new object of a user-type, a **parametric type**, is simply created by calling the new type with appropriate parameters corresponding to the field types, in correct order. For example, we can think of a new type `MyType` that only contains two numbers, such as
+
+```{julia}
+struct MyType
+    a::Float64
+    b::Int
+end
+
+new_obj = MyType(5.0, 10)
+```
+
+The instantiation will fail if the types of the parameters are not correct, or in a wrong order:
+
+```{julia}
+#| error: true
+new_obj = MyType([10,9,8], 5.0)
+```
+
+In the example above, the instantiation of a new object fails because `MyType` requires the first field `a` to be of type `Float64`, and field `b` of type `Int` (short-hand for 64-bit integer), but we passed a vector of 64-bit integers (`Vector{Int}`) which cannot be implicitly converted to the expected types.
+
+Note that implicit conversions happen, when possible! Doing the following, for example, does not raise an error, due to the fact that `10` can be converted to a `Float64`, and `5.0` can be converted into an `Int` without meaningful loss of precision:
+
+```{julia}
+new_obj = MyType(10, 5.0)
+```
+
+Of course trying to instantiate this new object with the second parameter being `5.1` instead of `5.0` now raises an error because `5.1` cannot be converted into an integer.
+
+```{julia}
+#| error: true
+new_obj = MyType(10, 5.1)
+```
+
+Moving on with our gas object, we first have to give it a name - `"O2"` seems like a sensible choice as it compactly describes the molecular oxygen gas for which we happen to posses the spectroscopic tables for.
+
+```{julia}
+gas_name = "O2"
+```
+
+Moving on, we must also generate a vector that represents the volume mixing ratio profile on pressure levels. Note that in a full algorithm built with G3RT, the profile must of course be of the same length as the retrieval pressure grid. In abscence of those other parts, we can simple create a 4-level vector with repeated entries like so:
+
+```{julia}
+vmr_levels = repeat([0.2095], 4)
+```
+
+Now we understand `0.2095` to be the volume mixing ratio in units of `1`, but we must explicitly specify that to the gas object. Again, we must specify the units here, which is best done by specifying `Unitful.NoUnits`, which is equal to having a quantity of unit `1`. Note that `GasAbsorber` **requires** a compatible dimensionless unit descriptor, so omitting the unit information is not allowed.
+
+```{julia}
+gas_o2 = G3RT.GasAbsorber(
+    gas_name,
+    absco_o2,
+    vmr_levels,
+    Unitful.NoUnits
+)
+```
+
+We have now successfully instantated a new `GasAbsorber` object, and called it `gas_o2`. And as before, we can access the associated fields of our object via the dot-syntax, so we can recall the name of the gas by typing
+
+```{julia}
+gas_o2.gas_name
+```
+
+We supplied the spectroscopy object of the first section of this tutorial, named `absco_o2` to this new `GasAbsorber` object named `gas_o2`. And we can freely access it in the expected manner. Dot-syntax can be chained, so we can display the pressure grid points of the spectroscopy object via accessing it from the gas object.
+
+```{julia}
+gas_o2.spectroscopy.pressures
+```
+
+::: {.callout-important}
+It is **crucial** to understand that when instantiating a new object of a user-type using pre-created objects, we are merely passing a reference! Unless explicitly done so, the objects (such as `gas_name`, `absco_o2` or `vmr_levels`) that are now part of the newly created `gas_o2`, are the exact same ones!
+:::
+
+The above reminder is of immense importance when working with G3RT! To elaborate on the point, let us remind ourselves that we first created several objects, such as the vector `vmr_levels`, or before that `absco_o2`. When we called `GasAbsorber(..)` to instantiate a new object of the `GasAbsorber` type, those objects remain in memory, and no new copies were made. What this means, in turn, is that when modifying those objects, they will appear to be modified when accessing them via `gas_o2`.
+
+For example, the gas VMR profile was initially created to have repeated values of `0.2095`. At this point, we can confirm that be displaying their values:
+
+```{julia}
+vmr_levels
+```
+
+Now, the entries of this vector are not protected in any way, so we are free to simply modify them.
+
+```{julia}
+vmr_levels[2] = 0.15
+```
+
+Since the `gas_o2` object stores only a reference to the `vmr_levels` vector, we will see that when we try to display the gas VMR levels of `gas_o2`, the values have changed!
+
+```{julia}
+gas_o2.vmr_levels
+```
+
+In fact, we can ask Julia whether the two objects are the same with the `===` operator. This operator confirms that `vmr_levels`, created beforehand, and `gas_o2.vmr_levels` are, as far as Julia is concerned, indistinguishable from each other!
+
+```{julia}
+vmr_levels === gas_o2.vmr_levels
+```
+
+This is fully expected behavior and also rather convenient in terms of performance. Spectroscopy tables, for examples, can be rather big and occupy a significant amount of space in memory. Once loaded, however, instantiating a new `GasAbsorber` object using an already existing `ABSCOSpectroscopy4D` object does not use significant memory.
+
+We can actually see this by observing how much memory Julia has to allocate when producing a new `GasAbsorber` object:
+
+```{julia}
+@time G3RT.GasAbsorber(gas_name, absco_o2, vmr_levels, Unitful.NoUnits);
+```
+
+The output from the statement above tells us that creating this new object is practically free in terms of memory usage, since none of the parameters have to be newly created during this process.
+
+When building algorithms with G3RT, users must make sure that objects (mostly vectors and arrays), that are used to construct other objects, are not unintentionally modified!
+
+# Summary and review
+
