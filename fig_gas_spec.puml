@@ -1,0 +1,31 @@
+@startuml
+struct ABSCOSpectroscopy4D{
+    + file_name: String
+    + gas_name: String
+    ..
+    + scale_factor: T1
+    ..
+    + ww: Vector{T2}
+    + ww_unit: Union{Unitful.LengthUnits, Unitful.WavenumberUnits}
+    + temperatures: Array{T3, 2}
+    + temperatures_unit: Unitful.TemperatureUnits
+    + pressures: Vector{T3}
+    + pressures_unit: Unitful.PressureUnits
+    + broadener_vmrs: Vector{T3}
+    + cross_section: Array{T4, 4}
+    + cross_section_unit: Unitful.AreaUnits
+    }
+
+struct GasAbsorber{
+    + gas_name: String
+    ..
+    + spectroscopy: AbstractSpectroscopy
+    ..
+    + vmr_levels: Vector{T}
+    + vmr_unit: Unitful.DimensionlessUnits
+    }
+
+
+ABSCOSpectroscopy4D --* GasAbsorber::spectroscopy
+
+@enduml
