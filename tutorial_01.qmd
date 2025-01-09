@@ -1,5 +1,6 @@
 ---
 title: "Tutorial 1: Spectroscopy and Gases"
+number-sections: true
 ---
 
 # Introduction
@@ -10,14 +11,18 @@ As a reminder, we often want to calculate the optical depth due to gas absorptio
 $$
 \tau(\lambda) \approx \int_{p_1}^{p_2} k(\lambda, p) \; N_{\mathrm{dry}} \; \mathrm{d}p,
 $$
-where $p_1$ and $p_2$ are two pressure values, usually the boundaries of some pressure layer, $N_{\mathrm{dry}}$ is the total number of dry air molecules. $k$ is the **absorption coefficient** for some gas, here written as a function of both wavelength $\lambda$ and pressure $p$.
+where $p_1$ and $p_2$ are two pressure values, usually the boundaries of some pressure layer, $N_{\mathrm{dry}}$ is the total number of dry air molecules. $k$ is the **absorption cross section** for some gas, here written as a function of both wavelength $\lambda$ and pressure $p$.
 
+
+::: {.callout-tip title="Goal of this tutorial"}
+In this tutorial, we want to introduce new users of G3RT to become familiar with the general usage of the toolkit. Prior experience with the Julia language is helpful, but not required. In the same manner, understanding the background of gas spectroscopy and its role in trace gas retrievals is also helpful.
+:::
 
 # Reading ABSCO Tables
 
-In many retrieval applications, the algorithms make use of *pre-calculated* absorptions coefficients, since they can generally be efficiently and accurately evaluated at arbitrary coordinates given the pre-evaluated points via some interpolation scheme. Using pre-calculated tables reduces some of the computational effort at the cost of memory, as now a large table of pre-computed values has to be loaded up-front.
+In many retrieval applications, algorithms make use of *pre-calculated* absorption cross sections, since they can generally be efficiently and accurately evaluated at arbitrary coordinates given the pre-evaluated points via some interpolation scheme. Using pre-calculated tables reduces some of the computational effort at the cost of memory, as now a large table of pre-computed values has to be loaded up-front.
 
-In this tutorial, we make use of so-called **ABSCO** files (ABSorption COefficient tables) which contain these pre-calculated gas cross sections. These files can be on the order of a few hundred MB, depending on the desired spectral coverage. Here we use a small table file, with restricted spectral coverage, to demonstrate how they are used withi G3RT.
+In this tutorial, we make use of so-called **ABSCO** files which contain these pre-calculated gas cross sections. These files can be on the order of a few hundred MB, depending on the desired spectral coverage. Here we use a small table file, with restricted spectral coverage, to demonstrate how they are used within G3RT.
 
 We can start by reading in the full table file located in `data/o2_spectroscopy_demo.h5`.
 
@@ -26,10 +31,18 @@ Currently, only the NASA JPL-type ABSCO data format is accepted. To learn more a
 :::
 
 ```{julia}
-
+# Some set-up for this document
+using Pkg
+Pkg.activate("/Users/psomkuti/Work/G3RT.jl")
 using G3RT
+using Plots
 
-absco_o2 = G3RT.load_ABSCO_spectroscopy(joinpath("data", "o2_spectroscopy_demo.h5"))
+default(fontfamily="Times")
+
+# Load the ABSCO table
+absco_o2 = G3RT.load_ABSCO_spectroscopy(
+    joinpath("data", "o2_spectroscopy_demo.h5")
+    )
 ```
 
 The function `load_ABSCO_spectroscopy` takes a single mandatory function argument, which is the path to the data file, and loads the contents of the table into a `ABSCOSpectroscopy4D` object. The object itself prints out some noteworthy information, such as the path to the underlying data file along with the number of levels for each of the axes. In our example case, we have a 4-dimensional table, meaning that this data file contains pre-computed gas absorption cross sections for four axes: spectral, temperature, pressure and water vapor broadener. G3RT also has support for ABSCO tables that do not contain a broadener dimension.
@@ -65,3 +78,274 @@ The above documentation of the type `ABSCOSpectroscopy4D` lists the so-called *t
 
 The first item, `file_name` simply refers to the underlying ABSCO data path, mostly for bookkeeping so that it can always be known wich file was used to construct a particular ABSCO object. Its type is simply `String`. Similarly, a string-type `gas_name` field is required, it can be used to note the name of the gas whose cross section data this object is describing.
 
+`scale_factor` is an overall factor that is applied to the cross section data **during read-in**, such that the values stored in the ABSCO object are a multiple of the original data. Note that this value is mostly informative, none of the calculation routines later on use this value. With the convienience function, a desired scale factor can be specified. For example, we could have written:
+
+```{julia}
+absco_o2_scaled = G3RT.load_ABSCO_spectroscopy(
+    joinpath("data", "o2_spectroscopy_demo.h5"),
+    scale_factor=1.01
+    );
+```
+
+And we can compared the un-scaled and the scaled data objects:
+
+```{julia}
+#| echo: true
+println("Unscaled: $(absco_o2.cross_section[1,2,3,4])")
+```
+
+```{julia}
+#| echo: true
+println("Scaled: $(absco_o2_scaled.cross_section[1,2,3,4])")
+```
+
+## Intermission: array slicing and views {#sec-array-slicing}
+
+This is a good opportunity to mention some aspects about array slicing in Julia, which might behave differently from what users are familiar with in other programming languages. Users highly familiar with Julia can skip this section and move on to @sec-ABSCO-dimensions.
+
+::: {.callout-tip}
+Reminder! Julia, by default, uses 1-based indexing for enumerations or vectors, arrays, and lists.
+:::
+
+At first glance, array slicing is very similar to that of Numpy Python library, of Fortran array operations. If some array `A` is declared, then using the colon `:` allows to **slice** through one or more axes. To illustrate, we can define a matrix `A`, which we set to have four rows and 3 columns:
+
+```{julia}
+A = [
+    1. 2. 3.;
+    4. 5. 6.;
+    7. 8. 9.;
+    10. 11. 12.;
+    ]
+```
+
+And we can see that Julia produces the expected object - note that `Matrix` is a Julia short-hand type for an Array with 2 dimenions. Accessing all elements of the second column, for example is done like this:
+
+```{julia}
+A[:,2]
+```
+
+Or getting all elements of the third row is done like so, with the expected result:
+```{julia}
+A[3,:]
+```
+
+Bounds-checking is enabled by default, so attempting to access an out-of-bounds index usually results in an appropriate error:
+```{julia}
+#| error: true
+A[5,:]
+```
+
+::: {.callout-tip}
+Julia's memory layout for multi-dimensional arrays is **column-major**, meaning that elements that are in the same **column** are located next to each other. Iterating over arrays is thus generally faster over **rows first**, then columns. Iterating over a 3-dimensional array `M[i,j,k]` should be done ideally such that the **outer-most** traverses index `i`, and the **inner-most** one loops over `k`.
+Real-world performance might not always benefit from re-arranging arrays to be in optimal order, so benchmarking is always encouraged.
+:::
+
+Moving on, we can peform more advanced slicing in both dimensions, such as taking every second row from the last two columns of `A`:
+
+```{julia}
+A[1:2:end,2:3]
+```
+
+Above we used the slicing notation `start:interval:stop`, and `end` can conveniently be used in Julia to access the last element of some list, vector or array.
+
+A **performance-crucial** aspect of array slicing is the fact that accessing arrays in this particular way generally **creates a copy** that is now a new object. This is a tricky concept, because depending on the statement, the slicing operation behaves in the expected manner. For example, if we want to slice the first row of array `A`, set those elements to some value, and inspect `A` again, we see that `A` has indeed changed.
+
+```{julia}
+A[1,:] .= -5
+A
+```
+
+If the slicing operation appears on the left-hand side of an equation, Julia will treat this as instruction to set those elements of A to the values of the right-hand side. This is not true when the slicing operation appears on the right-hand side of an expression like the one below:
+
+```{julia}
+B = A[1,:] # A new copy is created
+B[:] .= 0 # We set all elements of B to 0
+println("B = ", B) # B should be zero
+println("A[1,:] = ", A[1,:]) # The first row of A should still be -5
+```
+
+In the first line, `A[1,:]` indeed creates a new copy of the sub-array (a vector in this case), and is then assigned to the variable with name `B`. Upon changing `B`, `A` remains unaffected.
+
+Often, we do not necessarily want to create new copy, but have a convenient way of accessing a sub-section of an array via a new symbol. Julia provides the `@views` macro to do just that. The Julia documentation provides more details, but for now it is enough to know that adding `@views` to an expression (such as on the right-hand side of an assigment via `=`) instructs Julia to use views of **explicit** array operations, rather than producing new copies. Related to the example above, we can simply modify the first line and obtain the result we initially wanted.
+
+```{julia}
+B = @views A[1,:] # B is a view upon the first row of A
+B[:] .= 0 # Set B to zero, and thus the first row of A also
+println("B = ", B) # B is zero
+println("A[1,:] = ", A[1,:]) # The first row of A is now also zero
+```
+
+Being aware of this behavior is crucial to making functions in Julia highly performant.
+
+::: {.callout-warning}
+Explicit array slicing in expressions, of either full (e.g. `[:,:,:]`) or partial subsets (e.g. `[1:3,:,5:10]`) of arrays via the bracket-column notation, will likely spawn new copies of arrays and result in dramatic performance loss as well as unnecessary memory usage and garbage collector strain.
+:::
+
+# ABSCO object dimensions {#sec-ABSCO-dimensions}
+
+The four axes of the absorption cross sections are accessed via `absco_o2.temperature`, `absco_o2.pressure`, `absco_o2.broadener_vmrs` and `absco_o2.wavelength`.
+
+::: {.callout-note}
+The spectral dimension, be it either wavenumber or wavelength, is generally accessed in a special way (more on that in a differentn tutorial). For now, it is sufficient to know that the spectral dimension axis can be accessed with `absco_o2.wavelength` or `absco_o2.ww`, both methods are equivalent and return the spectral axis in wavelength units.
+:::
+
+Finally, the absorption cross section data is easily accessed via `absco_o2.cross_section`, and should be indexed in the order that is stated in the in-line comment of the type. ABSCO tables, as provided by NASA JPL, are tabulated in a non-uniform manner, so we will first explore the data a little bit.
+
+The wavelength and broadener VMR axes are straightforward. As we have seen before, this particular data table was pre-computed for three different H2O VMRs:
+
+```{julia}
+absco_o2.broadener_vmrs
+```
+
+So accessing all pre-computed cross sections for all available wavelengths, temperatures and pressures, for a fixed water vapor VMR of 0.03 can be done via (lengthy output is suppressed here via the semi-colon at the end of the expression):
+
+```{julia}
+idx_h2o = 2
+absco_o2.cross_section[:,idx_h2o,:,:];
+```
+
+The pressure dimension corresponds to the last index. For the sake of simplicity, we can check the size of the pressure dimension via
+
+```{julia}
+size(absco_o2.pressures)
+```
+
+and then simply opt to pick out the 60th element, which corresponds to the following pressure value.
+
+```{julia}
+idx_p = 60
+absco_o2.pressures[idx_p]
+```
+
+Note that the ABSCO object also carries a `pressures_unit` field, which tells us in which units the corresponding pressure values are stored in:
+
+```{julia}
+absco_o2.pressures_unit
+```
+
+::: {.callout-note}
+Units play a big role in G3RT, however working with units will be discussed in a later tutorial. For now, we just make note of the fact the pressure axis contains values in units of Pascal.
+:::
+
+Just like before, we could inspect all cross sections for a broadener VMR of 0.03 that were also calculated for the specific pressure value shown above:
+
+```{julia}
+absco_o2.cross_section[:,idx_h2o,:,idx_p]
+```
+
+The temperature axis handles differently than the other three axes. Since these gas absorption cross sections were computed for applications in Earth's atmosphere, there is an innate relationship between temperature and pressure. In order to make the storage of these cross sections more efficient, the temperature axis was chosen to be two-dimensional: for each pressure grid point, the temperature axis is different.
+
+Below, we illustrate this two-dimensional temperature axis (@fig-temperature-dimension). The next piece of code plots a line connecting all temperature grid points for each distinct pressure grid point. The first vertical line near 1.0 Pa, colored in blue, spans a temperature range between ~115 K through ~280 K. The next temperature range, valid for the pressure grid point of ~45 Pa spans a different range between ~175 K through ~335 K. The pressure grid itself is not uniform, and absorption cross sections are sampled much more densely in pressure space when entering the tropospheric pressure regime of a few thousand Pascals.
+
+```{julia}
+#| label: fig-temperature-dimension
+#| fig-cap: "ABSCO temperature axes"
+
+plot(
+    xticks=[1, 10, 100, 1000, 10000, 100000],
+    xlabel="Pressure [Pa]",
+    ylabel="Temperature [K]",
+    xgrid=nothing,
+    ygrid=nothing
+)
+
+num_T = size(absco_o2.temperatures, 1)
+
+for p in 1:size(absco_o2.pressures, 1)
+
+    # Ternary expression to use alternating colors
+    mod(p,2) == 0 ? color=:black : color=:blue
+
+    plot!(
+        repeat([absco_o2.pressures[p]], num_T),
+        absco_o2.temperatures[:,p],
+        markershape=:circle,
+        markersize=2,
+        linecolor=color,
+        markerstrokecolor=color,
+        markercolor=color,
+        label=nothing,
+        xscale=:log10,
+    )
+end
+plot!(
+    absco_o2.pressures,
+    absco_o2.temperatures',
+    linecolor=:black,
+    linestyle=:dash,
+    alpha=0.25,
+    label=nothing
+)
+```
+
+For example, if we want to obtain the cross sections for a given point in the atmosphere, we must first pick our pressure grid point. For the sake of simplicity, we can just assume that this pressure corresponds exactly to the third pressure grid point at
+```{julia}
+println("p = $(absco_o2.pressures[3]) Pa")
+```
+
+This means we have to look at the third vertical line from the left in @fig-temperature-dimension (blue) and move to the grid point on that line which corresponds to the temperature of our chosen point in the atmosphere. The temperatures corresponding to that particular pressure grid point are easily found via typing
+
+```{julia}
+absco_o2.temperatures[:, 3]
+```
+
+Again, assuming a convenient case in which the temperature we are looking for falls exactly onto a grid point, for example the 10th temperature value, we can thus obtain all cross section values belonging to this (p,T)-pair like so:
+
+```{julia}
+absco_o2.cross_section[:, :, 10, 3];
+# Output surpressed here
+```
+
+Here it is important to realize that this 2-dimensional pressure grid has consequences for traversing the ABSCO table when moving to a neighbouring point. For example, we have selected now `10` for the temperature index, and `3` for the pressure index. If we move to the next available pressure grid point at index `4`, **the temperatue value implicitly changes**! This can be easily verified by comparing the two temperatue values at
+```{julia}
+absco_o2.temperatures[10, 3]
+```
+and
+```{julia}
+absco_o2.temperatures[10, 4]
+```
+
+This makes usage of the ABSCO table data slightly more cumbersome in practice, however users generally do not have to worry much about this underlying structure. The sampling of these tables is handled by lower-lying functions of G3RT which most users do not have to call themselves.
+
+Lastly, we can look at the spectral dependence of the cross sections. In addition to the temperature-pressure pair we already picked before `[10,3]` we select the first value in the water vapor broadener axis (equal to a H2O VMR of `0.0`). The only remaining axis is the spectral axis equal to the first dimension.
+
+Since this is a small subset of the full ABSCO table originally devised to cover the full oxygen A-band, we only see two major oxygen absorption lines.
+
+```{julia}
+#| label: fig-spectral-dimension-1
+#| fig-cap: "ABSCO spectral axis"
+
+plot(
+    absco_o2.λ,
+    absco_o2.cross_section[:,1,10,4],
+    label=nothing,
+    xlabel="Wavelength [µm]",
+    ylabel="Cross section [cm²/molecule]",
+    yticks=[0, 1e-22, 2.0e-22]
+)
+```
+
+We can further zoom into towards the first of the two major absorption lines, and sample the cross section table at different pressure grid points (and implicitly therefore also different temperature grid point values). We see in @fig-spectral-dimension-2 that the cross section for this absorption line becomes shallower but also wider with increasing pressure due to Doppler broadening.
+
+```{julia}
+#| label: fig-spectral-dimension-2
+#| fig-cap: "ABSCO spectral axis"#|
+
+plot()
+for p in [4, 20, 50]
+    plot!(
+        absco_o2.λ,
+        absco_o2.cross_section[:,1,10,p],
+        markershape=:circle,
+        markersize=2,
+        label="p = $(absco_o2.pressures[p]) Pa",
+        legend_position=:topleft,
+        xlabel="Wavelength [µm]",
+        ylabel="Cross section [cm²/molecule]",
+        yticks=[0, 1e-22, 2.0e-22]
+    )
+end
+xlims!(0.76461, 0.76465)
+# Needed to display the resulting plot since we used `plot!` inside a loop
+current()
+```
