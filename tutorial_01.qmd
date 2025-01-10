@@ -58,7 +58,7 @@ With the object available in memory, we can now easily interrogate some of the c
 absco_o2.broadener_vmrs
 ```
 
-This shows us that the broadener dimension (water vapor volume mixing ratio in this case) contains three points, and those grid points (points at which the gas cross sections were pre-calculated) are printed.
+This shows us that the broadener dimension (water vapor volume mixing ratio in this case) contains three points, and those grid points (points at which the gas cross sections were pre-calculated) are printed. In Julia, the fields of so-called parametric types are accessed with the *dot-syntax*, so one can generally type `object.field` to access some `field` that belongs to `object`. In the Julia console and other environments, such as Jupyter notebooks, one may type `object.` and press the **TAB** key to see a list of field names associated with `object`.
 
 # The ABSCO object
 
@@ -366,7 +366,9 @@ By itself, these spectroscopy objects do not achieve much, and within G3RT, we w
 
 We can see in the fields of `GasAbsorber`, that it requires an `AbstractSpectroscopy` object.
 
-![Relationship between `GasAbsorber` and the underlying spectroscopy.](./fig_gas_spec.svg){#fig-gas-spectroscopy-struct}
+![Relationship between `GasAbsorber` and the underlying spectroscopy. Note that the placeholders `T1`, `T2`, `T3` and `T4` can be any combination of real-valued numbers. See the G3RT documentation for more details.](./fig_gas_spec.svg){#fig-gas-spectroscopy-struct}
+
+Many provided types in G3RT have similar relationships and dependencies as shown in @fig-gas-spectroscopy-struct, as they very naturally follow the conceptual hierarchies that are inherent in the many calculations that are performed in a typical retrieval problem.
 
 Conceptually, the idea behind this formulation is simple: in the end we want to be able to describe a gaseous absorber in our model atmosphere, that gas must have a name and a volume mixing ratio profile associated with it. But in order to compute spectra, we must also attach some spectroscopic information which will be called up when the optical properties are computed.
 
@@ -374,11 +376,11 @@ It is much more straightforward to instantiate a new object of type `GasAbsorber
 
 ```{julia}
 struct MyType
-    a::Float64
-    b::Int
+    a::Float64 # A 64-bit float number
+    b::Int # A 64-bit integer number
 end
 
-new_obj = MyType(5.0, 10)
+new_obj = MyType(5.0, 10) # Create the new type with a=5.0 and b=10
 ```
 
 The instantiation will fail if the types of the parameters are not correct, or in a wrong order:
@@ -482,3 +484,6 @@ When building algorithms with G3RT, users must make sure that objects (mostly ve
 
 # Summary and review
 
+In this tutorial, we covered the basic concept of instantiating a new object via the example of a very fundamental building block of gas retrievals: spectroscopy. We have loaded a spectroscopy file using a convenience function, `load_ABSCO_spectroscopy`, which automatically reads the file contents of an ABSCO table file and returns the newly created `ABSCOSpectroscopy4D` object. We learned how to interrogate this particular spectroscopy object as well as slice through the multi-dimensional cross section table. Objects in G3RT can have relationships, as is the case for objects of the `GasAbsorber` type, which themselves require some spectroscopy object to create them. We successfully created a new `GasAbsorber` object by using the spectroscopy object we created earlier, and learned that there is generally no computational overhead in creating a new object when all its parameters have already been created!
+
+[Link](./tutorial_02.qmd)
