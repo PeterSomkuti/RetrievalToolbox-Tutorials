@@ -1,6 +1,44 @@
 ---
-title: "Tutorial 2: TBD"
+title: "Tutorial 2: Creating an Atmosphere and Working with Physical Units"
 number-sections: true
 ---
 
 # Introduction
+
+In the previous tutorial ([Tutorial 1](./tutorial_01.qmd)), we have learned how to instantiate two fundamental objects within G3RT, spectroscopy and gases. Those two object types are found towards the bottom of the G3RT type hierarchy: an `ABSCOSpectroscopy4D` object does not require another G3RT object type, and a `GasAbsorber` only requires one spectroscopy type.
+
+::: {.callout-tip title="Goal of this tutorial"}
+In this tutorial we will focus on constructing an atmosphere object with G3RT, which plays an equally important role within retrieval applications. Further, we will learn how we can effectively use physical units.
+:::
+
+
+
+## The `EarthAtmosphere` Object
+
+G3RT features a type that represents a typical atmosphere found here on Earth, of course only containing information that is relevant for typical retrieval applications. Within G3RT, we follow the general model of a layered atmosphere in which we assume all relevant quantities to be constant inside that layer. Here we already must make an important observation! The `EarthAtmosphere` object contains not just one, but two layer systems: one representing the vertical grid which the inversion will see, and a second one on which meteorological quantities are defined. While possibly confusing at first, this set-up allows us to be much more flexible with respect to our choices in setting up the retrieval algorithm.
+
+### The Retrieval and Meteorological Grids
+
+
+
+
+
+![caption goes here](figures/met-p-grid.svg){#fig-met-p-grid}
+
+### Type definition
+
+```{julia}
+# Some set-up for this document
+using Pkg;
+Pkg.activate("/Users/psomkuti/Work/G3RT.jl");
+using G3RT;
+using Plots;
+using Unitful;
+```
+
+::: {.callout-note title="EarthAtmosphere"}
+```{julia}
+#| echo: false
+@doc G3RT.EarthAtmosphere
+```
+:::

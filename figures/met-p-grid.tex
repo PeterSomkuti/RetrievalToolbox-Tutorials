@@ -1,0 +1,33 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{sfmath}
+\usepackage{tikz}
+
+\begin{document}
+\usetikzlibrary{arrows.meta}
+\begin{tikzpicture}[font=\sffamily]
+
+\draw [thick] (0,0) -- (5,0);
+\node at (-0.5, 0) {$p_{\mathrm{L}}$};
+\draw [thick] (0,1) -- (5,1);
+\node at (-0.5, 1) {$p_{\mathrm{L}-1}$};
+\draw [thick] (0,2) -- (5,2);
+\node at (-0.5, 2) {$p_{\mathrm{L}-2}$};
+
+\node at (2.5, 3.5) {\vdots};
+\draw [thick] (0,5) -- (5,5);
+\node at (-0.5, 5) {$p_{2}$};
+\draw [thick] (0,6) -- (5,6);
+\node at (-0.5, 6) {$p_{1}$};
+
+
+\node at (9.5, 0.35) {$p_{\mathrm{M}}$};
+\draw [thick] (10,0.35) -- (15,0.35);
+\node at (9.5, 1.10) {$p_{\mathrm{M}-1}$};
+\draw [thick] (10,1.10) -- (15,1.10);
+\node at (9.5, 1.85) {$p_{\mathrm{M}-2}$};
+\draw [thick] (10,1.85) -- (15,1.85);
+
+\end{tikzpicture}
+\end{document}

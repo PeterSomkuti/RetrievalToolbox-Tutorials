@@ -18,6 +18,10 @@ format:
       - brand
     css: styles.css
     toc: true
+    toc-location: right
+    html-math-method: katex
+    link-external-icon: true
+    fontsize: 13px
 
 execute:
   cache: true
