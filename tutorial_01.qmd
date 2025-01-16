@@ -366,7 +366,7 @@ By itself, these spectroscopy objects do not achieve much, and within G3RT, we w
 
 We can see in the fields of `GasAbsorber`, that it requires an `AbstractSpectroscopy` object.
 
-![Relationship between `GasAbsorber` and the underlying spectroscopy. Note that the placeholders `T1`, `T2`, `T3` and `T4` can be any combination of real-valued numbers. See the G3RT documentation for more details.](./fig_gas_spec.svg){#fig-gas-spectroscopy-struct}
+![Relationship between `GasAbsorber` and the underlying spectroscopy. Note that the placeholders `T1`, `T2`, `T3` and `T4` can be any combination of real-valued numbers. See the G3RT documentation for more details.](figures/fig_gas_spec.svg){#fig-gas-spectroscopy-struct}
 
 Many provided types in G3RT have similar relationships and dependencies as shown in @fig-gas-spectroscopy-struct, as they very naturally follow the conceptual hierarchies that are inherent in the many calculations that are performed in a typical retrieval problem.
 
@@ -480,10 +480,12 @@ We can actually see this by observing how much memory Julia has to allocate when
 
 The output from the statement above tells us that creating this new object is practically free in terms of memory usage, since none of the parameters have to be newly created during this process.
 
-When building algorithms with G3RT, users must make sure that objects (mostly vectors and arrays), that are used to construct other objects, are not unintentionally modified!
+**When building algorithms with G3RT, users must make sure that objects (mostly vectors and arrays), that are used to construct other objects, are not unintentionally modified!**
 
 # Summary and review
 
 In this tutorial, we covered the basic concept of instantiating a new object via the example of a very fundamental building block of gas retrievals: spectroscopy. We have loaded a spectroscopy file using a convenience function, `load_ABSCO_spectroscopy`, which automatically reads the file contents of an ABSCO table file and returns the newly created `ABSCOSpectroscopy4D` object. We learned how to interrogate this particular spectroscopy object as well as slice through the multi-dimensional cross section table. Objects in G3RT can have relationships, as is the case for objects of the `GasAbsorber` type, which themselves require some spectroscopy object to create them. We successfully created a new `GasAbsorber` object by using the spectroscopy object we created earlier, and learned that there is generally no computational overhead in creating a new object when all its parameters have already been created!
 
-[Link](./tutorial_02.qmd)
+
+
+Move on to the next tutorial! [Tutorial 2](./tutorial_02.qmd)

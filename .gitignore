@@ -4,3 +4,9 @@ _site
 .jupyter_cache/
 .ipynb_checkpoints/
 *.quarto_ipynb
+diagram-*.pdf
+figures/*.log
+figures/*.svg
+figures/*.aux
+figures/*.pdf
+*_files/
