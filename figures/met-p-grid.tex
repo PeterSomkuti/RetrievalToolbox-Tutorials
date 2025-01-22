@@ -5,29 +5,53 @@
 \usepackage{tikz}
 
 \begin{document}
-\usetikzlibrary{arrows.meta}
+\usetikzlibrary{arrows.meta, math}
 \begin{tikzpicture}[font=\sffamily]
 
-\draw [thick] (0,0) -- (5,0);
-\node at (-0.5, 0) {$p_{\mathrm{L}}$};
-\draw [thick] (0,1) -- (5,1);
-\node at (-0.5, 1) {$p_{\mathrm{L}-1}$};
-\draw [thick] (0,2) -- (5,2);
-\node at (-0.5, 2) {$p_{\mathrm{L}-2}$};
+% Draw the left-hand side retrieval grid
+\def\Nfirst{4}
+\def\Nsecond{3}
+\def\Nend{1}
+\def\yoffset{0.25}
+\def\xoffset{0}
+\def\xr{5}
 
-\node at (2.5, 3.5) {\vdots};
-\draw [thick] (0,5) -- (5,5);
-\node at (-0.5, 5) {$p_{2}$};
-\draw [thick] (0,6) -- (5,6);
-\node at (-0.5, 6) {$p_{1}$};
+\foreach[count=\i] \y in {\Nfirst,\Nsecond,...,\Nend}
+{
+    \tikzmath{\yy = \yoffset + \y;}
+    \tikzmath{\xx = \xoffset; \xl = \xoffset - 0.5; \xxr = \xoffset + \xr;}
+
+    \ifnum\numexpr\i=1
+        \filldraw[draw=black,dotted,fill=lightgray] (\xx,\yy) rectangle (\xr,\yy-1.0) node[pos=.5] {layer 1};
+    \fi
+
+    \draw [thick] (\xx,\yy) -- (\xxr,{\yy});
+    \node at (\xl,\yy) {$p_{\i}$};
+}
+
+% Draw a layer box
 
 
-\node at (9.5, 0.35) {$p_{\mathrm{M}}$};
-\draw [thick] (10,0.35) -- (15,0.35);
-\node at (9.5, 1.10) {$p_{\mathrm{M}-1}$};
-\draw [thick] (10,1.10) -- (15,1.10);
-\node at (9.5, 1.85) {$p_{\mathrm{M}-2}$};
-\draw [thick] (10,1.85) -- (15,1.85);
+
+% Draw the right-hand side MET grid
+\def\Nfirst{5.35}
+\def\Nsecond{4.55}
+\def\Nend{1.05}
+\def\yoffset{-0.5}
+\def\xoffset{8}
+\def\xr{5}
+
+\foreach[count=\i] \y in {\Nfirst,\Nsecond,...,\Nend}
+{
+    \tikzmath{\yy = \yoffset + \y;}
+    \tikzmath{\xx = \xoffset; \xl = \xoffset - 0.5; \xxr = \xoffset + \xr;}
+    \draw [thick] (\xx,\yy) -- (\xxr,{\yy});
+    \node at (\xl,\yy) {$p_{\i}$};
+}
+
+% Draw the coordinate arrow
+\draw [thick, -stealth] (-3,1) -- (-3,4) node [midway, above, sloped] (TextNode) {pressure};
+
 
 \end{tikzpicture}
 \end{document}

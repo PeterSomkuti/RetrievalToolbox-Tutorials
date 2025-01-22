@@ -1,6 +1,10 @@
 project:
   type: website
 
+bibliography: bibliography.bib
+bibliographystyle: apa
+number-sections: true
+
 website:
   title: "G3RT-Tutorials"
   navbar:
@@ -21,7 +25,8 @@ format:
     toc-location: right
     html-math-method: katex
     link-external-icon: true
-    fontsize: 13px
+    #mainfont: Georgia
+    fontsize: 14px
 
 execute:
   cache: true
