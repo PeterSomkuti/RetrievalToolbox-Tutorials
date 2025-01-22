@@ -1,7 +1,15 @@
 ---
 title: "Tutorial 2: Creating an Atmosphere and Working with Physical Units"
-number-sections: true
 ---
+
+```{julia}
+# Some set-up for this document
+using Pkg;
+Pkg.activate("/Users/psomkuti/Work/G3RT.jl");
+using G3RT;
+using Plots; default(fontfamily="cmss");
+using Unitful;
+```
 
 # Introduction
 
@@ -15,26 +23,49 @@ In this tutorial we will focus on constructing an atmosphere object with G3RT, w
 
 ## The `EarthAtmosphere` Object
 
-G3RT features a type that represents a typical atmosphere found here on Earth, of course only containing information that is relevant for typical retrieval applications. Within G3RT, we follow the general model of a layered atmosphere in which we assume all relevant quantities to be constant inside that layer. Here we already must make an important observation! The `EarthAtmosphere` object contains not just one, but two layer systems: one representing the vertical grid which the inversion will see, and a second one on which meteorological quantities are defined. While possibly confusing at first, this set-up allows us to be much more flexible with respect to our choices in setting up the retrieval algorithm.
+G3RT features a type that represents a typical atmosphere found here on Earth, of course only containing information that is relevant for typical retrieval applications. Within G3RT, we follow the general model of a layered atmosphere in which we assume all relevant quantities to be constant inside that layer. **Here we already must make an important observation!** The `EarthAtmosphere` object contains not just one, but two layer systems: one representing the vertical grid which the inversion will see, and a second one on which meteorological quantities are defined. While possibly confusing at first, this set-up allows us to be much more flexible with respect to our choices in setting up the retrieval algorithm.
 
 ### The Retrieval and Meteorological Grids
 
+The choice of pressure grid in a given retrieval application is based on a number of factors, such as computational performance, type of instrument from whose measurements we are trying to retrieve gases, and so on. More layers usually means slower forward model, as the radiative transfer solver has to do more work. On the other hand, we might find that we need more vertical layers to account for e.g. scatterers that are located in different parts of the atmosphere and a coarse layering structure would not allow us to reasonably model those. We recommend reading the appropriate section in [@Rodgers2000, sec. 10.3.1] to learn more about optimal choices for the retrieval grid.
 
+In general, we want to be highly flexible when making that choice regarding this **retrieval grid**.
 
+Further, most retrieval applications require meteorological profiles. For retrievals in the short-wave infrared, the most commonly uses ones are profiles of temperature and specific humidity. It is also highly common for these meteorological profiles to be derived from modern forecasting systems or reanalysis products, both tend to have much higher vertical resolution than most retrieval grids. We aim to retain the higher resolution of those MET profiles, and thus G3RT has a dedicated space for those profiles. @fig-met-p-grid shows an illustration of two possible grids.
 
+::: {.callout-note}
+The retrieval and meteorological grids are fully independent of each other! There is no general requirement that one must be finer resolved than the other one, and they could be the same!
+:::
 
-![caption goes here](figures/met-p-grid.svg){#fig-met-p-grid}
+![The retrieval pressure grid (left) compared to the meteorological grid (right).](figures/met-p-grid.svg){#fig-met-p-grid}
+
+Note the convention in @fig-met-p-grid! By this convention, we order the atmosphere with a running index starting at 1 from the top. $p_1$ thus refer to the top-of-atmosphere (TOA) level in this figure. Also note that we use the same convention when indexing *layers* rather than *levels*. The first layer, situated between levels $p_1$ and $p_2$ also has index 1.
+
+::: {.callout-warning}
+Handling level and layer-related quantities can easily cause confusion and requires attention! In general, there is no guaranteed method of learning whether a quantity is defined with respect to layers or levels, other than understanding the nature of that quantity itself. Make sure to consult on-line and in-line documentation of the related functions!
+:::
+
+The meteorological grid and its associated profiles (temperature $T$, specific humidity $q$, altitude $z$ and local gravity $g$) are used mostly in the calculation of the optical properties that later enter the radiative transfer calculations and are of utmost importance.
+
+We can illustrate this by a specific example. The quantity of interest there is the optical depth due to some gas absorber, within layer $l = 1$:
+
+$$
+    \tau_l = \int_{p_2}^{p_1} \underbrace{\dfrac{1 - q(p)}{g(p) \cdot M_{\mathrm{dry}}}}_{\text{number of dry-air molecules}} \cdot \overbrace{c_\text{gas}(p)}^{\text{concentration of gas}} \cdot \underbrace{k(p)}_{\text{gas cross section}} \; \mathrm{d}p
+$$ {#eq-gas-tau}
+
+Without going into the details about how one numerically evaluates this integral, we can identify the various terms in @eq-gas-tau and whether they belong to the retrieval or the meteorological grid.
+
+The gas concentration $c_\text{gas}(p)$ is based off a profile that is likely connected to the retrieval grid. For the sake of this example, let us imagine this particular gas represents a target gas that we want to retrieve from a measurement, and therefore the profile is defined on the retrieval grid. In G3RT, gases to be retrieved are defined on pressure levels $p_i$ and values for any arbitrary $p$ are obtained through *linear interpolation in (linear) pressure*.
+
+The two meteorological pressure-dependent variables $q(p)$ (specific humdity) and $g(p)$ (local gravity) are discretized on their own grid (the right grid in @fig-met-p-grid). When evaluating $q(p)$ or $g(p)$ for arbitrary $p$, the respective values are obtained via linear interpolation **on their own meteorological grid**.
+
+Lastly, the evaluation of the gas cross section $k(p)$ is actually performed in a completely different grid that either of the two shown in @fig-met-p-grid. As mentioned in another tutorial ([Tutorial 1](./tutorial_01.qmd)), spectroscopic data is sampled on its own pressure and temperature levels.
+
+Note however the following. When we have to evaluate the integrand in @eq-gas-tau at some arbitrary $p$, we must also look up $k(p)$. Earlier, we learned that $k(p)$ is really $k(p,T,c_\text{H$_2$O})$, so we must also know what the temperature and the water vapor mole fraction is for any given pressure in the model atmosphere. The temperature profile is defined on the MET grid, so we can easily infer $T \rightarrow T(p)$. While the water vapor mole fraction $c_\text{H$_2$O}$ is not explicitly stored, we can first infer the specific humidity at any given $p$ as $q \rightarrow q(p)$ and then calculate $c_\text{H$_2$O}(q)$, so that we can finally evaluate the cross section $k$ as $k(p, T(p), c_\text{H$_2$O}(q(p)))$.
 
 ### Type definition
 
-```{julia}
-# Some set-up for this document
-using Pkg;
-Pkg.activate("/Users/psomkuti/Work/G3RT.jl");
-using G3RT;
-using Plots;
-using Unitful;
-```
+The definition of the `EarthAtmosphere` object is shown below, with all type fields having verbose names to make it clear what they represent - especially whether they belong to pressure layers or pressure levels.
 
 ::: {.callout-note title="EarthAtmosphere"}
 ```{julia}
@@ -42,3 +73,236 @@ using Unitful;
 @doc G3RT.EarthAtmosphere
 ```
 :::
+
+For the creation of an `EarthAtmosphere` object, there is one convenice function that produces the object with a specified number of levels for both grids, and fills them with zeros. This is a recurring design in G3RT that users should get familiar with. Objects, especially those of considerable size, are allocated (or created) once, and then altered (or mutated) through the course of the retrieval process. Later tutorials will elaborate on the neccessity of this approach along with best practices.
+
+The convenience function used to produce a pre-allocated `EarthAtmosphere` object is named `create_empty_EarthAtmosphere`, and can be called in the following way:
+
+```{julia}
+
+atm = G3RT.create_empty_EarthAtmosphere(
+    4, # number of levels for retrieval grid
+    6, # number of levels for MET grid
+    Float64, # data type for all arrays
+    u"hPa", # pressure unit for retrieval grid
+    u"Pa", # pressure unit for MET grid
+    u"K", # unit for temperature profile
+    u"kg/kg", # unit for specific humidity profile
+    u"km", # unit for altitude profile
+    u"m/s^2", # unit for local gravity profile
+);
+
+```
+
+The parameters to the function `create_empty_EarthAtmosphere` are rather self-explanatory: we first pass the number of levels we want for both retrieval and meteorological grid. Then we must also decide on the data type that we want the arrays of the object to be; 64-bit floats are a good choice in almost all cases. The remaining 6 parameters define the units of the quantities that object contains. Two major things are of note here. First, we can see that there are two different units for the two pressure grids! This means that the retrieval grid could be specified in, e.g., pascal, and the meteorological grid could be specified in, e.g., torr. They can be the same of course.
+
+## Ingesting Values with Units
+
+From here on, we can inspect the object fields in the known manner - for example we can look at vector representing the retrieval pressure grid variables and see that they are all zeros.
+```{julia}
+atm.pressure_levels
+```
+
+The `EarthAtmosphere` type itself is not mutable, which means that we cannot replace the vector `atm.pressure_level` by our desired pressure level. Attempting an operation such as
+```{julia}
+#| error: true
+atm.pressure_levels = [1., 100., 500., 1000.]
+```
+will result in the error seen above. However, we can easily change the contents of the vector without having to violate the immutable nature of the `EarthAtmosphere`-typed object `atm`.
+
+```{julia}
+atm.pressure_levels[:] = [1., 100., 500., 1000.];
+atm.pressure_levels
+```
+
+Recall that `[:]` is an indexing operation, so rather than trying to assign a new vector to the `pressure_levels` field of the object `atm`, we are accessing the contents of the vector that is referenced by `atm.pressure_levels`.
+
+::: {.callout-tip}
+Contents of vectors, arrays, lists etc. of objects of mutable types can be altered!
+:::
+
+Above we have created the `atm` object with a specific unit for the retrieval pressure grid, and we can access that unit via
+```{julia}
+atm.pressure_unit
+```
+
+The new pressure grid we just created is obviously "reasonable", so to speak - meaning that values from 1 through 1000 hPa make sense within the context of an atmosphere on Earth. Note, however, that there is nothing that would keep us from assigning non-sensical values.
+
+A very likely error to occur is the mix-up of units. We can demonstrate a possible scenario by pretending we obtain our retrieval grid from some external source, like a configuration script or a file containing our desired grid. Further, we will pretend that those values were initially calculated in units of pascal (Pa) rather than hectopascal (hPa).
+
+```{julia}
+# Note: Julia allows "_"-separators in numbers to make them visually more obvious to readers
+rgrid = [100., 300., 50_000., 100_000.]
+atm.pressure_levels[:] = rgrid
+```
+
+Now neither G3RT nor Julia have any complaints about this, we have mostly just copied the contents of some vector into the memory space of another vector. Like in all scientific programming, it is the responsibility of the user to ensure that the correct values are fed into objects and functions. The most classic way to do this would be the following: we know we obtain the data in units of pascal, and we know that our object knows its retrieval grid in units of hectopascal, so we make the appropriate conversion before assigment and comment somewhere in our code why we did so:
+
+```{julia}
+# Divide by 100 since `rgrid` is in Pa
+atm.pressure_levels[:] = rgrid ./ 100
+```
+
+The above solution is perfectly fine, however we can make a slightly smarter choice. If we know the units of the source data, we can attach those to the data like so:
+
+```{julia}
+rgrid = [100., 300., 50_000., 100_000.]u"Pa"
+```
+
+Now `rgrid` is not just a `Float64` vector, but a vector of a different type, as evidenced by the output in the code cell above. As such, we can no longer simply copy the contents of `rgrid` into the contents of `atm.pressure_levels`, since Julia would throw an error due to the two types being incompatible. We must first make an appropriate conversion, and then extract the numerical values that we can then copy to `atm.pressure_levels`.
+
+```{julia}
+atm.pressure_levels[:] = ustrip(rgrid .|> atm.pressure_unit);
+atm.pressure_levels
+```
+
+The code above handles performs two operations. First, the vector `rgrid` is being converted into a new vector with units of `atm.pressure_unit` (hectopascal in our case). The `|>` is an infix operator in Julia which applies some function on the right-hand side to some expression on the left-hand side. Since `rgrid` is a vector rather than a number, we must pre-fix with a `.` to call the broadcast operation which in turn will apply the infix operation on all elements of `rgrid`. This first operation leaves us with a new vector in which the numerical contents have been appropriately converted from the original units (Pa) to the new ones (hPa). Feel free to experiment with different, compatible units:
+
+```{julia}
+rgrid .|> u"atm"
+```
+
+Note that after such a conversion has taken place, the resulting vector is still a vector whose elements are of some `Unitful`-type which are not compatible with the contents of `atm.pressure_levels`. The last step takes care of this: the `ustrip` function (provided by `Unitful.jl`) returns a view of the vector that allows copying over the numerical contents only.
+
+```{julia}
+ustrip(rgrid .|> u"atm")
+```
+
+Note that the `ustrip` function, when called on an array (or vector), returns a view onto the underlying array data, whereas calling `ustrip` on a scalar `Unitful`-type object returns a new value:
+
+```{julia}
+ustrip(5.7u"km")
+```
+
+The advatage of this approach is clear: our retrieval application now automatically handles the unit conversion. Think of other examples. Meteorological data tends to come in netCDF formats (or similar) in which each variable contains appropriate metadata that describes its units. The lack of hard-coding these units makes the retrieval application more resilient against these conversion errors which could arise when, for example, changing data sources.
+
+## Summary and Take-aways!
+
+This section introduces some very important concepts, hence we want to emphasize the key take-aways.
+
+* G3RT is designed such that certain objects must be created (allocated) once and then fed with appriate numerical values.
+    + Due to Julia's lack of manual memory management (we cannot explicitly free memory), creating large arrays over and over again leads to dramatic performance loss when the garbage collector has to be called repeatedly^[See e.g. <https://docs.julialang.org/en/v1/manual/performance-tips/#Pre-allocating-outputs>]
+
+    + In general, this requires that retrieval applications built with G3RT must do some up-front work to create necessary objects and then change the values inside those objects, as appropriate.
+
+    + Some parametric types offered by G3RT are **mutable**, whereas others are not. There is no good rule as to which type is mutable or immutable, but a good rule of thumb is: *if you cannot change a value after creating the object, you probably shouldn't*. Mutability of G3RT types is subject to change due to updates. For example, the `EarthScene` type is mutable, since it contains solar anlges, the scene location and time - all quantities that one might want to change after instantiation (when performing retrievals for many scenes).
+
+*  Many G3RT objects have unit fields that describe the unit of their corresponding fields, and they can be leveraged to produce unit-aware algorithms.
+
+    + This feature can be used to dynamically incorporate the units of source data (e.g. meteorological model ouptut) and match it with user-preferred units on the algorithm side.
+
+
+# Layers and Levels
+
+In the last section, we filled our atmosphere object with values for the retrieval pressure grid: `atm.pressure_levels`. Inspecting the type documentation [ADD LINK], we can see that there is a field `atm.pressure_layers`, which still contains only zeros:
+
+```{julia}
+atm.pressure_layers
+```
+
+Again, there is no function that is called automatically when we assign new values to `atm.pressure_levels`, so we have to manually calculate and ingest the mid-layer pressure values. One rather explicit way of doing it would be the following:
+
+```{julia}
+for i in 1:atm.N_layer
+    atm.pressure_layers[i] = 0.5 * (atm.pressure_levels[i] + atm.pressure_levels[i+1])
+end
+atm.pressure_layers * atm.pressure_unit
+```
+
+Since this is a common operation, G3RT has a convenice function `levels_to_layers` which calculates the mid-layer values for a given level-based profile.
+
+```{julia}
+G3RT.levels_to_layers(atm.pressure_levels)
+```
+
+We can plot the location of level and layer values and visually "check" that they are correct:
+
+```{julia}
+# Plot the pressure level/layer values over level numbers
+scatter(
+    collect(1:atm.N_level),
+    atm.pressure_levels,
+    markershape=:square, label="Levels",
+    size=(400, 300)
+)
+plot!(
+    collect(1:atm.N_layer) .+ 0.5,
+    atm.pressure_layers,
+    seriescolor=:black, seriestype=:stepmid,
+    markershape=:circle, label="Layers"
+)
+title!("Retrieval grid")
+xlabel!("Level number")
+ylabel!("Pressure [$(atm.pressure_unit)]")
+```
+
+At this point, the atmosphere object `atm` has reasonable values for retrieval pressure grid, but we must also make sure we add data to represent the meteorological grid. Remember, that we initialized the atmosphere object with two more levels than the retrieval grid:
+
+
+```{julia}
+mgrid = [5., 65., 200., 400., 650., 950.]u"hPa"
+
+atm.met_pressure_levels[:] = ustrip(mgrid .|> atm.pressure_unit);
+atm.met_pressure_layers[:] = G3RT.levels_to_layers(atm.met_pressure_levels);
+```
+
+```{julia}
+# Plot the pressure level/layer values over level numbers
+scatter(
+    collect(1:atm.N_met_level),
+    atm.met_pressure_levels,
+    markershape=:square, label="Levels",
+    size=(400, 300)
+)
+plot!(
+    collect(1:atm.N_met_layer) .+ 0.5,
+    atm.met_pressure_layers,
+    seriescolor=:black, seriestype=:stepmid,
+    markershape=:circle, label="Layers"
+)
+title!("Meteorological grid")
+xlabel!("Level number")
+ylabel!("Pressure [$(atm.pressure_unit)]")
+```
+
+
+Moving on, we should also add some reasonable values to represent both the temperature and the specific humidity profiles. Earlier, we chose the units for specific humidity to be `u"kg/kg"`, which is a special type of unit in `Unitful`, namely a `DimensionlessUnits` type. It signifies that the resulting unit is effectively "1", and objects with dimensionless units can always be cast onto "naked" Julia types.
+
+To demonstrate, let us create two vectors that we want to fill in with some values:
+
+```{julia}
+demo_a = zeros(3);
+demo_b = zeros(3);
+```
+
+And let us assume we have another two vectors that represent some quantities that have units attached:
+
+```{julia}
+uv_a = [1., 2., 3.]u"mbar/m"
+uv_b = [4., 5., 6.]u"kg/g"
+```
+
+The first quantity has units of pressure over length and cannot be reduced much; the second quantity, however, is effectively just a factor. If we try to cast the values of `uv_a` into the contents of `demo_a`, an error is thrown:
+
+```{julia}
+#| error: true
+demo_a[:] .= uv_a[:]
+```
+
+The important portions of the error log are found at the top, but one needs to look closely. Dimenionless units in `Unitful` are unfortunately not displayed as `1`, but as an empty character ` `. The above error log mentions a `DimensionError` followed by the statement that ` ` and the pressure unit `mbar/m` are not compatible.
+This is the behavior we truly want! We use `Unitful` such that unit conversion errors do not happen in the first place!
+
+Performing this operation on the second set of vectors, however, succeeds as we expect! More importantly, `Unitful` has correctly used the conversion factor 1000 that stems from kg/g before copying over the values.
+
+```{julia}
+demo_b[:] .= uv_b[:];
+demo_b
+```
+
+
+
+# Altitude and Gravity
+something
+
+# Adding Atmosphere Elements
+something

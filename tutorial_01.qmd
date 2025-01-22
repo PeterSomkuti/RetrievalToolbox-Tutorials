@@ -1,6 +1,5 @@
 ---
 title: "Tutorial 1: Spectroscopy and Gases"
-number-sections: true
 ---
 
 # Introduction
@@ -32,13 +31,13 @@ Currently, only the NASA JPL-type ABSCO data format is accepted. To learn more a
 
 ```{julia}
 # Some set-up for this document
-using Pkg
-Pkg.activate("/Users/psomkuti/Work/G3RT.jl")
-using G3RT
-using Plots
-using Unitful
+using Pkg;
+Pkg.activate("/Users/psomkuti/Work/G3RT.jl");
+using G3RT;
+using Plots; default(fontfamily="cmss");
+using Unitful;
 
-default(fontfamily="Times")
+
 
 # Load the ABSCO table
 absco_o2 = G3RT.load_ABSCO_spectroscopy(
