@@ -10,3 +10,4 @@ figures/*.svg
 figures/*.aux
 figures/*.pdf
 *_files/
+.DS_Store

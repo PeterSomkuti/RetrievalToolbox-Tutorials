@@ -87,7 +87,7 @@ atm = G3RT.create_empty_EarthAtmosphere(
     u"hPa", # pressure unit for retrieval grid
     u"Pa", # pressure unit for MET grid
     u"K", # unit for temperature profile
-    u"kg/kg", # unit for specific humidity profile
+    u"g/kg", # unit for specific humidity profile
     u"km", # unit for altitude profile
     u"m/s^2", # unit for local gravity profile
 );
@@ -226,7 +226,7 @@ scatter(
     size=(400, 300)
 )
 plot!(
-    collect(1:atm.N_layer) .+ 0.5,
+    collect(1:atm.N_layer) .+ 0.5, # set x coordinate of layer center to be in the middle
     atm.pressure_layers,
     seriescolor=:black, seriestype=:stepmid,
     markershape=:circle, label="Layers"
@@ -279,7 +279,7 @@ And let us assume we have another two vectors that represent some quantities tha
 
 ```{julia}
 uv_a = [1., 2., 3.]u"mbar/m"
-uv_b = [4., 5., 6.]u"kg/g"
+uv_b = [4., 5., 6.]u"g/kg"
 ```
 
 The first quantity has units of pressure over length and cannot be reduced much; the second quantity, however, is effectively just a factor. If we try to cast the values of `uv_a` into the contents of `demo_a`, an error is thrown:
@@ -292,17 +292,255 @@ demo_a[:] .= uv_a[:]
 The important portions of the error log are found at the top, but one needs to look closely. Dimenionless units in `Unitful` are unfortunately not displayed as `1`, but as an empty character ` `. The above error log mentions a `DimensionError` followed by the statement that ` ` and the pressure unit `mbar/m` are not compatible.
 This is the behavior we truly want! We use `Unitful` such that unit conversion errors do not happen in the first place!
 
-Performing this operation on the second set of vectors, however, succeeds as we expect! More importantly, `Unitful` has correctly used the conversion factor 1000 that stems from kg/g before copying over the values.
+Performing this operation on the second set of vectors, however, succeeds as we expect. More importantly, `Unitful` has correctly used the conversion factor 1000 that stems from kg/g before copying over the values.
 
 ```{julia}
 demo_b[:] .= uv_b[:];
 demo_b
 ```
 
+With this knowledge, we can fill in the specific humidity profile with a unit-carrying vector, and we also make sure to not forget to calculate the mid-layer values.
+
+```{julia}
+q = [0.0001, 0.0002, 0.00035, 0.00035, 0.00075, 0.0020]u"kg/kg"
+atm.specific_humidity_levels[:] .= q
+atm.specific_humidity_layers[:] = G3RT.levels_to_layers(
+    atm.specific_humidity_levels
+);
+```
+
+::: {.callout-important}
+**But wait, this is wrong! An important lesson follows!**
+:::
+
+First, we look at vector `q` again, which we have defined just above to represent a profile in units of kg/kg. Note that the vector does not carry any units, since `Unitful.jl` implicitly casts the resulting vector as a "normal" vector
+```{julia}
+q
+```
+
+If we perform the assigment in the obvious way, such as
+
+```julia
+atm.specific_humidity_levels[:] .= q
+```
+
+the field `specific_humidity_levels` of our atmosphere object is filled with values that represent a quantity in unitless dimensions of kg/kg. The atmosphere object, however, was earlier defined in g/kg, as can be inferred:
+
+```{julia}
+atm.specific_humidity_unit
+```
+
+This discrepancy between unit and quantity will result in errors in following computations!
+
+The solution to this is to **always** perform an explicit unit conversion when setting unit-valued object fields. The correct, explicit assignment is
+
+```{julia}
+atm.specific_humidity_levels[:] .= q .|> atm.specific_humidity_unit .|> ustrip
+atm.specific_humidity_layers[:] = G3RT.levels_to_layers(atm.specific_humidity_levels)
+# This should now be in g/kg!
+```
+
+The output in the above section confirms that the correction conversion was performed before the values were copied into `atm.specific_humidity_levels`.
+
+
+The last quantity to be covered in this section is the temperature profile. We can use the same recipes that we have learned before to add a temperature profile. Temperature units, however, require a litte more care than other units. A well-written article is found within the `Unitful.jl` documentation: [link](https://painterqubits.github.io/Unitful.jl/stable/temperature/). In short, there are ambiguities with respect to mathematical operations that involve temperatures with different units, in particular if one mixes absolute  (Kelvin, Rankine) and relative (Celcius, Fahrenheit) scales. To avoid downstream issues, the functions and objects that currently accept temperature units will force users to use absolute temperature units, such as K, mK, Ra, etc.
+
+```{julia}
+T = [253., 233., 238., 253., 278., 293.]u"K"
+atm.temperature_levels[:] = ustrip(T .|> atm.temperature_unit)
+atm.temperature_layers[:] = G3RT.levels_to_layers(
+    atm.temperature_levels
+);
+```
+
+::: {.callout-tip}
+It is good practice to keep all temperature quantities in units of K, mostly to minimize potential (unknown) issues.
+:::
+
+## Summary and a Useful Convenience Function
+
+The prior section intends to emphasize the role of units and how they are used within G3RT. To summarize:
+
+1. Quantities that have units are stored as "normal" number-types (or number-type arrays). A corresponding field states the units of those.
+
+Using number-type arrays, e.g. of `Matrix{Float64}`, allows certain mathematical operations to be performed much faster, which is why G3RT takes the approach of using a seperate variable that stores unit information. In principle, it is possible to make use of arrays with attached units - but early tests have shown that the current approach is more performant.
+
+2. At all times, users must be aware of units, which quantities have units attached, and how they enter various G3RT objects.
+
+As per the design goals of G3RT, there is no over-arching mechanism that controls how quantities flow from data source to be part of G3RT-provided objects or functions. Users are free to design that route themselves as they see fit for their application. However, users must always make sure they understand which quantities have units attached to them. Lack of awareness can lead to calcluation errors.
+
+::: {.callout-warning}
+G3RT does not evaluate users' handling of unit-attached quantities. It is the user's responsibility to ensure that the G3RT object units and the corresponding numerical values match!
+:::
+
+
+
+While we have used explicit formulations in the section above to learn about how to deal with units, there is a helpful convience function provided by G3RT that makes the typing a little more compact.
+
+Instead of writing
+
+```{julia}
+atm.specific_humidity_levels[:] .= q .|> atm.specific_humidity_unit .|> ustrip
+```
+
+we can use the convenience function `ingest!` to copy over a numerical value (or the contents of some array) into a G3RT object. The unit conversion is handled by the function itself.
+
+```{julia}
+G3RT.ingest!(atm, :specific_humidity_levels, q)
+```
+
+Note that there are two specialized implementations of the function, so bother number-type and array-type quantities can be ingested into G3RT objects very efficiently this way. Also, the target must be valid in the sense that the G3RT object must possess both a field, say `obj.field`, and the accompanying `obj.field_unit`.
+
+::: {.callout-tip}
+It is a Julia convention, that functions which modify one or more of its arguments, have an exclamation mark at the end. Users can spot immediately that `ingest!` modifies the `atm` object!
+:::
 
 
 # Altitude and Gravity
-something
+
+Looking at @eq-gas-tau, we can see that we will likely require the local acceleration due to Earth's gravity at various points in our atmosphere. The `EarthAtmosphere` object holds the level-resolved value for $g$ in its own field, named `.gravity`. Users have the option to use their own method to calculate this profile via their own function, e.g.
+
+```julia
+atm.gravity_levels[:] .= my_own_gravity_function()
+```
+
+Since this is such a common operation, G3RT ships with a function to calculate the location-based local gravity profile which takes into account the latitude and altitude of the observation point at which we want to create a model atmosphere. However, that function requires additional inputs (scene latitude and altitude), hence we will skip that particular functionality for now and use dummy values instead:
+
+```{julia}
+atm.gravity_levels[:] .= 9.81; # this will be in m/s^2
+atm.altitude_levels[:] .= [45.0, 20.0, 10.0, 7.0, 3.5, 0.6]; # this will be in "km"
+```
+
+Finally, to make things a little more quick, we use a convenience function `calculate_layers!` that acts on an `EarthAtmosphere` object and calculates all mid-layer quantities. We could have, equivalently, used `G3RT.levels_to_layers`, as was introduced earlier and manually calculate and assign the mid-layer quantities for `gravity_layers`, `altitude_layers`, etc.
+
+```{julia}
+G3RT.calculate_layers!(atm)
+```
 
 # Adding Atmosphere Elements
-something
+
+We have added everything needed for a functioning atmosphere: we defined a pressure level grid for the retrieval (`pressure_levels`), and then another pressure level grid for our meteorological profiles (`met_pressure_levels`). We then assigned our temperature and specific humidity profiles (`temperature_levels`, `specific_humidity_levels`) as well as altitude and gravity (`altitude_levels`, `gravity_levels`). Finally, we calculate the mid-layer values using a helpful convenience function (`calculate_layers`).
+
+This atmosphere object would work just fine within a retrieval set-up, although this model atmosphere would be somewhat empty. When we initially created the `EarthAtmosphere` object, with the function `create_empty_EarthAtmosphere`, we specified number of layers and some units, but we did not add "actors" so to speak.
+
+In G3RT, Earth atmosphere objects contain a list of "atmosphere elements". These atmosphere elements can be thought of as items which characterize the atmosphere in the sense that they modify the radiance when calculated through one of the provided radiative transfer schemes. This is the place where we could insert, for example, a few aerosols or clouds, or gases. We can inspect this list by typing:
+
+```{julia}
+atm.atm_elements
+```
+
+We notice that this list is empty, and it is of type `AbstractAtmosphereElements`. We will revisit type hierarchy at a later stage, but for now we will note that `AbstractAtmosphereElements` encompasses all of the above mentioned concepts (gases, aerosols and more). Being an empty vector of some type also means that we can only add elements to this vector whose type matches!
+
+For the sake of simplicity, we can add atmosphere element to this atmosphere that requires no additional set-up: Rayleigh scattering. We can instantiate new Rayleigh scattering object by typing `G3RT.RayleighScattering()`, which produces a mostly empty object:
+
+```{julia}
+ray = G3RT.RayleighScattering()
+```
+
+And we can push this into the vector of atmosphere elements in our atmosphere:
+
+```{julia}
+push!(atm.atm_elements, ray)
+```
+
+::: {.callout-tip}
+`push!` is a very general Julia function that adds an element (or multiple elements) to some collection. This works for almost all types of vectors or lists. E.g. `x = [1,2,3]; push!(x, 4)` would add `4` to the vector `x`.
+:::
+
+Inspecting the type definition of `RayleighScattering` reveals that it is actually fully empty - there is no field inside this particular type, you can try it yourself by typing `?G3RT.RayleighScattering` in a Julia prompt. So how does G3RT calculate the appropriate quantities when the time comes, such as the Rayleigh scattering optical depth, or the Rayleigh scattering phase matrix?
+
+In this case, G3RT is simply interrogating the list of atmosphere elements. Functions internal to G3RT will see if certain objects or objects of certain types are part of `atm.atm_elements`, and then act accordingly. For example, the code snippet below is taken straight from the routine which calculates all the optical properties for our retrieval. When performing the calculations, G3RT will inquire whether any of the types of the objects in `atm.atm_elements` belong to the `AbstractRayleighScattering` class. This indicates to the overall program logic that the user wants Rayleigh scattering to be computed, and thus the appropriate function is called.
+
+```julia
+if findanytype(atm.atm_elements, AbstractRayleighScattering)
+    # Check if we have Rayleigh scattering as an atmospheric element..
+
+    # Calculate OD profiles
+    calculate_rayleigh_optical_depth_profiles!(opt, scene)
+end
+```
+
+`findanytype` is a function of G3RT that allows to quickly iterate over some vector to see if any of the elements belong to some type, so this first code will evaluate to `true` (the second element is of `String` type)
+
+```{julia}
+G3RT.findanytype([1, "test", 2.0, 5.25im], String)
+```
+
+whereas this next code bit evaluates to `false`, since the third element is a `Float64`, rather than a `Float32`, and thus there is no 64-bit float type in this vector.
+
+```{julia}
+G3RT.findanytype([1, "test", 2.0, 5.25im], Float32)
+```
+
+The idea behind this design pattern is the following: atmospheric elements contain all the necessary information about them, which can be very little. In the case of Rayleigh scattering, we have no need for additional information, as G3RT (for now) only knows one particular realization of this phenomenon and it does not need any more parameters. It is enough to know that the Earth atmosphere object contains a `RayleighScattering` instance, which then signals to relevant functions that certain computations must be performed.
+
+We can also add a gas to our atmosphere, using what we have learned in the last tutorial:
+
+```{julia}
+# Load the spectroscopy
+absco_o2 = G3RT.load_ABSCO_spectroscopy(
+    joinpath("data", "o2_spectroscopy_demo.h5")
+)
+# Define the gas object
+gas_o2 = G3RT.GasAbsorber(
+    "O2",
+    absco_o2,
+    [0.2095, 0.2095, 0.2095, 0.2095],
+    Unitful.NoUnits
+)
+# push into our list of atmosphere objects
+push!(atm.atm_elements, gas_o2)
+```
+
+Now our atmosphere contains both Rayleigh scattering and molecular oxygen as an absorber. As we have learned in the last tutorial, populating a list such as `atm.atm_elements` does not automatically create a new copy of some element. In the example above, **only one instance** of `gas_o2` exists. We can check that again by looking at the element in the list and comparing it with `gas_o2` using the `===` operator:
+
+```{julia}
+# `end` refers to the last element in some list
+atm.atm_elements[end] === gas_o2
+```
+
+Since the above line evaluates to `true`, we can be sure that both symbols point to the same object in memory! This remains an important aspect of working with G3RT! The name `gas_o2` could easily be clobbered, for example we could create a new `gas_o2` object with some slightly different oxygent volume mixing ratio:
+
+```{julia}
+gas_o2 = G3RT.GasAbsorber(
+    "O2",
+    absco_o2,
+    [0.22, 0.22, 0.22, 0.22],
+    Unitful.NoUnits
+)
+```
+
+And we can see that those two symbols now **do not** point to the same obect in memory:
+
+```{julia}
+# `end` refers to the last element in some list
+atm.atm_elements[end] === gas_o2
+```
+
+Or we can look at the VMR levels:
+
+```{julia}
+println(gas_o2.vmr_levels)
+println(atm.atm_elements[end].vmr_levels)
+```
+
+Again, we repeat the same important lesson as in [Tutorial 1](./tutorial_01.qmd): be careful when managing these objects of interest! There are not just downsides such as possible confusion of objects - the fact that these "down-the-line"-objects only reference the original objects can be very effectively used!
+
+First, let us make sure we have our correct gas absorber:
+```{julia}
+gas_o2 = atm.atm_elements[end]
+```
+
+Now think of a situation in which we might want to be able to change the contents of `gas_o2`, but do not want to re-create all of the other objects that initially depended on it. For example, we could want to study the impact of slightly different oxygen columns to a top-of-atmosphere radiance, as calculated by our model. We could simply cast the relevant functions into a loop such as so:
+
+```julia
+for o2_vmr in [0.2095, 0.2065, 0.2035]
+    gas_o2.vmr_levels[:] .= o2_vmr
+
+    run_forward_model(atm) # this is a placeholder dummy function
+end
+```
+
+The above code illustrates how we would update the gas object volume mixing ratio, then call some function to do the radiative transfer. Since `gas_o2` is being (implicitly) referenced by `atm`, the atmosphere object, when interrogated, would show varying oxygen columns at each loop iteration. Of course this all depends on `run_forward_model` actually re-calculating the optical properties, which we assume would happen. This method would obviously not produce the intended result if the symbol `gas_o2` had been clobbered or overwritten by some other object in the meantime!
+
+Move on to the next tutorial! [Tutorial 3](./tutorial_03.qmd)

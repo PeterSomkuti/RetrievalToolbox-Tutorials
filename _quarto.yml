@@ -27,6 +27,11 @@ format:
     link-external-icon: true
     #mainfont: Georgia
     fontsize: 14px
+  pdf:
+    toc: true
+    colorlinks: true
+    mainfont: "Times New Roman"
+    monofont: "JuliaMono"
 
 execute:
   cache: true
