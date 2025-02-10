@@ -1,0 +1,22 @@
+---
+title: "Tutorial 3: Spectral Windows, Scenes and Optical Properties"
+---
+
+```{julia}
+# Some set-up for this document
+using Pkg;
+Pkg.activate("/Users/psomkuti/Work/G3RT.jl");
+using G3RT;
+using Plots; default(fontfamily="cmss");
+using Unitful;
+```
+
+
+# Introduction
+
+In the previous tutorial ([Tutorial 2](./tutorial_02.qmd)), we have learned about atmospheres and which types of profiles and other objects they contain. Further, we have learned about the importance of dealing with physical units correctly, such that G3RT can correctly do the necessary unit conversions for us.
+
+::: {.callout-tip title="Goal of this tutorial"}
+In this tutorial we will move to creating an actual retrieval scene, and define the extent of our spectral region of interest. This provides us with everything needed to peform some basic calculations that we then use to produce top-of-atmosphere radiances.
+:::
+
