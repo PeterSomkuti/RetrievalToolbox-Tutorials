@@ -1,6 +1,7 @@
+_freeze
 _site
 .quarto
-/.quarto/
+/.quarto/*
 .jupyter_cache/
 .ipynb_checkpoints/
 *.quarto_ipynb
@@ -11,3 +12,5 @@ figures/*.aux
 figures/*.pdf
 *_files/
 .DS_Store
+
+
