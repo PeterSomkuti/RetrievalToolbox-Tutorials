@@ -1,0 +1,40 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{sfmath}
+\usepackage{tikz,pgfplots}
+
+\begin{document}
+\usetikzlibrary{arrows.meta, math}
+
+
+\begin{tikzpicture}[font=\sffamily]
+
+    \begin{axis}[
+        clip mode=individual, % need this to adjust z-order of plots
+        xmin=-3, xmax=6,
+        ymin=-0.1, ymax=1.2,
+        xtick=\empty,
+        ytick=\empty,
+        xlabel={Wavelength},
+        legend style={draw=none}
+    ]
+
+        \addplot[gray,very thick,mark=none] coordinates {(0, -0.15) (-0.15, 1.2)};
+        \node [coordinate,pin={[pin distance=1.5cm]325:{$\texttt{wavelength\_min}$}}] at (axis cs:-0.15,1.06) {};
+        \pgfplotsinvokeforeach{-2.5,-2.25,...,5.6}{
+            \addplot [red,only marks,mark=*,forget plot]  coordinates { (#1,0) (#1,0) };}
+
+        \addplot [id=exp,domain=-2:2,samples=100,very thick,black] gnuplot {exp(-((x)**2)/0.2)};
+        \addplot [blue,only marks,mark=triangle*,mark size=3] coordinates{(0, 0.5)} ;
+        \addlegendentry{ISRF}
+
+
+
+
+
+    \end{axis}
+
+
+\end{tikzpicture}
+\end{document}
