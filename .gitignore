@@ -12,5 +12,7 @@ figures/*.aux
 figures/*.pdf
 *_files/
 .DS_Store
+figures/*.gnuplot
+figures/*.table
 
-
+/.quarto/
