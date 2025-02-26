@@ -301,13 +301,22 @@ We fill these in with some plausible values. Note that the satellite velocity an
 Be aware of implicit angular unit conversions when using `Unitful` degree units!
 :::
 
-The next required object is a location, and for this exercise we opt for an `EarthLocation` type, which describes the position on Earth at which the instrument points.
+The next required object is a location, and for this exercise we opt for an `EarthLocation` type, which describes the position on Earth at which the instrument points. Currently, these Earth locations are considered to be point-like, meaning that they do not have any spatial extent. This notion is consistent with the utilized 1-dimensional radiative transfer, so any location represents some idea of a mean atmospheric and surface state of the area covered by the field-of-view of the ground footprint.
 
 ```{julia}
-location = G3RT.EarthLocations(
+location = G3RT.EarthLocation(
     16.3713,
     48.2081,
     200.0,
     u"m"
 )
 ```
+
+The last separate object needed is a simple `DateTime`, which is an object type that is part of the Julia standard library to represent a time. It requires loading in a module first, however:
+
+```{julia}
+using Dates
+time = DateTime("2025-02-19T13:00:00")
+```
+
+Again, we picked an arbitrary date. So far, the only function which needs this particular data (`EarthScene.time`) is a function that can calculate the solar Doppler shift between the sun and the Earth location (if needed).
