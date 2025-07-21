@@ -319,4 +319,115 @@ using Dates
 time = DateTime("2025-02-19T13:00:00")
 ```
 
-Again, we picked an arbitrary date. So far, the only function which needs this particular data (`EarthScene.time`) is a function that can calculate the solar Doppler shift between the sun and the Earth location (if needed).
+Again, we picked an arbitrary date. So far, the only function which needs this particular data (`EarthScene.time`) is a function that can calculate the solar Doppler shift between the sun and the Earth location (if explicitly needed).
+
+We now have all the components needed to create a scene object. We re-use the code we wrote in the previous tutorial to produce an atmosphere object ([Tutorial 2](./tutorial_02.qmd)). Readers can un-fold the code cell below to look at the details.
+
+```{julia}
+#| code-fold: true
+
+atm = G3RT.create_empty_EarthAtmosphere(
+    4, # number of levels for retrieval grid
+    6, # number of levels for MET grid
+    Float64, # data type for all arrays
+    u"hPa", # pressure unit for retrieval grid
+    u"Pa", # pressure unit for MET grid
+    u"K", # unit for temperature profile
+    u"g/kg", # unit for specific humidity profile
+    u"km", # unit for altitude profile
+    u"m/s^2", # unit for local gravity profile
+);
+
+G3RT.ingest!(atm, :pressure_levels, [1., 100., 500., 1000.]u"hPa")
+G3RT.ingest!(atm, :met_pressure_levels, [5., 65., 200., 400., 650., 950.]u"hPa")
+G3RT.ingest!(atm, :specific_humidity_levels, [0.0001, 0.0002, 0.00035, 0.00035, 0.00075, 0.0020]u"kg/kg")
+G3RT.ingest!(atm, :temperature_levels, [253., 233., 238., 253., 278., 293.]u"K")
+
+G3RT.calculate_layers!(atm)
+
+# Load the spectroscopy
+absco_o2 = G3RT.load_ABSCO_spectroscopy(
+    joinpath("data", "o2_spectroscopy_demo.h5")
+)
+
+# Define the gas object
+gas_o2 = G3RT.GasAbsorber(
+    "O2",
+    absco_o2,
+    [0.2095, 0.2095, 0.2095, 0.2095],
+    Unitful.NoUnits
+)
+
+# push into our list of atmosphere objects
+push!(atm.atm_elements, gas_o2);
+```
+
+
+```{julia}
+scene = G3RT.EarthScene(
+    atm, # Atmosphere
+    surf_dict, # Surface(s)
+    observer, # Observer
+    location, # Scene location
+    12.3, # Solar zenith angle
+    56.7, # Solar azimuth angle
+    time # Time of measurement
+)
+```
+
+Before moving on to use the scene object for computations, let us ponder the relationship and dependencies between the various objects we have created in order to build this. Understanding those connections is helpful since those reflect the needed paths of fundamental calculations that we require for most retrieval applications.
+
+```{mermaid}
+---
+config:
+    class:
+        hideEmptyMembersBox: true
+---
+classDiagram
+
+    class SpectralWindow["SpectralWindow\n(shortened)"]{
+        Number λ_min
+        Number λ_max
+    }
+
+    class surfaces
+
+    class LambertianPolynomialSurface["LambertianPolynomialSurface\n(shortened)"]
+
+    class ABSCOSpectroscopy["ABSCOSpectroscopy\n(shortened)"]{
+        String filename
+    }
+
+    class GasAbsorber["GasAbsorber\n(shortened)"]{
+        ABSCOSpectroscopy spectroscopy
+    }
+
+    class EarthAtmosphere["EarthAtmosphere\n(shortened)"]{
+        AtmosphereElements
+
+        retrieval_pressure_grid
+        met_pressure_grid
+        met_profiles
+        met_profiles_units
+
+    }
+
+    class EarthScene{
+        Dict[SpectralWindow->AbstractSurfaces] surfaces
+        EarthAtmosphere atm
+        AbstractObserver observer
+        AbstractLocation location
+        Number solar_zenith
+        Number solar_azimuth
+        DateTime time
+    }
+
+    GasAbsorber <-- ABSCOSpectroscopy
+    EarthAtmosphere <-- GasAbsorber
+    EarthScene <-- EarthAtmosphere
+    EarthScene <-- surfaces
+
+    SpectralWindow --> surfaces
+    LambertianPolynomialSurface --> surfaces
+
+```
