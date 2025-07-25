@@ -265,19 +265,14 @@ window.Quarto = {
 </header>
 
 
-<div id="49d71dcd" class="cell" data-execution_count="1">
+<div id="056067fe" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Some set-up for this document</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">RetrievalToolbox</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> RE <span class="op">=</span> RetrievalToolbox</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots;</span> default(fontfamily="cmss");</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Unitful;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>┌ Warning: XRTM_PATH environment variable was not found! Not loading XRTM!
-└ @ RetrievalToolbox ~/Work/ghgc/RetrievalToolbox.jl/src/RetrievalToolbox.jl:67
-┌ Warning: Could not find XRTM module!
-└ @ RetrievalToolbox ~/Work/ghgc/RetrievalToolbox.jl/src/RetrievalToolbox.jl:102
-┌ Warning: Calls to XRTM library functions will crash the session!
-└ @ RetrievalToolbox ~/Work/ghgc/RetrievalToolbox.jl/src/RetrievalToolbox.jl:103</code></pre>
+<pre><code>[ Info: Loading XRTM from /Users/psomkuti/Work/xrtm_fork/interfaces</code></pre>
 </div>
 </div>
 <section id="introduction" class="level1" data-number="1">
@@ -365,7 +360,7 @@ EarthAtmosphere
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="6a676665" class="cell" data-execution_count="2">
+<div id="63f9c55c" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <ul>
 <li><code>atm_elements::Vector{&lt;:AbstractAtmosphereElement}</code>: Vector of atmosphere elements present in this atmosphere</li>
@@ -398,7 +393,7 @@ EarthAtmosphere
 </div>
 <p>For the creation of an <code>EarthAtmosphere</code> object, there is one convenice function that produces the object with a specified number of levels for both grids, and fills them with zeros. This is a recurring design in RetrievalToolbox that users should get familiar with. Objects, especially those of considerable size, are allocated (or created) once, and then altered (or mutated) through the course of the retrieval process. Later tutorials will elaborate on the neccessity of this approach along with best practices.</p>
 <p>The convenience function used to produce a pre-allocated <code>EarthAtmosphere</code> object is named <code>create_empty_EarthAtmosphere</code>, and can be called in the following way:</p>
-<div id="570881fa" class="cell" data-execution_count="3">
+<div id="1c5da83f" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>atm <span class="op">=</span> RE.<span class="fu">create_empty_EarthAtmosphere</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fl">4</span>, <span class="co"># number of levels for retrieval grid</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fl">6</span>, <span class="co"># number of levels for MET grid</span></span>
@@ -417,7 +412,7 @@ EarthAtmosphere
 <section id="ingesting-values-with-units" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="ingesting-values-with-units"><span class="header-section-number">1.2</span> Ingesting Values with Units</h2>
 <p>From here on, we can inspect the object fields in the known manner - for example we can look at vector representing the retrieval pressure grid variables and see that they are all zeros.</p>
-<div id="89cd6b43" class="cell" data-execution_count="4">
+<div id="8ffbdfd6" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>4-element Vector{Float64}:
@@ -428,7 +423,7 @@ EarthAtmosphere
 </div>
 </div>
 <p>The <code>EarthAtmosphere</code> type itself is not mutable, which means that we cannot replace the vector <code>atm.pressure_level</code> by our desired pressure level. Attempting an operation such as</p>
-<div id="3ce6fce3" class="cell" data-execution_count="5">
+<div id="8850aa76" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels <span class="op">=</span> [<span class="fl">1</span>., <span class="fl">100</span>., <span class="fl">500</span>., <span class="fl">1000</span>.]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <div class="ansi-escaped-output">
@@ -443,7 +438,7 @@ Stacktrace:
 </div>
 </div>
 <p>will result in the error seen above. However, we can easily change the contents of the vector without having to violate the immutable nature of the <code>EarthAtmosphere</code>-typed object <code>atm</code>.</p>
-<div id="cbebe014" class="cell" data-execution_count="6">
+<div id="ca4f3cce" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels[<span class="op">:</span>] <span class="op">=</span> [<span class="fl">1</span>., <span class="fl">100</span>., <span class="fl">500</span>., <span class="fl">1000</span>.];</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
@@ -469,7 +464,7 @@ Tip
 </div>
 </div>
 <p>Above we have created the <code>atm</code> object with a specific unit for the retrieval pressure grid, and we can access that unit via</p>
-<div id="2cfec0f0" class="cell" data-execution_count="7">
+<div id="9c56cd26" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_unit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>hPa</code></pre>
@@ -477,7 +472,7 @@ Tip
 </div>
 <p>The new pressure grid we just created is obviously “reasonable”, so to speak - meaning that values from 1 through 1000 hPa make sense within the context of an atmosphere on Earth. Note, however, that there is nothing that would keep us from assigning non-sensical values.</p>
 <p>A very likely error to occur is the mix-up of units. We can demonstrate a possible scenario by pretending we obtain our retrieval grid from some external source, like a configuration script or a file containing our desired grid. Further, we will pretend that those values were initially calculated in units of pascal (Pa) rather than hectopascal (hPa).</p>
-<div id="5c1f9b9f" class="cell" data-execution_count="8">
+<div id="4c8298b3" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: Julia allows "_"-separators in numbers to make them visually more obvious to readers</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>rgrid <span class="op">=</span> [<span class="fl">100</span>., <span class="fl">300</span>., <span class="fl">50_000</span>., <span class="fl">100_000</span>.]</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels[<span class="op">:</span>] <span class="op">=</span> rgrid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -490,7 +485,7 @@ Tip
 </div>
 </div>
 <p>Now neither RetrievalToolbox nor Julia have any complaints about this, we have mostly just copied the contents of some vector into the memory space of another vector. Like in all scientific programming, it is the responsibility of the user to ensure that the correct values are fed into objects and functions. The most classic way to do this would be the following: we know we obtain the data in units of pascal, and we know that our object knows its retrieval grid in units of hectopascal, so we make the appropriate conversion before assigment and comment somewhere in our code why we did so:</p>
-<div id="30df09d3" class="cell" data-execution_count="9">
+<div id="542443e3" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Divide by 100 since `rgrid` is in Pa</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels[<span class="op">:</span>] <span class="op">=</span> rgrid <span class="op">./</span> <span class="fl">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
@@ -502,7 +497,7 @@ Tip
 </div>
 </div>
 <p>The above solution is perfectly fine, however we can make a slightly smarter choice. If we know the units of the source data, we can attach those to the data like so:</p>
-<div id="955c32b3" class="cell" data-execution_count="10">
+<div id="d2b7954c" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>rgrid <span class="op">=</span> [<span class="fl">100</span>., <span class="fl">300</span>., <span class="fl">50_000</span>., <span class="fl">100_000</span>.]u<span class="st">"Pa"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>4-element Vector{Quantity{Float64, 𝐌 𝐋⁻¹ 𝐓⁻², Unitful.FreeUnits{(Pa,), 𝐌 𝐋⁻¹ 𝐓⁻², nothing}}}:
@@ -513,7 +508,7 @@ Tip
 </div>
 </div>
 <p>Now <code>rgrid</code> is not just a <code>Float64</code> vector, but a vector of a different type, as evidenced by the output in the code cell above. As such, we can no longer simply copy the contents of <code>rgrid</code> into the contents of <code>atm.pressure_levels</code>, since Julia would throw an error due to the two types being incompatible. We must first make an appropriate conversion, and then extract the numerical values that we can then copy to <code>atm.pressure_levels</code>.</p>
-<div id="c6380809" class="cell" data-execution_count="11">
+<div id="34ad8da3" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels[<span class="op">:</span>] <span class="op">=</span> <span class="fu">ustrip</span>(rgrid <span class="op">.|&gt;</span> atm.pressure_unit);</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
@@ -525,7 +520,7 @@ Tip
 </div>
 </div>
 <p>The code above handles performs two operations. First, the vector <code>rgrid</code> is being converted into a new vector with units of <code>atm.pressure_unit</code> (hectopascal in our case). The <code>|&gt;</code> is an infix operator in Julia which applies some function on the right-hand side to some expression on the left-hand side. Since <code>rgrid</code> is a vector rather than a number, we must pre-fix with a <code>.</code> to call the broadcast operation which in turn will apply the infix operation on all elements of <code>rgrid</code>. This first operation leaves us with a new vector in which the numerical contents have been appropriately converted from the original units (Pa) to the new ones (hPa). Feel free to experiment with different, compatible units:</p>
-<div id="253452bc" class="cell" data-execution_count="12">
+<div id="d453dc92" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>rgrid <span class="op">.|&gt;</span> u<span class="st">"atm"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>4-element Vector{Quantity{Float64, 𝐌 𝐋⁻¹ 𝐓⁻², Unitful.FreeUnits{(atm,), 𝐌 𝐋⁻¹ 𝐓⁻², nothing}}}:
@@ -536,7 +531,7 @@ Tip
 </div>
 </div>
 <p>Note that after such a conversion has taken place, the resulting vector is still a vector whose elements are of some <code>Unitful</code>-type which are not compatible with the contents of <code>atm.pressure_levels</code>. The last step takes care of this: the <code>ustrip</code> function (provided by <code>Unitful.jl</code>) returns a view of the vector that allows copying over the numerical contents only.</p>
-<div id="206248b3" class="cell" data-execution_count="13">
+<div id="b7af1564" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ustrip</span>(rgrid <span class="op">.|&gt;</span> u<span class="st">"atm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>4-element reinterpret(Float64, ::Vector{Quantity{Float64, 𝐌 𝐋⁻¹ 𝐓⁻², Unitful.FreeUnits{(atm,), 𝐌 𝐋⁻¹ 𝐓⁻², nothing}}}):
@@ -547,7 +542,7 @@ Tip
 </div>
 </div>
 <p>Note that the <code>ustrip</code> function, when called on an array (or vector), returns a view onto the underlying array data, whereas calling <code>ustrip</code> on a scalar <code>Unitful</code>-type object returns a new value:</p>
-<div id="72d84d4b" class="cell" data-execution_count="14">
+<div id="9ab24d13" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ustrip</span>(<span class="fl">5.7</span>u<span class="st">"km"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="15">
 <pre><code>5.7</code></pre>
@@ -575,7 +570,7 @@ Tip
 <section id="layers-and-levels" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Layers and Levels</h1>
 <p>In the last section, we filled our atmosphere object with values for the retrieval pressure grid: <code>atm.pressure_levels</code>. Inspecting the type documentation [ADD LINK], we can see that there is a field <code>atm.pressure_layers</code>, which still contains only zeros:</p>
-<div id="4f2afcae" class="cell" data-execution_count="15">
+<div id="31a49631" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_layers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>3-element Vector{Float64}:
@@ -585,7 +580,7 @@ Tip
 </div>
 </div>
 <p>Again, there is no function that is called automatically when we assign new values to <code>atm.pressure_levels</code>, so we have to manually calculate and ingest the mid-layer pressure values. One rather explicit way of doing it would be the following:</p>
-<div id="2a1518a8" class="cell" data-execution_count="16">
+<div id="4589b686" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>atm.N_layer</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    atm.pressure_layers[i] <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (atm.pressure_levels[i] <span class="op">+</span> atm.pressure_levels[i<span class="op">+</span><span class="fl">1</span>])</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
@@ -598,7 +593,7 @@ Tip
 </div>
 </div>
 <p>Since this is a common operation, RetrievalToolbox has a convenice function <code>levels_to_layers</code> which calculates the mid-layer values for a given level-based profile.</p>
-<div id="ca676742" class="cell" data-execution_count="17">
+<div id="209de8fc" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">levels_to_layers</span>(atm.pressure_levels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>3-element Vector{Float64}:
@@ -608,7 +603,7 @@ Tip
 </div>
 </div>
 <p>We can plot the location of level and layer values and visually “check” that they are correct:</p>
-<div id="02da9c10" class="cell" data-execution_count="18">
+<div id="d9b8c601" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the pressure level/layer values over level numbers</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter</span>(</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span>atm.N_level),</span>
@@ -629,94 +624,94 @@ Tip
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="400" height="300" viewbox="0 0 1600 1200">
 <defs>
-  <clippath id="clip280">
+  <clippath id="clip330">
     <rect x="0" y="0" width="1600" height="1200"></rect>
   </clippath>
 </defs>
-<path clip-path="url(#clip280)" d="M0 1200 L1600 1200 L1600 0 L0 0  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<path clip-path="url(#clip330)" d="M0 1200 L1600 1200 L1600 0 L0 0  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
 <defs>
-  <clippath id="clip281">
+  <clippath id="clip331">
     <rect x="320" y="0" width="1121" height="1121"></rect>
   </clippath>
 </defs>
-<path clip-path="url(#clip280)" d="M248.9 1021.74 L1552.76 1021.74 L1552.76 127.477 L248.9 127.477  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<path clip-path="url(#clip330)" d="M248.9 1021.74 L1552.76 1021.74 L1552.76 127.477 L248.9 127.477  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
 <defs>
-  <clippath id="clip282">
+  <clippath id="clip332">
     <rect x="248" y="127" width="1305" height="895"></rect>
   </clippath>
 </defs>
-<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="285.802,1021.74 285.802,127.477 "></polyline>
-<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="695.819,1021.74 695.819,127.477 "></polyline>
-<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1105.84,1021.74 1105.84,127.477 "></polyline>
-<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1515.85,1021.74 1515.85,127.477 "></polyline>
-<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,997.28 1552.76,997.28 "></polyline>
-<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,786.156 1552.76,786.156 "></polyline>
-<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,575.033 1552.76,575.033 "></polyline>
-<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,363.91 1552.76,363.91 "></polyline>
-<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,152.786 1552.76,152.786 "></polyline>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,1021.74 1552.76,1021.74 "></polyline>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="285.802,1021.74 285.802,1002.85 "></polyline>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="695.819,1021.74 695.819,1002.85 "></polyline>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1105.84,1021.74 1105.84,1002.85 "></polyline>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1515.85,1021.74 1515.85,1002.85 "></polyline>
-<g clip-path="url(#clip280)">
+<polyline clip-path="url(#clip332)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="285.802,1021.74 285.802,127.477 "></polyline>
+<polyline clip-path="url(#clip332)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="695.819,1021.74 695.819,127.477 "></polyline>
+<polyline clip-path="url(#clip332)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1105.84,1021.74 1105.84,127.477 "></polyline>
+<polyline clip-path="url(#clip332)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1515.85,1021.74 1515.85,127.477 "></polyline>
+<polyline clip-path="url(#clip332)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,997.28 1552.76,997.28 "></polyline>
+<polyline clip-path="url(#clip332)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,786.156 1552.76,786.156 "></polyline>
+<polyline clip-path="url(#clip332)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,575.033 1552.76,575.033 "></polyline>
+<polyline clip-path="url(#clip332)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,363.91 1552.76,363.91 "></polyline>
+<polyline clip-path="url(#clip332)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,152.786 1552.76,152.786 "></polyline>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,1021.74 1552.76,1021.74 "></polyline>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="285.802,1021.74 285.802,1002.85 "></polyline>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="695.819,1021.74 695.819,1002.85 "></polyline>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1105.84,1021.74 1105.84,1002.85 "></polyline>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1515.85,1021.74 1515.85,1002.85 "></polyline>
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 285.802, 1076.61)" x="285.802" y="1076.61">1</text>
 </g>
-<g clip-path="url(#clip280)">
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 695.819, 1076.61)" x="695.819" y="1076.61">2</text>
 </g>
-<g clip-path="url(#clip280)">
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 1105.84, 1076.61)" x="1105.84" y="1076.61">3</text>
 </g>
-<g clip-path="url(#clip280)">
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 1515.85, 1076.61)" x="1515.85" y="1076.61">4</text>
 </g>
-<g clip-path="url(#clip280)">
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:65px; text-anchor:middle;" transform="rotate(0, 900.828, 1152.83)" x="900.828" y="1152.83">Level number</text>
 </g>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,1021.74 248.9,127.477 "></polyline>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,997.28 267.798,997.28 "></polyline>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,786.156 267.798,786.156 "></polyline>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,575.033 267.798,575.033 "></polyline>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,363.91 267.798,363.91 "></polyline>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,152.786 267.798,152.786 "></polyline>
-<g clip-path="url(#clip280)">
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,1021.74 248.9,127.477 "></polyline>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,997.28 267.798,997.28 "></polyline>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,786.156 267.798,786.156 "></polyline>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,575.033 267.798,575.033 "></polyline>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,363.91 267.798,363.91 "></polyline>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,152.786 267.798,152.786 "></polyline>
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 211.963, 1014.78)" x="211.963" y="1014.78">0</text>
 </g>
-<g clip-path="url(#clip280)">
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 186.09, 803.656)" x="186.09" y="803.656">250</text>
 </g>
-<g clip-path="url(#clip280)">
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 186.09, 592.533)" x="186.09" y="592.533">500</text>
 </g>
-<g clip-path="url(#clip280)">
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 186.09, 381.41)" x="186.09" y="381.41">750</text>
 </g>
-<g clip-path="url(#clip280)">
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 173.153, 170.286)" x="173.153" y="170.286">1000</text>
 </g>
-<g clip-path="url(#clip280)">
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:65px; text-anchor:middle;" transform="rotate(-90, 87.4513, 574.611)" x="87.4513" y="574.611">Pressure [hPa]</text>
 </g>
-<g clip-path="url(#clip280)">
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:83px; text-anchor:middle;" transform="rotate(0, 900.828, 73.2)" x="900.828" y="73.2">Retrieval grid</text>
 </g>
-<path clip-path="url(#clip282)" d="M269.802 980.435 L269.802 1012.44 L301.802 1012.44 L301.802 980.435 L269.802 980.435 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
-<path clip-path="url(#clip282)" d="M679.819 978.746 L679.819 1010.75 L711.819 1010.75 L711.819 978.746 L679.819 978.746 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
-<path clip-path="url(#clip282)" d="M1089.84 559.033 L1089.84 591.033 L1121.84 591.033 L1121.84 559.033 L1089.84 559.033 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
-<path clip-path="url(#clip282)" d="M1499.85 136.786 L1499.85 168.786 L1531.85 168.786 L1531.85 136.786 L1499.85 136.786 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
-<circle clip-path="url(#clip282)" cx="490.81" cy="995.591" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
-<circle clip-path="url(#clip282)" cx="900.828" cy="784.89" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
-<circle clip-path="url(#clip282)" cx="1310.85" cy="363.91" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
-<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="490.81,995.591 695.819,995.591 695.819,784.89 1105.84,784.89 1105.84,363.91 1310.85,363.91 "></polyline>
-<path clip-path="url(#clip280)" d="M292.362 304.68 L563.79 304.68 L563.79 157.286 L292.362 157.286  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="292.362,304.68 563.79,304.68 563.79,157.286 292.362,157.286 292.362,304.68 "></polyline>
-<path clip-path="url(#clip280)" d="M327.555 183.662 L327.555 229.173 L373.067 229.173 L373.067 183.662 L327.555 183.662 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.41333"></path>
-<g clip-path="url(#clip280)">
+<path clip-path="url(#clip332)" d="M269.802 980.435 L269.802 1012.44 L301.802 1012.44 L301.802 980.435 L269.802 980.435 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip332)" d="M679.819 978.746 L679.819 1010.75 L711.819 1010.75 L711.819 978.746 L679.819 978.746 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip332)" d="M1089.84 559.033 L1089.84 591.033 L1121.84 591.033 L1121.84 559.033 L1089.84 559.033 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip332)" d="M1499.85 136.786 L1499.85 168.786 L1531.85 168.786 L1531.85 136.786 L1499.85 136.786 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<circle clip-path="url(#clip332)" cx="490.81" cy="995.591" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip332)" cx="900.828" cy="784.89" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip332)" cx="1310.85" cy="363.91" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<polyline clip-path="url(#clip332)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="490.81,995.591 695.819,995.591 695.819,784.89 1105.84,784.89 1105.84,363.91 1310.85,363.91 "></polyline>
+<path clip-path="url(#clip330)" d="M292.362 304.68 L563.79 304.68 L563.79 157.286 L292.362 157.286  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="292.362,304.68 563.79,304.68 563.79,157.286 292.362,157.286 292.362,304.68 "></polyline>
+<path clip-path="url(#clip330)" d="M327.555 183.662 L327.555 229.173 L373.067 229.173 L373.067 183.662 L327.555 183.662 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.41333"></path>
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:start;" transform="rotate(0, 408.26, 223.917)" x="408.26" y="223.917">Levels</text>
 </g>
-<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="306.849,255.548 393.773,255.548 "></polyline>
-<g clip-path="url(#clip280)">
+<polyline clip-path="url(#clip330)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="306.849,255.548 393.773,255.548 "></polyline>
+<g clip-path="url(#clip330)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:start;" transform="rotate(0, 408.26, 273.048)" x="408.26" y="273.048">Layers</text>
 </g>
 </svg>
@@ -726,13 +721,13 @@ Tip
 </div>
 </div>
 <p>At this point, the atmosphere object <code>atm</code> has reasonable values for retrieval pressure grid, but we must also make sure we add data to represent the meteorological grid. Remember, that we initialized the atmosphere object with two more levels than the retrieval grid:</p>
-<div id="c4df0231" class="cell" data-execution_count="19">
+<div id="8cb15cd6" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>mgrid <span class="op">=</span> [<span class="fl">5</span>., <span class="fl">65</span>., <span class="fl">200</span>., <span class="fl">400</span>., <span class="fl">650</span>., <span class="fl">950</span>.]u<span class="st">"hPa"</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>atm.met_pressure_levels[<span class="op">:</span>] <span class="op">=</span> <span class="fu">ustrip</span>(mgrid <span class="op">.|&gt;</span> atm.pressure_unit);</span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>atm.met_pressure_layers[<span class="op">:</span>] <span class="op">=</span> RE.<span class="fu">levels_to_layers</span>(atm.met_pressure_levels);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="41d6b2f3" class="cell" data-execution_count="20">
+<div id="ce30da70" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the pressure level/layer values over level numbers</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter</span>(</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span>atm.N_met_level),</span>
@@ -753,108 +748,108 @@ Tip
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="400" height="300" viewbox="0 0 1600 1200">
 <defs>
-  <clippath id="clip370">
+  <clippath id="clip420">
     <rect x="0" y="0" width="1600" height="1200"></rect>
   </clippath>
 </defs>
-<path clip-path="url(#clip370)" d="M0 1200 L1600 1200 L1600 0 L0 0  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<path clip-path="url(#clip420)" d="M0 1200 L1600 1200 L1600 0 L0 0  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
 <defs>
-  <clippath id="clip371">
+  <clippath id="clip421">
     <rect x="320" y="0" width="1121" height="1121"></rect>
   </clippath>
 </defs>
-<path clip-path="url(#clip370)" d="M223.027 1021.74 L1552.76 1021.74 L1552.76 127.477 L223.027 127.477  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<path clip-path="url(#clip420)" d="M223.027 1021.74 L1552.76 1021.74 L1552.76 127.477 L223.027 127.477  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
 <defs>
-  <clippath id="clip372">
+  <clippath id="clip422">
     <rect x="223" y="127" width="1331" height="895"></rect>
   </clippath>
 </defs>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="260.66,1021.74 260.66,127.477 "></polyline>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="511.553,1021.74 511.553,127.477 "></polyline>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="762.445,1021.74 762.445,127.477 "></polyline>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1013.34,1021.74 1013.34,127.477 "></polyline>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1264.23,1021.74 1264.23,127.477 "></polyline>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1515.12,1021.74 1515.12,127.477 "></polyline>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,1000.9 1552.76,1000.9 "></polyline>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,822.349 1552.76,822.349 "></polyline>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,643.799 1552.76,643.799 "></polyline>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,465.249 1552.76,465.249 "></polyline>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,286.699 1552.76,286.699 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,1021.74 1552.76,1021.74 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="260.66,1021.74 260.66,1002.85 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="511.553,1021.74 511.553,1002.85 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="762.445,1021.74 762.445,1002.85 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1013.34,1021.74 1013.34,1002.85 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1264.23,1021.74 1264.23,1002.85 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1515.12,1021.74 1515.12,1002.85 "></polyline>
-<g clip-path="url(#clip370)">
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="260.66,1021.74 260.66,127.477 "></polyline>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="511.553,1021.74 511.553,127.477 "></polyline>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="762.445,1021.74 762.445,127.477 "></polyline>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1013.34,1021.74 1013.34,127.477 "></polyline>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1264.23,1021.74 1264.23,127.477 "></polyline>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1515.12,1021.74 1515.12,127.477 "></polyline>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,1000.9 1552.76,1000.9 "></polyline>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,822.349 1552.76,822.349 "></polyline>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,643.799 1552.76,643.799 "></polyline>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,465.249 1552.76,465.249 "></polyline>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,286.699 1552.76,286.699 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,1021.74 1552.76,1021.74 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="260.66,1021.74 260.66,1002.85 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="511.553,1021.74 511.553,1002.85 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="762.445,1021.74 762.445,1002.85 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1013.34,1021.74 1013.34,1002.85 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1264.23,1021.74 1264.23,1002.85 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1515.12,1021.74 1515.12,1002.85 "></polyline>
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 260.66, 1076.61)" x="260.66" y="1076.61">1</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 511.553, 1076.61)" x="511.553" y="1076.61">2</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 762.445, 1076.61)" x="762.445" y="1076.61">3</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 1013.34, 1076.61)" x="1013.34" y="1076.61">4</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 1264.23, 1076.61)" x="1264.23" y="1076.61">5</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 1515.12, 1076.61)" x="1515.12" y="1076.61">6</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:65px; text-anchor:middle;" transform="rotate(0, 887.891, 1152.83)" x="887.891" y="1152.83">Level number</text>
 </g>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,1021.74 223.027,127.477 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,1000.9 241.924,1000.9 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,822.349 241.924,822.349 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,643.799 241.924,643.799 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,465.249 241.924,465.249 "></polyline>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,286.699 241.924,286.699 "></polyline>
-<g clip-path="url(#clip370)">
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,1021.74 223.027,127.477 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,1000.9 241.924,1000.9 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,822.349 241.924,822.349 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,643.799 241.924,643.799 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,465.249 241.924,465.249 "></polyline>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,286.699 241.924,286.699 "></polyline>
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 186.09, 1018.4)" x="186.09" y="1018.4">0</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 160.217, 839.849)" x="160.217" y="839.849">200</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 160.217, 661.299)" x="160.217" y="661.299">400</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 160.217, 482.749)" x="160.217" y="482.749">600</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 160.217, 304.199)" x="160.217" y="304.199">800</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:65px; text-anchor:middle;" transform="rotate(-90, 87.4513, 574.611)" x="87.4513" y="574.611">Pressure [hPa]</text>
 </g>
-<g clip-path="url(#clip370)">
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:83px; text-anchor:middle;" transform="rotate(0, 887.891, 73.2)" x="887.891" y="73.2">Meteorological grid</text>
 </g>
-<path clip-path="url(#clip372)" d="M244.66 980.435 L244.66 1012.44 L276.66 1012.44 L276.66 980.435 L244.66 980.435 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
-<path clip-path="url(#clip372)" d="M495.553 926.87 L495.553 958.87 L527.553 958.87 L527.553 926.87 L495.553 926.87 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
-<path clip-path="url(#clip372)" d="M746.445 806.349 L746.445 838.349 L778.445 838.349 L778.445 806.349 L746.445 806.349 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
-<path clip-path="url(#clip372)" d="M997.337 627.799 L997.337 659.799 L1029.34 659.799 L1029.34 627.799 L997.337 627.799 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
-<path clip-path="url(#clip372)" d="M1248.23 404.611 L1248.23 436.611 L1280.23 436.611 L1280.23 404.611 L1248.23 404.611 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
-<path clip-path="url(#clip372)" d="M1499.12 136.786 L1499.12 168.786 L1531.12 168.786 L1531.12 136.786 L1499.12 136.786 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
-<circle clip-path="url(#clip372)" cx="386.107" cy="969.653" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
-<circle clip-path="url(#clip372)" cx="636.999" cy="882.61" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
-<circle clip-path="url(#clip372)" cx="887.891" cy="733.074" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
-<circle clip-path="url(#clip372)" cx="1138.78" cy="532.205" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
-<circle clip-path="url(#clip372)" cx="1389.68" cy="286.699" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
-<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="386.107,969.653 511.553,969.653 511.553,882.61 762.445,882.61 762.445,733.074 1013.34,733.074 1013.34,532.205 1264.23,532.205 1264.23,286.699 1389.68,286.699 "></polyline>
-<path clip-path="url(#clip370)" d="M267.351 304.68 L541.366 304.68 L541.366 157.286 L267.351 157.286  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="267.351,304.68 541.366,304.68 541.366,157.286 267.351,157.286 267.351,304.68 "></polyline>
-<path clip-path="url(#clip370)" d="M303.694 183.662 L303.694 229.173 L349.206 229.173 L349.206 183.662 L303.694 183.662 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.41333"></path>
-<g clip-path="url(#clip370)">
+<path clip-path="url(#clip422)" d="M244.66 980.435 L244.66 1012.44 L276.66 1012.44 L276.66 980.435 L244.66 980.435 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip422)" d="M495.553 926.87 L495.553 958.87 L527.553 958.87 L527.553 926.87 L495.553 926.87 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip422)" d="M746.445 806.349 L746.445 838.349 L778.445 838.349 L778.445 806.349 L746.445 806.349 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip422)" d="M997.337 627.799 L997.337 659.799 L1029.34 659.799 L1029.34 627.799 L997.337 627.799 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip422)" d="M1248.23 404.611 L1248.23 436.611 L1280.23 436.611 L1280.23 404.611 L1248.23 404.611 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip422)" d="M1499.12 136.786 L1499.12 168.786 L1531.12 168.786 L1531.12 136.786 L1499.12 136.786 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<circle clip-path="url(#clip422)" cx="386.107" cy="969.653" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip422)" cx="636.999" cy="882.61" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip422)" cx="887.891" cy="733.074" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip422)" cx="1138.78" cy="532.205" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip422)" cx="1389.68" cy="286.699" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<polyline clip-path="url(#clip422)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="386.107,969.653 511.553,969.653 511.553,882.61 762.445,882.61 762.445,733.074 1013.34,733.074 1013.34,532.205 1264.23,532.205 1264.23,286.699 1389.68,286.699 "></polyline>
+<path clip-path="url(#clip420)" d="M267.351 304.68 L541.366 304.68 L541.366 157.286 L267.351 157.286  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="267.351,304.68 541.366,304.68 541.366,157.286 267.351,157.286 267.351,304.68 "></polyline>
+<path clip-path="url(#clip420)" d="M303.694 183.662 L303.694 229.173 L349.206 229.173 L349.206 183.662 L303.694 183.662 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.41333"></path>
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:start;" transform="rotate(0, 385.549, 223.917)" x="385.549" y="223.917">Levels</text>
 </g>
-<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="282.126,255.548 370.774,255.548 "></polyline>
-<g clip-path="url(#clip370)">
+<polyline clip-path="url(#clip420)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="282.126,255.548 370.774,255.548 "></polyline>
+<g clip-path="url(#clip420)">
 <text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:start;" transform="rotate(0, 385.549, 273.048)" x="385.549" y="273.048">Layers</text>
 </g>
 </svg>
@@ -862,12 +857,12 @@ Tip
 </div>
 <p>Moving on, we should also add some reasonable values to represent both the temperature and the specific humidity profiles. Earlier, we chose the units for specific humidity to be <code>u"kg/kg"</code>, which is a special type of unit in <code>Unitful</code>, namely a <code>DimensionlessUnits</code> type. It signifies that the resulting unit is effectively “1”, and objects with dimensionless units can always be cast onto “naked” Julia types.</p>
 <p>To demonstrate, let us create two vectors that we want to fill in with some values:</p>
-<div id="43d46559" class="cell" data-execution_count="21">
+<div id="f61dfe5f" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>demo_a <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">3</span>);</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>demo_b <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">3</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And let us assume we have another two vectors that represent some quantities that have units attached:</p>
-<div id="5e41c138" class="cell" data-execution_count="22">
+<div id="b6f8e894" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>uv_a <span class="op">=</span> [<span class="fl">1</span>., <span class="fl">2</span>., <span class="fl">3</span>.]u<span class="st">"mbar/m"</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>uv_b <span class="op">=</span> [<span class="fl">4</span>., <span class="fl">5</span>., <span class="fl">6</span>.]u<span class="st">"g/kg"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="23">
@@ -878,7 +873,7 @@ Tip
 </div>
 </div>
 <p>The first quantity has units of pressure over length and cannot be reduced much; the second quantity, however, is effectively just a factor. If we try to cast the values of <code>uv_a</code> into the contents of <code>demo_a</code>, an error is thrown:</p>
-<div id="39423074" class="cell" data-execution_count="23">
+<div id="724a67cd" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>demo_a[<span class="op">:</span>] <span class="op">.=</span> uv_a[<span class="op">:</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <div class="ansi-escaped-output">
@@ -920,7 +915,7 @@ Stacktrace:
 </div>
 <p>The important portions of the error log are found at the top, but one needs to look closely. Dimenionless units in <code>Unitful</code> are unfortunately not displayed as <code>1</code>, but as an empty character <code></code>. The above error log mentions a <code>DimensionError</code> followed by the statement that <code></code> and the pressure unit <code>mbar/m</code> are not compatible. This is the behavior we truly want! We use <code>Unitful</code> such that unit conversion errors do not happen in the first place!</p>
 <p>Performing this operation on the second set of vectors, however, succeeds as we expect. More importantly, <code>Unitful</code> has correctly used the conversion factor 1000 that stems from kg/g before copying over the values.</p>
-<div id="4038309e" class="cell" data-execution_count="24">
+<div id="71d6ca14" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>demo_b[<span class="op">:</span>] <span class="op">.=</span> uv_b[<span class="op">:</span>];</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>demo_b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
@@ -931,7 +926,7 @@ Stacktrace:
 </div>
 </div>
 <p>With this knowledge, we can fill in the specific humidity profile with a unit-carrying vector, and we also make sure to not forget to calculate the mid-layer values.</p>
-<div id="0668721a" class="cell" data-execution_count="25">
+<div id="426631cd" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> [<span class="fl">0.0001</span>, <span class="fl">0.0002</span>, <span class="fl">0.00035</span>, <span class="fl">0.00035</span>, <span class="fl">0.00075</span>, <span class="fl">0.0020</span>]u<span class="st">"kg/kg"</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_levels[<span class="op">:</span>] <span class="op">.=</span> q</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_layers[<span class="op">:</span>] <span class="op">=</span> RE.<span class="fu">levels_to_layers</span>(</span>
@@ -952,7 +947,7 @@ Important
 </div>
 </div>
 <p>First, we look at vector <code>q</code> again, which we have defined just above to represent a profile in units of kg/kg. Note that the vector does not carry any units, since <code>Unitful.jl</code> implicitly casts the resulting vector as a “normal” vector</p>
-<div id="83a10b5b" class="cell" data-execution_count="26">
+<div id="8437d556" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="27">
 <pre><code>6-element Vector{Float64}:
@@ -967,7 +962,7 @@ Important
 <p>If we perform the assigment in the obvious way, such as</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_levels[<span class="op">:</span>] <span class="op">.=</span> q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>the field <code>specific_humidity_levels</code> of our atmosphere object is filled with values that represent a quantity in unitless dimensions of kg/kg. The atmosphere object, however, was earlier defined in g/kg, as can be inferred:</p>
-<div id="984a2926" class="cell" data-execution_count="27">
+<div id="f8615b54" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_unit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="28">
 <pre><code>g kg⁻¹</code></pre>
@@ -975,7 +970,7 @@ Important
 </div>
 <p>This discrepancy between unit and quantity will result in errors in following computations!</p>
 <p>The solution to this is to <strong>always</strong> perform an explicit unit conversion when setting unit-valued object fields. The correct, explicit assignment is</p>
-<div id="d97e56ea" class="cell" data-execution_count="28">
+<div id="ba6a03a4" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_levels[<span class="op">:</span>] <span class="op">.=</span> q <span class="op">.|&gt;</span> atm.specific_humidity_unit <span class="op">.|&gt;</span> ustrip</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_layers[<span class="op">:</span>] <span class="op">=</span> RE.<span class="fu">levels_to_layers</span>(atm.specific_humidity_levels)</span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co"># This should now be in g/kg!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -990,7 +985,7 @@ Important
 </div>
 <p>The output in the above section confirms that the correction conversion was performed before the values were copied into <code>atm.specific_humidity_levels</code>.</p>
 <p>The last quantity to be covered in this section is the temperature profile. We can use the same recipes that we have learned before to add a temperature profile. Temperature units, however, require a litte more care than other units. A well-written article is found within the <code>Unitful.jl</code> documentation: <a href="https://painterqubits.github.io/Unitful.jl/stable/temperature/">link</a>. In short, there are ambiguities with respect to mathematical operations that involve temperatures with different units, in particular if one mixes absolute (Kelvin, Rankine) and relative (Celcius, Fahrenheit) scales. To avoid downstream issues, the functions and objects that currently accept temperature units will force users to use absolute temperature units, such as K, mK, Ra, etc.</p>
-<div id="ea02d785" class="cell" data-execution_count="29">
+<div id="bef50d7d" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> [<span class="fl">253</span>., <span class="fl">233</span>., <span class="fl">238</span>., <span class="fl">253</span>., <span class="fl">278</span>., <span class="fl">293</span>.]u<span class="st">"K"</span></span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>atm.temperature_levels[<span class="op">:</span>] <span class="op">=</span> <span class="fu">ustrip</span>(T <span class="op">.|&gt;</span> atm.temperature_unit)</span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>atm.temperature_layers[<span class="op">:</span>] <span class="op">=</span> RE.<span class="fu">levels_to_layers</span>(</span>
@@ -1036,7 +1031,7 @@ Warning
 </div>
 <p>While we have used explicit formulations in the section above to learn about how to deal with units, there is a helpful convience function provided by RetrievalToolbox that makes the typing a little more compact.</p>
 <p>Instead of writing</p>
-<div id="4c7ba868" class="cell" data-execution_count="30">
+<div id="c4ec37f1" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_levels[<span class="op">:</span>] <span class="op">.=</span> q <span class="op">.|&gt;</span> atm.specific_humidity_unit <span class="op">.|&gt;</span> ustrip</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="31">
 <pre><code>6-element view(::Vector{Float64}, :) with eltype Float64:
@@ -1049,7 +1044,7 @@ Warning
 </div>
 </div>
 <p>we can use the convenience function <code>ingest!</code> to copy over a numerical value (or the contents of some array) into a RetrievalToolbox object. The unit conversion is handled by the function itself.</p>
-<div id="ecaf3efb" class="cell" data-execution_count="31">
+<div id="9a0d2295" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">ingest!</span>(atm, <span class="op">:</span>specific_humidity_levels, q)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Note that there are two specialized implementations of the function, so bother number-type and array-type quantities can be ingested into RetrievalToolbox objects very efficiently this way. Also, the target must be valid in the sense that the RetrievalToolbox object must possess both a field, say <code>obj.field</code>, and the accompanying <code>obj.field_unit</code>.</p>
@@ -1073,12 +1068,12 @@ Tip
 <p>Looking at <a href="#eq-gas-tau" class="quarto-xref">Equation&nbsp;1</a>, we can see that we will likely require the local acceleration due to Earth’s gravity at various points in our atmosphere. The <code>EarthAtmosphere</code> object holds the level-resolved value for <span class="math inline">g</span> in its own field, named <code>.gravity</code>. Users have the option to use their own method to calculate this profile via their own function, e.g.</p>
 <div class="sourceCode" id="cb53"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>atm.gravity_levels[<span class="op">:</span>] <span class="op">.=</span> <span class="fu">my_own_gravity_function</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Since this is such a common operation, RetrievalToolbox ships with a function to calculate the location-based local gravity profile which takes into account the latitude and altitude of the observation point at which we want to create a model atmosphere. However, that function requires additional inputs (scene latitude and altitude), hence we will skip that particular functionality for now and use dummy values instead:</p>
-<div id="b4ae6ec6" class="cell" data-execution_count="32">
+<div id="cc8b814c" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>atm.gravity_levels[<span class="op">:</span>] <span class="op">.=</span> <span class="fl">9.81</span>; <span class="co"># this will be in m/s^2</span></span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>atm.altitude_levels[<span class="op">:</span>] <span class="op">.=</span> [<span class="fl">45.0</span>, <span class="fl">20.0</span>, <span class="fl">10.0</span>, <span class="fl">7.0</span>, <span class="fl">3.5</span>, <span class="fl">0.6</span>]; <span class="co"># this will be in "km"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally, to make things a little more quick, we use a convenience function <code>calculate_layers!</code> that acts on an <code>EarthAtmosphere</code> object and calculates all mid-layer quantities. We could have, equivalently, used <code>RE.levels_to_layers</code>, as was introduced earlier and manually calculate and assign the mid-layer quantities for <code>gravity_layers</code>, <code>altitude_layers</code>, etc.</p>
-<div id="cf623f5f" class="cell" data-execution_count="33">
+<div id="e09dc815" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb55"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">calculate_layers!</span>(atm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -1087,7 +1082,7 @@ Tip
 <p>We have added everything needed for a functioning atmosphere: we defined a pressure level grid for the retrieval (<code>pressure_levels</code>), and then another pressure level grid for our meteorological profiles (<code>met_pressure_levels</code>). We then assigned our temperature and specific humidity profiles (<code>temperature_levels</code>, <code>specific_humidity_levels</code>) as well as altitude and gravity (<code>altitude_levels</code>, <code>gravity_levels</code>). Finally, we calculate the mid-layer values using a helpful convenience function (<code>calculate_layers</code>).</p>
 <p>This atmosphere object would work just fine within a retrieval set-up, although this model atmosphere would be somewhat empty. When we initially created the <code>EarthAtmosphere</code> object, with the function <code>create_empty_EarthAtmosphere</code>, we specified number of layers and some units, but we did not add “actors” so to speak.</p>
 <p>In RetrievalToolbox, Earth atmosphere objects contain a list of “atmosphere elements”. These atmosphere elements can be thought of as items which characterize the atmosphere in the sense that they modify the radiance when calculated through one of the provided radiative transfer schemes. This is the place where we could insert, for example, a few aerosols or clouds, or gases. We can inspect this list by typing:</p>
-<div id="9a8afbc6" class="cell" data-execution_count="34">
+<div id="dd504311" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>atm.atm_elements</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="35">
 <pre><code>AbstractAtmosphereElement[]</code></pre>
@@ -1095,14 +1090,14 @@ Tip
 </div>
 <p>We notice that this list is empty, and it is of type <code>AbstractAtmosphereElements</code>. We will revisit type hierarchy at a later stage, but for now we will note that <code>AbstractAtmosphereElements</code> encompasses all of the above mentioned concepts (gases, aerosols and more). Being an empty vector of some type also means that we can only add elements to this vector whose type matches!</p>
 <p>For the sake of simplicity, we can add atmosphere element to this atmosphere that requires no additional set-up: Rayleigh scattering. We can instantiate new Rayleigh scattering object by typing <code>RE.RayleighScattering()</code>, which produces a mostly empty object:</p>
-<div id="a9e4a7b1" class="cell" data-execution_count="35">
+<div id="4d349a29" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>ray <span class="op">=</span> RE.<span class="fu">RayleighScattering</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="36">
 <pre><code>RayleighScattering</code></pre>
 </div>
 </div>
 <p>And we can push this into the vector of atmosphere elements in our atmosphere:</p>
-<div id="04cd93ba" class="cell" data-execution_count="36">
+<div id="60b916bb" class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">push!</span>(atm.atm_elements, ray)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="37">
 <pre><code>1-element Vector{AbstractAtmosphereElement}:
@@ -1131,14 +1126,14 @@ Tip
 <span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">calculate_rayleigh_optical_depth_profiles!</span>(opt, scene)</span>
 <span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><code>findanytype</code> is a function of RetrievalToolbox that allows to quickly iterate over some vector to see if any of the elements belong to some type, so this first code will evaluate to <code>true</code> (the second element is of <code>String</code> type)</p>
-<div id="ef356ecd" class="cell" data-execution_count="37">
+<div id="12be14ab" class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">findanytype</span>([<span class="fl">1</span>, <span class="st">"test"</span>, <span class="fl">2.0</span>, <span class="fl">5.25im</span>], <span class="dt">String</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="38">
 <pre><code>true</code></pre>
 </div>
 </div>
 <p>whereas this next code bit evaluates to <code>false</code>, since the third element is a <code>Float64</code>, rather than a <code>Float32</code>, and thus there is no 64-bit float type in this vector.</p>
-<div id="a6a938ce" class="cell" data-execution_count="38">
+<div id="1374fd60" class="cell" data-execution_count="38">
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">findanytype</span>([<span class="fl">1</span>, <span class="st">"test"</span>, <span class="fl">2.0</span>, <span class="fl">5.25im</span>], <span class="dt">Float32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="39">
 <pre><code>false</code></pre>
@@ -1146,7 +1141,7 @@ Tip
 </div>
 <p>The idea behind this design pattern is the following: atmospheric elements contain all the necessary information about them, which can be very little. In the case of Rayleigh scattering, we have no need for additional information, as RetrievalToolbox (for now) only knows one particular realization of this phenomenon and it does not need any more parameters. It is enough to know that the Earth atmosphere object contains a <code>RayleighScattering</code> instance, which then signals to relevant functions that certain computations must be performed.</p>
 <p>We can also add a gas to our atmosphere, using what we have learned in the last tutorial:</p>
-<div id="13971b64" class="cell" data-execution_count="39">
+<div id="02b7d932" class="cell" data-execution_count="39">
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the spectroscopy</span></span>
 <span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>absco_o2 <span class="op">=</span> RE.<span class="fu">load_ABSCO_spectroscopy</span>(</span>
 <span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">joinpath</span>(<span class="st">"data"</span>, <span class="st">"o2_spectroscopy_demo.h5"</span>)</span>
@@ -1167,7 +1162,7 @@ Tip
 </div>
 </div>
 <p>Now our atmosphere contains both Rayleigh scattering and molecular oxygen as an absorber. As we have learned in the last tutorial, populating a list such as <code>atm.atm_elements</code> does not automatically create a new copy of some element. In the example above, <strong>only one instance</strong> of <code>gas_o2</code> exists. We can check that again by looking at the element in the list and comparing it with <code>gas_o2</code> using the <code>===</code> operator:</p>
-<div id="9fd266fc" class="cell" data-execution_count="40">
+<div id="221db28d" class="cell" data-execution_count="40">
 <div class="sourceCode cell-code" id="cb69"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># `end` refers to the last element in some list</span></span>
 <span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>atm.atm_elements[<span class="kw">end</span>] <span class="op">===</span> gas_o2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="41">
@@ -1175,7 +1170,7 @@ Tip
 </div>
 </div>
 <p>Since the above line evaluates to <code>true</code>, we can be sure that both symbols point to the same object in memory! This remains an important aspect of working with RetrievalToolbox! The name <code>gas_o2</code> could easily be clobbered, for example we could create a new <code>gas_o2</code> object with some slightly different oxygent volume mixing ratio:</p>
-<div id="44fc9ad4" class="cell" data-execution_count="41">
+<div id="e590b71e" class="cell" data-execution_count="41">
 <div class="sourceCode cell-code" id="cb71"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>gas_o2 <span class="op">=</span> RE.<span class="fu">GasAbsorber</span>(</span>
 <span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"O2"</span>,</span>
 <span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>    absco_o2,</span>
@@ -1188,7 +1183,7 @@ Associated spectroscopy: data/o2_spectroscopy_demo.h5</code></pre>
 </div>
 </div>
 <p>And we can see that those two symbols now <strong>do not</strong> point to the same obect in memory:</p>
-<div id="7a9e3f5f" class="cell" data-execution_count="42">
+<div id="8d5a3591" class="cell" data-execution_count="42">
 <div class="sourceCode cell-code" id="cb73"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># `end` refers to the last element in some list</span></span>
 <span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>atm.atm_elements[<span class="kw">end</span>] <span class="op">===</span> gas_o2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="43">
@@ -1196,7 +1191,7 @@ Associated spectroscopy: data/o2_spectroscopy_demo.h5</code></pre>
 </div>
 </div>
 <p>Or we can look at the VMR levels:</p>
-<div id="03139ce1" class="cell" data-execution_count="43">
+<div id="02b92f76" class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb75"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(gas_o2.vmr_levels)</span>
 <span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(atm.atm_elements[<span class="kw">end</span>].vmr_levels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1206,7 +1201,7 @@ Associated spectroscopy: data/o2_spectroscopy_demo.h5</code></pre>
 </div>
 <p>Again, we repeat the same important lesson as in <a href="./tutorial_01.html">Tutorial 1</a>: be careful when managing these objects of interest! There are not just downsides such as possible confusion of objects - the fact that these “down-the-line”-objects only reference the original objects can be very effectively used!</p>
 <p>First, let us make sure we have our correct gas absorber:</p>
-<div id="c60000b4" class="cell" data-execution_count="44">
+<div id="a7b0253c" class="cell" data-execution_count="44">
 <div class="sourceCode cell-code" id="cb77"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>gas_o2 <span class="op">=</span> atm.atm_elements[<span class="kw">end</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="45">
 <pre><code>Gas absorber: O2
