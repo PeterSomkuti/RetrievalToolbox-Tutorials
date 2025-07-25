@@ -31,12 +31,10 @@ Currently, only the NASA JPL-type ABSCO data format is accepted. To learn more a
 
 ```{julia}
 # Some set-up for this document
-using RetrievalToolbox
-const RE = RetrievalToolbox
-using Plots; default(fontfamily="cmss");
+using RetrievalToolbox;
+const RE = RetrievalToolbox;
+using Plots; default(fontfamily="Helvetica")
 using Unitful;
-
-
 
 # Load the ABSCO table
 absco_o2 = RE.load_ABSCO_spectroscopy(

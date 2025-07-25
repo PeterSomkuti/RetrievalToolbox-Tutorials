@@ -4,9 +4,9 @@ title: "Tutorial 3: Spectral Windows, Scenes and Optical Properties"
 
 ```{julia}
 # Some set-up for this document
-using RetrievalToolbox
-const RE = RetrievalToolbox
-using Plots; default(fontfamily="cmss");
+using RetrievalToolbox;
+const RE = RetrievalToolbox;
+using Plots; default(fontfamily="Helvetica")
 using Unitful;
 ```
 
