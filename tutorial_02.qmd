@@ -4,26 +4,25 @@ title: "Tutorial 2: Creating an Atmosphere and Working with Physical Units"
 
 ```{julia}
 # Some set-up for this document
-using Pkg;
-Pkg.activate("/Users/psomkuti/Work/G3RT.jl");
-using G3RT;
+using RetrievalToolbox
+const RE = RetrievalToolbox
 using Plots; default(fontfamily="cmss");
 using Unitful;
 ```
 
 # Introduction
 
-In the previous tutorial ([Tutorial 1](./tutorial_01.qmd)), we have learned how to instantiate two fundamental objects within G3RT, spectroscopy and gases. Those two object types are found towards the bottom of the G3RT type hierarchy: an `ABSCOSpectroscopy4D` object does not require another G3RT object type, and a `GasAbsorber` only requires one spectroscopy type.
+In the previous tutorial ([Tutorial 1](./tutorial_01.qmd)), we have learned how to instantiate two fundamental objects within RetrievalToolbox, spectroscopy and gases. Those two object types are found towards the bottom of the RetrievalToolbox type hierarchy: an `ABSCOSpectroscopy4D` object does not require another RetrievalToolbox object type, and a `GasAbsorber` only requires one spectroscopy type.
 
 ::: {.callout-tip title="Goal of this tutorial"}
-In this tutorial we will focus on constructing an atmosphere object with G3RT, which plays an equally important role within retrieval applications. Further, we will learn how we can effectively use physical units.
+In this tutorial we will focus on constructing an atmosphere object with RetrievalToolbox, which plays an equally important role within retrieval applications. Further, we will learn how we can effectively use physical units.
 :::
 
 
 
 ## The `EarthAtmosphere` Object
 
-G3RT features a type that represents a typical atmosphere found here on Earth, of course only containing information that is relevant for typical retrieval applications. Within G3RT, we follow the general model of a layered atmosphere in which we assume all relevant quantities to be constant inside that layer. **Here we already must make an important observation!** The `EarthAtmosphere` object contains not just one, but two layer systems: one representing the vertical grid which the inversion will see, and a second one on which meteorological quantities are defined. While possibly confusing at first, this set-up allows us to be much more flexible with respect to our choices in setting up the retrieval algorithm.
+RetrievalToolbox features a type that represents a typical atmosphere found here on Earth, of course only containing information that is relevant for typical retrieval applications. Within RetrievalToolbox, we follow the general model of a layered atmosphere in which we assume all relevant quantities to be constant inside that layer. **Here we already must make an important observation!** The `EarthAtmosphere` object contains not just one, but two layer systems: one representing the vertical grid which the inversion will see, and a second one on which meteorological quantities are defined. While possibly confusing at first, this set-up allows us to be much more flexible with respect to our choices in setting up the retrieval algorithm.
 
 ### The Retrieval and Meteorological Grids
 
@@ -31,7 +30,7 @@ The choice of pressure grid in a given retrieval application is based on a numbe
 
 In general, we want to be highly flexible when making that choice regarding this **retrieval grid**.
 
-Further, most retrieval applications require meteorological profiles. For retrievals in the short-wave infrared, the most commonly uses ones are profiles of temperature and specific humidity. It is also highly common for these meteorological profiles to be derived from modern forecasting systems or reanalysis products, both tend to have much higher vertical resolution than most retrieval grids. We aim to retain the higher resolution of those MET profiles, and thus G3RT has a dedicated space for those profiles. @fig-met-p-grid shows an illustration of two possible grids.
+Further, most retrieval applications require meteorological profiles. For retrievals in the short-wave infrared, the most commonly uses ones are profiles of temperature and specific humidity. It is also highly common for these meteorological profiles to be derived from modern forecasting systems or reanalysis products, both tend to have much higher vertical resolution than most retrieval grids. We aim to retain the higher resolution of those MET profiles, and thus RetrievalToolbox has a dedicated space for those profiles. @fig-met-p-grid shows an illustration of two possible grids.
 
 ::: {.callout-note}
 The retrieval and meteorological grids are fully independent of each other! There is no general requirement that one must be finer resolved than the other one, and they could be the same!
@@ -55,7 +54,7 @@ $$ {#eq-gas-tau}
 
 Without going into the details about how one numerically evaluates this integral, we can identify the various terms in @eq-gas-tau and whether they belong to the retrieval or the meteorological grid.
 
-The gas concentration $c_\text{gas}(p)$ is based off a profile that is likely connected to the retrieval grid. For the sake of this example, let us imagine this particular gas represents a target gas that we want to retrieve from a measurement, and therefore the profile is defined on the retrieval grid. In G3RT, gases to be retrieved are defined on pressure levels $p_i$ and values for any arbitrary $p$ are obtained through *linear interpolation in (linear) pressure*.
+The gas concentration $c_\text{gas}(p)$ is based off a profile that is likely connected to the retrieval grid. For the sake of this example, let us imagine this particular gas represents a target gas that we want to retrieve from a measurement, and therefore the profile is defined on the retrieval grid. In RetrievalToolbox, gases to be retrieved are defined on pressure levels $p_i$ and values for any arbitrary $p$ are obtained through *linear interpolation in (linear) pressure*.
 
 The two meteorological pressure-dependent variables $q(p)$ (specific humdity) and $g(p)$ (local gravity) are discretized on their own grid (the right grid in @fig-met-p-grid). When evaluating $q(p)$ or $g(p)$ for arbitrary $p$, the respective values are obtained via linear interpolation **on their own meteorological grid**.
 
@@ -70,17 +69,17 @@ The definition of the `EarthAtmosphere` object is shown below, with all type fie
 ::: {.callout-note title="EarthAtmosphere"}
 ```{julia}
 #| echo: false
-@doc G3RT.EarthAtmosphere
+@doc RE.EarthAtmosphere
 ```
 :::
 
-For the creation of an `EarthAtmosphere` object, there is one convenice function that produces the object with a specified number of levels for both grids, and fills them with zeros. This is a recurring design in G3RT that users should get familiar with. Objects, especially those of considerable size, are allocated (or created) once, and then altered (or mutated) through the course of the retrieval process. Later tutorials will elaborate on the neccessity of this approach along with best practices.
+For the creation of an `EarthAtmosphere` object, there is one convenice function that produces the object with a specified number of levels for both grids, and fills them with zeros. This is a recurring design in RetrievalToolbox that users should get familiar with. Objects, especially those of considerable size, are allocated (or created) once, and then altered (or mutated) through the course of the retrieval process. Later tutorials will elaborate on the neccessity of this approach along with best practices.
 
 The convenience function used to produce a pre-allocated `EarthAtmosphere` object is named `create_empty_EarthAtmosphere`, and can be called in the following way:
 
 ```{julia}
 
-atm = G3RT.create_empty_EarthAtmosphere(
+atm = RE.create_empty_EarthAtmosphere(
     4, # number of levels for retrieval grid
     6, # number of levels for MET grid
     Float64, # data type for all arrays
@@ -136,7 +135,7 @@ rgrid = [100., 300., 50_000., 100_000.]
 atm.pressure_levels[:] = rgrid
 ```
 
-Now neither G3RT nor Julia have any complaints about this, we have mostly just copied the contents of some vector into the memory space of another vector. Like in all scientific programming, it is the responsibility of the user to ensure that the correct values are fed into objects and functions. The most classic way to do this would be the following: we know we obtain the data in units of pascal, and we know that our object knows its retrieval grid in units of hectopascal, so we make the appropriate conversion before assigment and comment somewhere in our code why we did so:
+Now neither RetrievalToolbox nor Julia have any complaints about this, we have mostly just copied the contents of some vector into the memory space of another vector. Like in all scientific programming, it is the responsibility of the user to ensure that the correct values are fed into objects and functions. The most classic way to do this would be the following: we know we obtain the data in units of pascal, and we know that our object knows its retrieval grid in units of hectopascal, so we make the appropriate conversion before assigment and comment somewhere in our code why we did so:
 
 ```{julia}
 # Divide by 100 since `rgrid` is in Pa
@@ -180,14 +179,14 @@ The advatage of this approach is clear: our retrieval application now automatica
 
 This section introduces some very important concepts, hence we want to emphasize the key take-aways.
 
-* G3RT is designed such that certain objects must be created (allocated) once and then fed with appriate numerical values.
+* RetrievalToolbox is designed such that certain objects must be created (allocated) once and then fed with appriate numerical values.
     + Due to Julia's lack of manual memory management (we cannot explicitly free memory), creating large arrays over and over again leads to dramatic performance loss when the garbage collector has to be called repeatedly^[See e.g. <https://docs.julialang.org/en/v1/manual/performance-tips/#Pre-allocating-outputs>]
 
-    + In general, this requires that retrieval applications built with G3RT must do some up-front work to create necessary objects and then change the values inside those objects, as appropriate.
+    + In general, this requires that retrieval applications built with RetrievalToolbox must do some up-front work to create necessary objects and then change the values inside those objects, as appropriate.
 
-    + Some parametric types offered by G3RT are **mutable**, whereas others are not. There is no good rule as to which type is mutable or immutable, but a good rule of thumb is: *if you cannot change a value after creating the object, you probably shouldn't*. Mutability of G3RT types is subject to change due to updates. For example, the `EarthScene` type is mutable, since it contains solar anlges, the scene location and time - all quantities that one might want to change after instantiation (when performing retrievals for many scenes).
+    + Some parametric types offered by RetrievalToolbox are **mutable**, whereas others are not. There is no good rule as to which type is mutable or immutable, but a good rule of thumb is: *if you cannot change a value after creating the object, you probably shouldn't*. Mutability of RetrievalToolbox types is subject to change due to updates. For example, the `EarthScene` type is mutable, since it contains solar anlges, the scene location and time - all quantities that one might want to change after instantiation (when performing retrievals for many scenes).
 
-*  Many G3RT objects have unit fields that describe the unit of their corresponding fields, and they can be leveraged to produce unit-aware algorithms.
+*  Many RetrievalToolbox objects have unit fields that describe the unit of their corresponding fields, and they can be leveraged to produce unit-aware algorithms.
 
     + This feature can be used to dynamically incorporate the units of source data (e.g. meteorological model ouptut) and match it with user-preferred units on the algorithm side.
 
@@ -209,10 +208,10 @@ end
 atm.pressure_layers * atm.pressure_unit
 ```
 
-Since this is a common operation, G3RT has a convenice function `levels_to_layers` which calculates the mid-layer values for a given level-based profile.
+Since this is a common operation, RetrievalToolbox has a convenice function `levels_to_layers` which calculates the mid-layer values for a given level-based profile.
 
 ```{julia}
-G3RT.levels_to_layers(atm.pressure_levels)
+RE.levels_to_layers(atm.pressure_levels)
 ```
 
 We can plot the location of level and layer values and visually "check" that they are correct:
@@ -243,7 +242,7 @@ At this point, the atmosphere object `atm` has reasonable values for retrieval p
 mgrid = [5., 65., 200., 400., 650., 950.]u"hPa"
 
 atm.met_pressure_levels[:] = ustrip(mgrid .|> atm.pressure_unit);
-atm.met_pressure_layers[:] = G3RT.levels_to_layers(atm.met_pressure_levels);
+atm.met_pressure_layers[:] = RE.levels_to_layers(atm.met_pressure_levels);
 ```
 
 ```{julia}
@@ -304,7 +303,7 @@ With this knowledge, we can fill in the specific humidity profile with a unit-ca
 ```{julia}
 q = [0.0001, 0.0002, 0.00035, 0.00035, 0.00075, 0.0020]u"kg/kg"
 atm.specific_humidity_levels[:] .= q
-atm.specific_humidity_layers[:] = G3RT.levels_to_layers(
+atm.specific_humidity_layers[:] = RE.levels_to_layers(
     atm.specific_humidity_levels
 );
 ```
@@ -336,7 +335,7 @@ The solution to this is to **always** perform an explicit unit conversion when s
 
 ```{julia}
 atm.specific_humidity_levels[:] .= q .|> atm.specific_humidity_unit .|> ustrip
-atm.specific_humidity_layers[:] = G3RT.levels_to_layers(atm.specific_humidity_levels)
+atm.specific_humidity_layers[:] = RE.levels_to_layers(atm.specific_humidity_levels)
 # This should now be in g/kg!
 ```
 
@@ -348,7 +347,7 @@ The last quantity to be covered in this section is the temperature profile. We c
 ```{julia}
 T = [253., 233., 238., 253., 278., 293.]u"K"
 atm.temperature_levels[:] = ustrip(T .|> atm.temperature_unit)
-atm.temperature_layers[:] = G3RT.levels_to_layers(
+atm.temperature_layers[:] = RE.levels_to_layers(
     atm.temperature_levels
 );
 ```
@@ -359,23 +358,23 @@ It is good practice to keep all temperature quantities in units of K, mostly to 
 
 ## Summary and a Useful Convenience Function
 
-The prior section intends to emphasize the role of units and how they are used within G3RT. To summarize:
+The prior section intends to emphasize the role of units and how they are used within RE. To summarize:
 
 1. Quantities that have units are stored as "normal" number-types (or number-type arrays). A corresponding field states the units of those.
 
-Using number-type arrays, e.g. of `Matrix{Float64}`, allows certain mathematical operations to be performed much faster, which is why G3RT takes the approach of using a seperate variable that stores unit information. In principle, it is possible to make use of arrays with attached units - but early tests have shown that the current approach is more performant.
+Using number-type arrays, e.g. of `Matrix{Float64}`, allows certain mathematical operations to be performed much faster, which is why RetrievalToolbox takes the approach of using a seperate variable that stores unit information. In principle, it is possible to make use of arrays with attached units - but early tests have shown that the current approach is more performant.
 
-2. At all times, users must be aware of units, which quantities have units attached, and how they enter various G3RT objects.
+2. At all times, users must be aware of units, which quantities have units attached, and how they enter various RetrievalToolbox objects.
 
-As per the design goals of G3RT, there is no over-arching mechanism that controls how quantities flow from data source to be part of G3RT-provided objects or functions. Users are free to design that route themselves as they see fit for their application. However, users must always make sure they understand which quantities have units attached to them. Lack of awareness can lead to calcluation errors.
+As per the design goals of RetrievalToolbox, there is no over-arching mechanism that controls how quantities flow from data source to be part of RetrievalToolbox-provided objects or functions. Users are free to design that route themselves as they see fit for their application. However, users must always make sure they understand which quantities have units attached to them. Lack of awareness can lead to calcluation errors.
 
 ::: {.callout-warning}
-G3RT does not evaluate users' handling of unit-attached quantities. It is the user's responsibility to ensure that the G3RT object units and the corresponding numerical values match!
+RetrievalToolbox does not evaluate users' handling of unit-attached quantities. It is the user's responsibility to ensure that the RetrievalToolbox object units and the corresponding numerical values match!
 :::
 
 
 
-While we have used explicit formulations in the section above to learn about how to deal with units, there is a helpful convience function provided by G3RT that makes the typing a little more compact.
+While we have used explicit formulations in the section above to learn about how to deal with units, there is a helpful convience function provided by RetrievalToolbox that makes the typing a little more compact.
 
 Instead of writing
 
@@ -383,13 +382,13 @@ Instead of writing
 atm.specific_humidity_levels[:] .= q .|> atm.specific_humidity_unit .|> ustrip
 ```
 
-we can use the convenience function `ingest!` to copy over a numerical value (or the contents of some array) into a G3RT object. The unit conversion is handled by the function itself.
+we can use the convenience function `ingest!` to copy over a numerical value (or the contents of some array) into a RetrievalToolbox object. The unit conversion is handled by the function itself.
 
 ```{julia}
-G3RT.ingest!(atm, :specific_humidity_levels, q)
+RE.ingest!(atm, :specific_humidity_levels, q)
 ```
 
-Note that there are two specialized implementations of the function, so bother number-type and array-type quantities can be ingested into G3RT objects very efficiently this way. Also, the target must be valid in the sense that the G3RT object must possess both a field, say `obj.field`, and the accompanying `obj.field_unit`.
+Note that there are two specialized implementations of the function, so bother number-type and array-type quantities can be ingested into RetrievalToolbox objects very efficiently this way. Also, the target must be valid in the sense that the RetrievalToolbox object must possess both a field, say `obj.field`, and the accompanying `obj.field_unit`.
 
 ::: {.callout-tip}
 It is a Julia convention, that functions which modify one or more of its arguments, have an exclamation mark at the end. Users can spot immediately that `ingest!` modifies the `atm` object!
@@ -404,17 +403,17 @@ Looking at @eq-gas-tau, we can see that we will likely require the local acceler
 atm.gravity_levels[:] .= my_own_gravity_function()
 ```
 
-Since this is such a common operation, G3RT ships with a function to calculate the location-based local gravity profile which takes into account the latitude and altitude of the observation point at which we want to create a model atmosphere. However, that function requires additional inputs (scene latitude and altitude), hence we will skip that particular functionality for now and use dummy values instead:
+Since this is such a common operation, RetrievalToolbox ships with a function to calculate the location-based local gravity profile which takes into account the latitude and altitude of the observation point at which we want to create a model atmosphere. However, that function requires additional inputs (scene latitude and altitude), hence we will skip that particular functionality for now and use dummy values instead:
 
 ```{julia}
 atm.gravity_levels[:] .= 9.81; # this will be in m/s^2
 atm.altitude_levels[:] .= [45.0, 20.0, 10.0, 7.0, 3.5, 0.6]; # this will be in "km"
 ```
 
-Finally, to make things a little more quick, we use a convenience function `calculate_layers!` that acts on an `EarthAtmosphere` object and calculates all mid-layer quantities. We could have, equivalently, used `G3RT.levels_to_layers`, as was introduced earlier and manually calculate and assign the mid-layer quantities for `gravity_layers`, `altitude_layers`, etc.
+Finally, to make things a little more quick, we use a convenience function `calculate_layers!` that acts on an `EarthAtmosphere` object and calculates all mid-layer quantities. We could have, equivalently, used `RE.levels_to_layers`, as was introduced earlier and manually calculate and assign the mid-layer quantities for `gravity_layers`, `altitude_layers`, etc.
 
 ```{julia}
-G3RT.calculate_layers!(atm)
+RE.calculate_layers!(atm)
 ```
 
 # Adding Atmosphere Elements
@@ -423,7 +422,7 @@ We have added everything needed for a functioning atmosphere: we defined a press
 
 This atmosphere object would work just fine within a retrieval set-up, although this model atmosphere would be somewhat empty. When we initially created the `EarthAtmosphere` object, with the function `create_empty_EarthAtmosphere`, we specified number of layers and some units, but we did not add "actors" so to speak.
 
-In G3RT, Earth atmosphere objects contain a list of "atmosphere elements". These atmosphere elements can be thought of as items which characterize the atmosphere in the sense that they modify the radiance when calculated through one of the provided radiative transfer schemes. This is the place where we could insert, for example, a few aerosols or clouds, or gases. We can inspect this list by typing:
+In RetrievalToolbox, Earth atmosphere objects contain a list of "atmosphere elements". These atmosphere elements can be thought of as items which characterize the atmosphere in the sense that they modify the radiance when calculated through one of the provided radiative transfer schemes. This is the place where we could insert, for example, a few aerosols or clouds, or gases. We can inspect this list by typing:
 
 ```{julia}
 atm.atm_elements
@@ -431,10 +430,10 @@ atm.atm_elements
 
 We notice that this list is empty, and it is of type `AbstractAtmosphereElements`. We will revisit type hierarchy at a later stage, but for now we will note that `AbstractAtmosphereElements` encompasses all of the above mentioned concepts (gases, aerosols and more). Being an empty vector of some type also means that we can only add elements to this vector whose type matches!
 
-For the sake of simplicity, we can add atmosphere element to this atmosphere that requires no additional set-up: Rayleigh scattering. We can instantiate new Rayleigh scattering object by typing `G3RT.RayleighScattering()`, which produces a mostly empty object:
+For the sake of simplicity, we can add atmosphere element to this atmosphere that requires no additional set-up: Rayleigh scattering. We can instantiate new Rayleigh scattering object by typing `RE.RayleighScattering()`, which produces a mostly empty object:
 
 ```{julia}
-ray = G3RT.RayleighScattering()
+ray = RE.RayleighScattering()
 ```
 
 And we can push this into the vector of atmosphere elements in our atmosphere:
@@ -447,9 +446,9 @@ push!(atm.atm_elements, ray)
 `push!` is a very general Julia function that adds an element (or multiple elements) to some collection. This works for almost all types of vectors or lists. E.g. `x = [1,2,3]; push!(x, 4)` would add `4` to the vector `x`.
 :::
 
-Inspecting the type definition of `RayleighScattering` reveals that it is actually fully empty - there is no field inside this particular type, you can try it yourself by typing `?G3RT.RayleighScattering` in a Julia prompt. So how does G3RT calculate the appropriate quantities when the time comes, such as the Rayleigh scattering optical depth, or the Rayleigh scattering phase matrix?
+Inspecting the type definition of `RayleighScattering` reveals that it is actually fully empty - there is no field inside this particular type, you can try it yourself by typing `?RE.RayleighScattering` in a Julia prompt. So how does RetrievalToolbox calculate the appropriate quantities when the time comes, such as the Rayleigh scattering optical depth, or the Rayleigh scattering phase matrix?
 
-In this case, G3RT is simply interrogating the list of atmosphere elements. Functions internal to G3RT will see if certain objects or objects of certain types are part of `atm.atm_elements`, and then act accordingly. For example, the code snippet below is taken straight from the routine which calculates all the optical properties for our retrieval. When performing the calculations, G3RT will inquire whether any of the types of the objects in `atm.atm_elements` belong to the `AbstractRayleighScattering` class. This indicates to the overall program logic that the user wants Rayleigh scattering to be computed, and thus the appropriate function is called.
+In this case, RetrievalToolbox is simply interrogating the list of atmosphere elements. Functions internal to RetrievalToolbox will see if certain objects or objects of certain types are part of `atm.atm_elements`, and then act accordingly. For example, the code snippet below is taken straight from the routine which calculates all the optical properties for our retrieval. When performing the calculations, RetrievalToolbox will inquire whether any of the types of the objects in `atm.atm_elements` belong to the `AbstractRayleighScattering` class. This indicates to the overall program logic that the user wants Rayleigh scattering to be computed, and thus the appropriate function is called.
 
 ```julia
 if findanytype(atm.atm_elements, AbstractRayleighScattering)
@@ -460,29 +459,29 @@ if findanytype(atm.atm_elements, AbstractRayleighScattering)
 end
 ```
 
-`findanytype` is a function of G3RT that allows to quickly iterate over some vector to see if any of the elements belong to some type, so this first code will evaluate to `true` (the second element is of `String` type)
+`findanytype` is a function of RetrievalToolbox that allows to quickly iterate over some vector to see if any of the elements belong to some type, so this first code will evaluate to `true` (the second element is of `String` type)
 
 ```{julia}
-G3RT.findanytype([1, "test", 2.0, 5.25im], String)
+RE.findanytype([1, "test", 2.0, 5.25im], String)
 ```
 
 whereas this next code bit evaluates to `false`, since the third element is a `Float64`, rather than a `Float32`, and thus there is no 64-bit float type in this vector.
 
 ```{julia}
-G3RT.findanytype([1, "test", 2.0, 5.25im], Float32)
+RE.findanytype([1, "test", 2.0, 5.25im], Float32)
 ```
 
-The idea behind this design pattern is the following: atmospheric elements contain all the necessary information about them, which can be very little. In the case of Rayleigh scattering, we have no need for additional information, as G3RT (for now) only knows one particular realization of this phenomenon and it does not need any more parameters. It is enough to know that the Earth atmosphere object contains a `RayleighScattering` instance, which then signals to relevant functions that certain computations must be performed.
+The idea behind this design pattern is the following: atmospheric elements contain all the necessary information about them, which can be very little. In the case of Rayleigh scattering, we have no need for additional information, as RetrievalToolbox (for now) only knows one particular realization of this phenomenon and it does not need any more parameters. It is enough to know that the Earth atmosphere object contains a `RayleighScattering` instance, which then signals to relevant functions that certain computations must be performed.
 
 We can also add a gas to our atmosphere, using what we have learned in the last tutorial:
 
 ```{julia}
 # Load the spectroscopy
-absco_o2 = G3RT.load_ABSCO_spectroscopy(
+absco_o2 = RE.load_ABSCO_spectroscopy(
     joinpath("data", "o2_spectroscopy_demo.h5")
 )
 # Define the gas object
-gas_o2 = G3RT.GasAbsorber(
+gas_o2 = RE.GasAbsorber(
     "O2",
     absco_o2,
     [0.2095, 0.2095, 0.2095, 0.2095],
@@ -499,10 +498,10 @@ Now our atmosphere contains both Rayleigh scattering and molecular oxygen as an 
 atm.atm_elements[end] === gas_o2
 ```
 
-Since the above line evaluates to `true`, we can be sure that both symbols point to the same object in memory! This remains an important aspect of working with G3RT! The name `gas_o2` could easily be clobbered, for example we could create a new `gas_o2` object with some slightly different oxygent volume mixing ratio:
+Since the above line evaluates to `true`, we can be sure that both symbols point to the same object in memory! This remains an important aspect of working with RetrievalToolbox! The name `gas_o2` could easily be clobbered, for example we could create a new `gas_o2` object with some slightly different oxygent volume mixing ratio:
 
 ```{julia}
-gas_o2 = G3RT.GasAbsorber(
+gas_o2 = RE.GasAbsorber(
     "O2",
     absco_o2,
     [0.22, 0.22, 0.22, 0.22],

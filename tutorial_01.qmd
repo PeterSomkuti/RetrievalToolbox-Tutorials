@@ -14,14 +14,14 @@ where $p_1$ and $p_2$ are two pressure values, usually the boundaries of some pr
 
 
 ::: {.callout-tip title="Goal of this tutorial"}
-In this tutorial, we want to introduce new users of G3RT to become familiar with the general usage of the toolkit. Prior experience with the Julia language is helpful, but not required. In the same manner, understanding the background of gas spectroscopy and its role in trace gas retrievals is also helpful.
+In this tutorial, we want to introduce new users of RetrievalToolbox to become familiar with the general usage of the toolkit. Prior experience with the Julia language is helpful, but not required. In the same manner, understanding the background of gas spectroscopy and its role in trace gas retrievals is also helpful.
 :::
 
 # Reading ABSCO Tables
 
 In many retrieval applications, algorithms make use of *pre-calculated* absorption cross sections, since they can generally be efficiently and accurately evaluated at arbitrary coordinates given the pre-evaluated points via some interpolation scheme. Using pre-calculated tables reduces some of the computational effort at the cost of memory, as now a large table of pre-computed values has to be loaded up-front.
 
-In this tutorial, we make use of so-called **ABSCO** files which contain these pre-calculated gas cross sections. These files can be on the order of a few hundred MB, depending on the desired spectral coverage. Here we use a small table file, with restricted spectral coverage, to demonstrate how they are used within G3RT.
+In this tutorial, we make use of so-called **ABSCO** files which contain these pre-calculated gas cross sections. These files can be on the order of a few hundred MB, depending on the desired spectral coverage. Here we use a small table file, with restricted spectral coverage, to demonstrate how they are used within RE.
 
 We can start by reading in the full table file located in `data/o2_spectroscopy_demo.h5`.
 
@@ -31,21 +31,20 @@ Currently, only the NASA JPL-type ABSCO data format is accepted. To learn more a
 
 ```{julia}
 # Some set-up for this document
-using Pkg;
-Pkg.activate("/Users/psomkuti/Work/G3RT.jl");
-using G3RT;
+using RetrievalToolbox
+const RE = RetrievalToolbox
 using Plots; default(fontfamily="cmss");
 using Unitful;
 
 
 
 # Load the ABSCO table
-absco_o2 = G3RT.load_ABSCO_spectroscopy(
+absco_o2 = RE.load_ABSCO_spectroscopy(
     joinpath("data", "o2_spectroscopy_demo.h5")
     )
 ```
 
-The function `load_ABSCO_spectroscopy` takes a single mandatory function argument, which is the path to the data file, and loads the contents of the table into a `ABSCOSpectroscopy4D` object. The object itself prints out some noteworthy information, such as the path to the underlying data file along with the number of levels for each of the axes. In our example case, we have a 4-dimensional table, meaning that this data file contains pre-computed gas absorption cross sections for four axes: spectral, temperature, pressure and water vapor broadener. G3RT also has support for ABSCO tables that do not contain a broadener dimension.
+The function `load_ABSCO_spectroscopy` takes a single mandatory function argument, which is the path to the data file, and loads the contents of the table into a `ABSCOSpectroscopy4D` object. The object itself prints out some noteworthy information, such as the path to the underlying data file along with the number of levels for each of the axes. In our example case, we have a 4-dimensional table, meaning that this data file contains pre-computed gas absorption cross sections for four axes: spectral, temperature, pressure and water vapor broadener. RetrievalToolbox also has support for ABSCO tables that do not contain a broadener dimension.
 
 ::: {.callout-note}
 In this example, the underlying spectral axis is automatically converted to wavelength, however the underlying spectral information is given in wavenumbers.
@@ -65,12 +64,12 @@ First, we will look at the ABSCO object more closely and understand how it relat
 
 In order to obtain the gas absorption optical depth between two vertical levels in the atmosphere, denoted by pressures $p_1$ and $p_2$, we take into account how the gas cross section $k$ varies with pressure. Notably, $k$ also depends on the temperature as well, along with the aformentioned water vapor mixing ratio. $k$ really is $k(\lambda,p,T,\mathrm{H}_2\mathrm{O})$.
 
-The variable `absco_o2` is of type `ABSCOSpectroscopy4D`, and its documentation can be accessed in a Julia console simply by typing `?G3RT.ABSCOSpectroscopy4D`:
+The variable `absco_o2` is of type `ABSCOSpectroscopy4D`, and its documentation can be accessed in a Julia console simply by typing `?RE.ABSCOSpectroscopy4D`:
 
 ::: {.callout-note title="ABSCOSpectroscopy4D"}
 ```{julia}
 #| echo: false
-@doc G3RT.ABSCOSpectroscopy4D
+@doc RE.ABSCOSpectroscopy4D
 ```
 :::
 
@@ -81,7 +80,7 @@ The first item, `file_name` simply refers to the underlying ABSCO data path, mos
 `scale_factor` is an overall factor that is applied to the cross section data **during read-in**, such that the values stored in the ABSCO object are a multiple of the original data. Note that this value is mostly informative, none of the calculation routines later on use this value. With the convienience function, a desired scale factor can be specified. For example, we could have written:
 
 ```{julia}
-absco_o2_scaled = G3RT.load_ABSCO_spectroscopy(
+absco_o2_scaled = RE.load_ABSCO_spectroscopy(
     joinpath("data", "o2_spectroscopy_demo.h5"),
     scale_factor=1.01
     );
@@ -224,7 +223,7 @@ absco_o2.pressures_unit
 ```
 
 ::: {.callout-note}
-Units play a big role in G3RT, however working with units will be discussed in a later tutorial. For now, we just make note of the fact the pressure axis contains values in units of Pascal.
+Units play a big role in RetrievalToolbox, however working with units will be discussed in a later tutorial. For now, we just make note of the fact the pressure axis contains values in units of Pascal.
 :::
 
 Just like before, we could inspect all cross sections for a broadener VMR of 0.03 that were also calculated for the specific pressure value shown above:
@@ -305,7 +304,7 @@ and
 absco_o2.temperatures[10, 4]
 ```
 
-This makes usage of the ABSCO table data slightly more cumbersome in practice, however users generally do not have to worry much about this underlying structure. The sampling of these tables is handled by lower-lying functions of G3RT which most users do not have to call themselves.
+This makes usage of the ABSCO table data slightly more cumbersome in practice, however users generally do not have to worry much about this underlying structure. The sampling of these tables is handled by lower-lying functions of RetrievalToolbox which most users do not have to call themselves.
 
 Lastly, we can look at the spectral dependence of the cross sections. In addition to the temperature-pressure pair we already picked before `[10,3]` we select the first value in the water vapor broadener axis (equal to a H2O VMR of `0.0`). The only remaining axis is the spectral axis equal to the first dimension.
 
@@ -352,22 +351,22 @@ current()
 
 # The gas object
 
-In the previous section, we explored ABSCO objects in G3RT, which in our example was an object of type `ABSCOSpectroscopy4D`. Those objects, or more generally speaking, an object of a type that belongs to the super-type `AbstractSpectroscopy`, represent something very tangible in the greater scheme of a trace gas algorithm, namely the underlying gas spectroscopy which we ultimately require to compute optical properties that feed into the calculation of a spectrum.
+In the previous section, we explored ABSCO objects in RetrievalToolbox, which in our example was an object of type `ABSCOSpectroscopy4D`. Those objects, or more generally speaking, an object of a type that belongs to the super-type `AbstractSpectroscopy`, represent something very tangible in the greater scheme of a trace gas algorithm, namely the underlying gas spectroscopy which we ultimately require to compute optical properties that feed into the calculation of a spectrum.
 
-By itself, these spectroscopy objects do not achieve much, and within G3RT, we want to attach them to a gas object, called `GasAbsorber`:
+By itself, these spectroscopy objects do not achieve much, and within RetrievalToolbox, we want to attach them to a gas object, called `GasAbsorber`:
 
 ::: {.callout-note title="GasAbsorber"}
 ```{julia}
 #| echo: false
-@doc G3RT.GasAbsorber
+@doc RE.GasAbsorber
 ```
 :::
 
 We can see in the fields of `GasAbsorber`, that it requires an `AbstractSpectroscopy` object.
 
-![Relationship between `GasAbsorber` and the underlying spectroscopy. Note that the placeholders `T1`, `T2`, `T3` and `T4` can be any combination of real-valued numbers. See the G3RT documentation for more details.](figures/fig_gas_spec.svg){#fig-gas-spectroscopy-struct}
+![Relationship between `GasAbsorber` and the underlying spectroscopy. Note that the placeholders `T1`, `T2`, `T3` and `T4` can be any combination of real-valued numbers. See the RetrievalToolbox documentation for more details.](figures/fig_gas_spec.svg){#fig-gas-spectroscopy-struct}
 
-Many provided types in G3RT have similar relationships and dependencies as shown in @fig-gas-spectroscopy-struct, as they very naturally follow the conceptual hierarchies that are inherent in the many calculations that are performed in a typical retrieval problem.
+Many provided types in RetrievalToolbox have similar relationships and dependencies as shown in @fig-gas-spectroscopy-struct, as they very naturally follow the conceptual hierarchies that are inherent in the many calculations that are performed in a typical retrieval problem.
 
 Conceptually, the idea behind this formulation is simple: in the end we want to be able to describe a gaseous absorber in our model atmosphere, that gas must have a name and a volume mixing ratio profile associated with it. But in order to compute spectra, we must also attach some spectroscopic information which will be called up when the optical properties are computed.
 
@@ -410,7 +409,7 @@ Moving on with our gas object, we first have to give it a name - `"O2"` seems li
 gas_name = "O2"
 ```
 
-Moving on, we must also generate a vector that represents the volume mixing ratio profile on pressure levels. Note that in a full algorithm built with G3RT, the profile must of course be of the same length as the retrieval pressure grid. In abscence of those other parts, we can simple create a 4-level vector with repeated entries like so:
+Moving on, we must also generate a vector that represents the volume mixing ratio profile on pressure levels. Note that in a full algorithm built with RetrievalToolbox, the profile must of course be of the same length as the retrieval pressure grid. In abscence of those other parts, we can simple create a 4-level vector with repeated entries like so:
 
 ```{julia}
 vmr_levels = repeat([0.2095], 4)
@@ -419,7 +418,7 @@ vmr_levels = repeat([0.2095], 4)
 Now we understand `0.2095` to be the volume mixing ratio in units of `1`, but we must explicitly specify that to the gas object. Again, we must specify the units here, which is best done by specifying `Unitful.NoUnits`, which is equal to having a quantity of unit `1`. Note that `GasAbsorber` **requires** a compatible dimensionless unit descriptor, so omitting the unit information is not allowed.
 
 ```{julia}
-gas_o2 = G3RT.GasAbsorber(
+gas_o2 = RE.GasAbsorber(
     gas_name,
     absco_o2,
     vmr_levels,
@@ -443,7 +442,7 @@ gas_o2.spectroscopy.pressures
 It is **crucial** to understand that when instantiating a new object of a user-type using pre-created objects, we are merely passing a reference! Unless explicitly done so, the objects (such as `gas_name`, `absco_o2` or `vmr_levels`) that are now part of the newly created `gas_o2`, are the exact same ones!
 :::
 
-The above reminder is of immense importance when working with G3RT! To elaborate on the point, let us remind ourselves that we first created several objects, such as the vector `vmr_levels`, or before that `absco_o2`. When we called `GasAbsorber(..)` to instantiate a new object of the `GasAbsorber` type, those objects remain in memory, and no new copies were made. What this means, in turn, is that when modifying those objects, they will appear to be modified when accessing them via `gas_o2`.
+The above reminder is of immense importance when working with RetrievalToolbox! To elaborate on the point, let us remind ourselves that we first created several objects, such as the vector `vmr_levels`, or before that `absco_o2`. When we called `GasAbsorber(..)` to instantiate a new object of the `GasAbsorber` type, those objects remain in memory, and no new copies were made. What this means, in turn, is that when modifying those objects, they will appear to be modified when accessing them via `gas_o2`.
 
 For example, the gas VMR profile was initially created to have repeated values of `0.2095`. At this point, we can confirm that be displaying their values:
 
@@ -474,15 +473,15 @@ This is fully expected behavior and also rather convenient in terms of performan
 We can actually see this by observing how much memory Julia has to allocate when producing a new `GasAbsorber` object:
 
 ```{julia}
-@time G3RT.GasAbsorber(gas_name, absco_o2, vmr_levels, Unitful.NoUnits);
+@time RE.GasAbsorber(gas_name, absco_o2, vmr_levels, Unitful.NoUnits);
 ```
 
 The output from the statement above tells us that creating this new object is practically free in terms of memory usage, since none of the parameters have to be newly created during this process.
 
-**When building algorithms with G3RT, users must make sure that objects (mostly vectors and arrays), that are used to construct other objects, are not unintentionally modified!**
+**When building algorithms with RetrievalToolbox, users must make sure that objects (mostly vectors and arrays), that are used to construct other objects, are not unintentionally modified!**
 
 # Summary and review
 
-In this tutorial, we covered the basic concept of instantiating a new object via the example of a very fundamental building block of gas retrievals: spectroscopy. We have loaded a spectroscopy file using a convenience function, `load_ABSCO_spectroscopy`, which automatically reads the file contents of an ABSCO table file and returns the newly created `ABSCOSpectroscopy4D` object. We learned how to interrogate this particular spectroscopy object as well as slice through the multi-dimensional cross section table. Objects in G3RT can have relationships, as is the case for objects of the `GasAbsorber` type, which themselves require some spectroscopy object to create them. We successfully created a new `GasAbsorber` object by using the spectroscopy object we created earlier, and learned that there is generally no computational overhead in creating a new object when all its parameters have already been created!
+In this tutorial, we covered the basic concept of instantiating a new object via the example of a very fundamental building block of gas retrievals: spectroscopy. We have loaded a spectroscopy file using a convenience function, `load_ABSCO_spectroscopy`, which automatically reads the file contents of an ABSCO table file and returns the newly created `ABSCOSpectroscopy4D` object. We learned how to interrogate this particular spectroscopy object as well as slice through the multi-dimensional cross section table. Objects in RetrievalToolbox can have relationships, as is the case for objects of the `GasAbsorber` type, which themselves require some spectroscopy object to create them. We successfully created a new `GasAbsorber` object by using the spectroscopy object we created earlier, and learned that there is generally no computational overhead in creating a new object when all its parameters have already been created!
 
 Move on to the next tutorial! [Tutorial 2](./tutorial_02.qmd)
