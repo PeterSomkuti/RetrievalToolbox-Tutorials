@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Tutorial 2: Creating an Atmosphere and Working with Physical Units – RetrievalToolbox-Tutorials</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-378cb20c3aa1cc4871e1c59a4c10131c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">RetrievalToolbox-Tutorials</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./tutorial_01.html"> 
+<span class="menu-text">Tutorial 1: Spectroscopy and Gases</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./tutorial_02.html" aria-current="page"> 
+<span class="menu-text">Tutorial 2: Creating an Atmosphere and Working with Physical Units</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./tutorial_03.html"> 
+<span class="menu-text">Tutorial 3: Spectral Windows, Scenes and Optical Properties</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a>
+  <ul class="collapse">
+  <li><a href="#the-earthatmosphere-object" id="toc-the-earthatmosphere-object" class="nav-link" data-scroll-target="#the-earthatmosphere-object"><span class="header-section-number">1.1</span> The <code>EarthAtmosphere</code> Object</a>
+  <ul class="collapse">
+  <li><a href="#the-retrieval-and-meteorological-grids" id="toc-the-retrieval-and-meteorological-grids" class="nav-link" data-scroll-target="#the-retrieval-and-meteorological-grids"><span class="header-section-number">1.1.1</span> The Retrieval and Meteorological Grids</a></li>
+  <li><a href="#type-definition" id="toc-type-definition" class="nav-link" data-scroll-target="#type-definition"><span class="header-section-number">1.1.2</span> Type definition</a></li>
+  </ul></li>
+  <li><a href="#ingesting-values-with-units" id="toc-ingesting-values-with-units" class="nav-link" data-scroll-target="#ingesting-values-with-units"><span class="header-section-number">1.2</span> Ingesting Values with Units</a></li>
+  <li><a href="#summary-and-take-aways" id="toc-summary-and-take-aways" class="nav-link" data-scroll-target="#summary-and-take-aways"><span class="header-section-number">1.3</span> Summary and Take-aways!</a></li>
+  </ul></li>
+  <li><a href="#layers-and-levels" id="toc-layers-and-levels" class="nav-link" data-scroll-target="#layers-and-levels"><span class="header-section-number">2</span> Layers and Levels</a>
+  <ul class="collapse">
+  <li><a href="#summary-and-a-useful-convenience-function" id="toc-summary-and-a-useful-convenience-function" class="nav-link" data-scroll-target="#summary-and-a-useful-convenience-function"><span class="header-section-number">2.1</span> Summary and a Useful Convenience Function</a></li>
+  </ul></li>
+  <li><a href="#altitude-and-gravity" id="toc-altitude-and-gravity" class="nav-link" data-scroll-target="#altitude-and-gravity"><span class="header-section-number">3</span> Altitude and Gravity</a></li>
+  <li><a href="#adding-atmosphere-elements" id="toc-adding-atmosphere-elements" class="nav-link" data-scroll-target="#adding-atmosphere-elements"><span class="header-section-number">4</span> Adding Atmosphere Elements</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Tutorial 2: Creating an Atmosphere and Working with Physical Units</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div id="49d71dcd" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Some set-up for this document</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">RetrievalToolbox</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> RE <span class="op">=</span> RetrievalToolbox</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots;</span> default(fontfamily="cmss");</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Unitful;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>┌ Warning: XRTM_PATH environment variable was not found! Not loading XRTM!
+└ @ RetrievalToolbox ~/Work/ghgc/RetrievalToolbox.jl/src/RetrievalToolbox.jl:67
+┌ Warning: Could not find XRTM module!
+└ @ RetrievalToolbox ~/Work/ghgc/RetrievalToolbox.jl/src/RetrievalToolbox.jl:102
+┌ Warning: Calls to XRTM library functions will crash the session!
+└ @ RetrievalToolbox ~/Work/ghgc/RetrievalToolbox.jl/src/RetrievalToolbox.jl:103</code></pre>
+</div>
+</div>
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>In the previous tutorial (<a href="./tutorial_01.html">Tutorial 1</a>), we have learned how to instantiate two fundamental objects within RetrievalToolbox, spectroscopy and gases. Those two object types are found towards the bottom of the RetrievalToolbox type hierarchy: an <code>ABSCOSpectroscopy4D</code> object does not require another RetrievalToolbox object type, and a <code>GasAbsorber</code> only requires one spectroscopy type.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Goal of this tutorial">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Goal of this tutorial
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In this tutorial we will focus on constructing an atmosphere object with RetrievalToolbox, which plays an equally important role within retrieval applications. Further, we will learn how we can effectively use physical units.</p>
+</div>
+</div>
+<section id="the-earthatmosphere-object" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="the-earthatmosphere-object"><span class="header-section-number">1.1</span> The <code>EarthAtmosphere</code> Object</h2>
+<p>RetrievalToolbox features a type that represents a typical atmosphere found here on Earth, of course only containing information that is relevant for typical retrieval applications. Within RetrievalToolbox, we follow the general model of a layered atmosphere in which we assume all relevant quantities to be constant inside that layer. <strong>Here we already must make an important observation!</strong> The <code>EarthAtmosphere</code> object contains not just one, but two layer systems: one representing the vertical grid which the inversion will see, and a second one on which meteorological quantities are defined. While possibly confusing at first, this set-up allows us to be much more flexible with respect to our choices in setting up the retrieval algorithm.</p>
+<section id="the-retrieval-and-meteorological-grids" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="the-retrieval-and-meteorological-grids"><span class="header-section-number">1.1.1</span> The Retrieval and Meteorological Grids</h3>
+<p>The choice of pressure grid in a given retrieval application is based on a number of factors, such as computational performance, type of instrument from whose measurements we are trying to retrieve gases, and so on. More layers usually means slower forward model, as the radiative transfer solver has to do more work. On the other hand, we might find that we need more vertical layers to account for e.g.&nbsp;scatterers that are located in different parts of the atmosphere and a coarse layering structure would not allow us to reasonably model those. We recommend reading the appropriate section in <span class="citation" data-cites="Rodgers2000">(<a href="#ref-Rodgers2000" role="doc-biblioref">Rodgers 2000, vol. 2, sec. 10.3.1</a>)</span> to learn more about optimal choices for the retrieval grid.</p>
+<p>In general, we want to be highly flexible when making that choice regarding this <strong>retrieval grid</strong>.</p>
+<p>Further, most retrieval applications require meteorological profiles. For retrievals in the short-wave infrared, the most commonly uses ones are profiles of temperature and specific humidity. It is also highly common for these meteorological profiles to be derived from modern forecasting systems or reanalysis products, both tend to have much higher vertical resolution than most retrieval grids. We aim to retain the higher resolution of those MET profiles, and thus RetrievalToolbox has a dedicated space for those profiles. <a href="#fig-met-p-grid" class="quarto-xref">Figure&nbsp;1</a> shows an illustration of two possible grids.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The retrieval and meteorological grids are fully independent of each other! There is no general requirement that one must be finer resolved than the other one, and they could be the same!</p>
+</div>
+</div>
+<div id="fig-met-p-grid" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-met-p-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/met-p-grid.svg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-met-p-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The retrieval pressure grid (left) compared to the meteorological grid (right).
+</figcaption>
+</figure>
+</div>
+<p>Note the convention in <a href="#fig-met-p-grid" class="quarto-xref">Figure&nbsp;1</a>! By this convention, we order the atmosphere with a running index starting at 1 from the top. <span class="math inline">p_1</span> thus refer to the top-of-atmosphere (TOA) level in this figure. Also note that we use the same convention when indexing <em>layers</em> rather than <em>levels</em>. The first layer, situated between levels <span class="math inline">p_1</span> and <span class="math inline">p_2</span> also has index 1.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Handling level and layer-related quantities can easily cause confusion and requires attention! In general, there is no guaranteed method of learning whether a quantity is defined with respect to layers or levels, other than understanding the nature of that quantity itself. Make sure to consult on-line and in-line documentation of the related functions!</p>
+</div>
+</div>
+<p>The meteorological grid and its associated profiles (temperature <span class="math inline">T</span>, specific humidity <span class="math inline">q</span>, altitude <span class="math inline">z</span> and local gravity <span class="math inline">g</span>) are used mostly in the calculation of the optical properties that later enter the radiative transfer calculations and are of utmost importance.</p>
+<p>We can illustrate this by a specific example. The quantity of interest there is the optical depth due to some gas absorber, within layer <span class="math inline">l = 1</span>:</p>
+<p><span id="eq-gas-tau"><span class="math display">
+    \tau_l = \int_{p_2}^{p_1} \underbrace{\dfrac{1 - q(p)}{g(p) \cdot M_{\mathrm{dry}}}}_{\text{number of dry-air molecules}} \cdot \overbrace{c_\text{gas}(p)}^{\text{concentration of gas}} \cdot \underbrace{k(p)}_{\text{gas cross section}} \; \mathrm{d}p
+\tag{1}</span></span></p>
+<p>Without going into the details about how one numerically evaluates this integral, we can identify the various terms in <a href="#eq-gas-tau" class="quarto-xref">Equation&nbsp;1</a> and whether they belong to the retrieval or the meteorological grid.</p>
+<p>The gas concentration <span class="math inline">c_\text{gas}(p)</span> is based off a profile that is likely connected to the retrieval grid. For the sake of this example, let us imagine this particular gas represents a target gas that we want to retrieve from a measurement, and therefore the profile is defined on the retrieval grid. In RetrievalToolbox, gases to be retrieved are defined on pressure levels <span class="math inline">p_i</span> and values for any arbitrary <span class="math inline">p</span> are obtained through <em>linear interpolation in (linear) pressure</em>.</p>
+<p>The two meteorological pressure-dependent variables <span class="math inline">q(p)</span> (specific humdity) and <span class="math inline">g(p)</span> (local gravity) are discretized on their own grid (the right grid in <a href="#fig-met-p-grid" class="quarto-xref">Figure&nbsp;1</a>). When evaluating <span class="math inline">q(p)</span> or <span class="math inline">g(p)</span> for arbitrary <span class="math inline">p</span>, the respective values are obtained via linear interpolation <strong>on their own meteorological grid</strong>.</p>
+<p>Lastly, the evaluation of the gas cross section <span class="math inline">k(p)</span> is actually performed in a completely different grid that either of the two shown in <a href="#fig-met-p-grid" class="quarto-xref">Figure&nbsp;1</a>. As mentioned in another tutorial (<a href="./tutorial_01.html">Tutorial 1</a>), spectroscopic data is sampled on its own pressure and temperature levels.</p>
+<p>Note however the following. When we have to evaluate the integrand in <a href="#eq-gas-tau" class="quarto-xref">Equation&nbsp;1</a> at some arbitrary <span class="math inline">p</span>, we must also look up <span class="math inline">k(p)</span>. Earlier, we learned that <span class="math inline">k(p)</span> is really <span class="math inline">k(p,T,c_\text{H$_2$O})</span>, so we must also know what the temperature and the water vapor mole fraction is for any given pressure in the model atmosphere. The temperature profile is defined on the MET grid, so we can easily infer <span class="math inline">T \rightarrow T(p)</span>. While the water vapor mole fraction <span class="math inline">c_\text{H$_2$O}</span> is not explicitly stored, we can first infer the specific humidity at any given <span class="math inline">p</span> as <span class="math inline">q \rightarrow q(p)</span> and then calculate <span class="math inline">c_\text{H$_2$O}(q)</span>, so that we can finally evaluate the cross section <span class="math inline">k</span> as <span class="math inline">k(p, T(p), c_\text{H$_2$O}(q(p)))</span>.</p>
+</section>
+<section id="type-definition" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="type-definition"><span class="header-section-number">1.1.2</span> Type definition</h3>
+<p>The definition of the <code>EarthAtmosphere</code> object is shown below, with all type fields having verbose names to make it clear what they represent - especially whether they belong to pressure layers or pressure levels.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="EarthAtmosphere">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+EarthAtmosphere
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div id="6a676665" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
+<ul>
+<li><code>atm_elements::Vector{&lt;:AbstractAtmosphereElement}</code>: Vector of atmosphere elements present in this atmosphere</li>
+<li><code>N_level::Int64</code>: Number of retrieval levels in this atmosphere</li>
+<li><code>N_layer::Int64</code>: Number of retrieval layers in this atmosphere</li>
+<li><code>pressure_levels::Vector{T} where T&lt;:AbstractFloat</code>: Pressure level locations</li>
+<li><code>pressure_layers::Vector{T} where T&lt;:AbstractFloat</code>: Mid-layer pressure locations</li>
+<li><code>pressure_unit::Unitful.Units{U, 𝐌 𝐋⁻¹ 𝐓⁻²} where U</code>: Pressure unit</li>
+<li><code>N_met_level::Int64</code>: Number of meteorological levels in this atmosphere</li>
+<li><code>N_met_layer::Int64</code>: Number of meteorological layers in this atmosphere</li>
+<li><code>met_pressure_levels::Vector{T} where T&lt;:AbstractFloat</code>: Meteorological pressure level locations</li>
+<li><code>met_pressure_layers::Vector{T} where T&lt;:AbstractFloat</code>: Mid-layer pressure locations for meteorology</li>
+<li><code>met_pressure_unit::Unitful.Units{U, 𝐌 𝐋⁻¹ 𝐓⁻²} where U</code>: Pressure units for meteorology</li>
+<li><code>temperature_levels::Vector{T} where T&lt;:AbstractFloat</code>: Temperatures at pressure levels</li>
+<li><code>temperature_layers::Vector{T} where T&lt;:AbstractFloat</code>: Temperatures at mid-layer pressures</li>
+<li><code>temperature_unit::Unitful.Units{U, 𝚯, nothing} where U</code>: Temperature unit</li>
+<li><code>specific_humidity_levels::Vector{T} where T&lt;:AbstractFloat</code>: Specific humidity at pressure levels</li>
+<li><code>specific_humidity_layers::Vector{T} where T&lt;:AbstractFloat</code>: Specific humidity at mid-layer pressures</li>
+<li><code>specific_humidity_unit::Unitful.Units{U, NoDims} where U</code>: Specific humidity unit</li>
+<li><code>altitude_levels::Vector{T} where T&lt;:AbstractFloat</code>: Altitude at pressure levels</li>
+<li><code>altitude_layers::Vector{T} where T&lt;:AbstractFloat</code>: Altitude at mid-layer pressures</li>
+<li><code>altitude_unit::Unitful.Units{U, 𝐋} where U</code>: Altitude units</li>
+<li><code>gravity_levels::Vector{T} where T&lt;:AbstractFloat</code>: Gravity at pressure levels</li>
+<li><code>gravity_layers::Vector{T} where T&lt;:AbstractFloat</code>: Gravity at mid-layer pressures</li>
+<li><code>gravity_unit::Unitful.Units{U, 𝐋 𝐓⁻²} where U</code>: Gravity unit</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<p>For the creation of an <code>EarthAtmosphere</code> object, there is one convenice function that produces the object with a specified number of levels for both grids, and fills them with zeros. This is a recurring design in RetrievalToolbox that users should get familiar with. Objects, especially those of considerable size, are allocated (or created) once, and then altered (or mutated) through the course of the retrieval process. Later tutorials will elaborate on the neccessity of this approach along with best practices.</p>
+<p>The convenience function used to produce a pre-allocated <code>EarthAtmosphere</code> object is named <code>create_empty_EarthAtmosphere</code>, and can be called in the following way:</p>
+<div id="570881fa" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>atm <span class="op">=</span> RE.<span class="fu">create_empty_EarthAtmosphere</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fl">4</span>, <span class="co"># number of levels for retrieval grid</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fl">6</span>, <span class="co"># number of levels for MET grid</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Float64</span>, <span class="co"># data type for all arrays</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    u<span class="st">"hPa"</span>, <span class="co"># pressure unit for retrieval grid</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    u<span class="st">"Pa"</span>, <span class="co"># pressure unit for MET grid</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    u<span class="st">"K"</span>, <span class="co"># unit for temperature profile</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    u<span class="st">"g/kg"</span>, <span class="co"># unit for specific humidity profile</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    u<span class="st">"km"</span>, <span class="co"># unit for altitude profile</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    u<span class="st">"m/s^2"</span>, <span class="co"># unit for local gravity profile</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The parameters to the function <code>create_empty_EarthAtmosphere</code> are rather self-explanatory: we first pass the number of levels we want for both retrieval and meteorological grid. Then we must also decide on the data type that we want the arrays of the object to be; 64-bit floats are a good choice in almost all cases. The remaining 6 parameters define the units of the quantities that object contains. Two major things are of note here. First, we can see that there are two different units for the two pressure grids! This means that the retrieval grid could be specified in, e.g., pascal, and the meteorological grid could be specified in, e.g., torr. They can be the same of course.</p>
+</section>
+</section>
+<section id="ingesting-values-with-units" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="ingesting-values-with-units"><span class="header-section-number">1.2</span> Ingesting Values with Units</h2>
+<p>From here on, we can inspect the object fields in the known manner - for example we can look at vector representing the retrieval pressure grid variables and see that they are all zeros.</p>
+<div id="89cd6b43" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>4-element Vector{Float64}:
+ 0.0
+ 0.0
+ 0.0
+ 0.0</code></pre>
+</div>
+</div>
+<p>The <code>EarthAtmosphere</code> type itself is not mutable, which means that we cannot replace the vector <code>atm.pressure_level</code> by our desired pressure level. Attempting an operation such as</p>
+<div id="3ce6fce3" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels <span class="op">=</span> [<span class="fl">1</span>., <span class="fl">100</span>., <span class="fl">500</span>., <span class="fl">1000</span>.]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre>setfield!: immutable struct of type EarthAtmosphere cannot be changed
+
+Stacktrace:
+ [1] <span class="ansi-bold">setproperty!</span><span class="ansi-bold">(</span><span class="ansi-bright-black-fg">x</span>::EarthAtmosphere<span class="ansi-bright-black-fg">{Float64}</span>, <span class="ansi-bright-black-fg">f</span>::Symbol, <span class="ansi-bright-black-fg">v</span>::Vector<span class="ansi-bright-black-fg">{Float64}</span><span class="ansi-bold">)</span>
+<span class="ansi-bright-black-fg">   @</span> <span class="ansi-bright-black-fg">Base</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">Base.jl:53</span>
+ [2] top-level scope
+<span class="ansi-bright-black-fg">   @</span> <span style="text-decoration:underline" class="ansi-bright-black-fg">In[6]:1</span></pre>
+</div>
+</div>
+</div>
+<p>will result in the error seen above. However, we can easily change the contents of the vector without having to violate the immutable nature of the <code>EarthAtmosphere</code>-typed object <code>atm</code>.</p>
+<div id="cbebe014" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels[<span class="op">:</span>] <span class="op">=</span> [<span class="fl">1</span>., <span class="fl">100</span>., <span class="fl">500</span>., <span class="fl">1000</span>.];</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>4-element Vector{Float64}:
+    1.0
+  100.0
+  500.0
+ 1000.0</code></pre>
+</div>
+</div>
+<p>Recall that <code>[:]</code> is an indexing operation, so rather than trying to assign a new vector to the <code>pressure_levels</code> field of the object <code>atm</code>, we are accessing the contents of the vector that is referenced by <code>atm.pressure_levels</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Contents of vectors, arrays, lists etc. of objects of mutable types can be altered!</p>
+</div>
+</div>
+<p>Above we have created the <code>atm</code> object with a specific unit for the retrieval pressure grid, and we can access that unit via</p>
+<div id="2cfec0f0" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_unit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>hPa</code></pre>
+</div>
+</div>
+<p>The new pressure grid we just created is obviously “reasonable”, so to speak - meaning that values from 1 through 1000 hPa make sense within the context of an atmosphere on Earth. Note, however, that there is nothing that would keep us from assigning non-sensical values.</p>
+<p>A very likely error to occur is the mix-up of units. We can demonstrate a possible scenario by pretending we obtain our retrieval grid from some external source, like a configuration script or a file containing our desired grid. Further, we will pretend that those values were initially calculated in units of pascal (Pa) rather than hectopascal (hPa).</p>
+<div id="5c1f9b9f" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: Julia allows "_"-separators in numbers to make them visually more obvious to readers</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>rgrid <span class="op">=</span> [<span class="fl">100</span>., <span class="fl">300</span>., <span class="fl">50_000</span>., <span class="fl">100_000</span>.]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels[<span class="op">:</span>] <span class="op">=</span> rgrid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>4-element Vector{Float64}:
+    100.0
+    300.0
+  50000.0
+ 100000.0</code></pre>
+</div>
+</div>
+<p>Now neither RetrievalToolbox nor Julia have any complaints about this, we have mostly just copied the contents of some vector into the memory space of another vector. Like in all scientific programming, it is the responsibility of the user to ensure that the correct values are fed into objects and functions. The most classic way to do this would be the following: we know we obtain the data in units of pascal, and we know that our object knows its retrieval grid in units of hectopascal, so we make the appropriate conversion before assigment and comment somewhere in our code why we did so:</p>
+<div id="30df09d3" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Divide by 100 since `rgrid` is in Pa</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels[<span class="op">:</span>] <span class="op">=</span> rgrid <span class="op">./</span> <span class="fl">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>4-element Vector{Float64}:
+    1.0
+    3.0
+  500.0
+ 1000.0</code></pre>
+</div>
+</div>
+<p>The above solution is perfectly fine, however we can make a slightly smarter choice. If we know the units of the source data, we can attach those to the data like so:</p>
+<div id="955c32b3" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>rgrid <span class="op">=</span> [<span class="fl">100</span>., <span class="fl">300</span>., <span class="fl">50_000</span>., <span class="fl">100_000</span>.]u<span class="st">"Pa"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>4-element Vector{Quantity{Float64, 𝐌 𝐋⁻¹ 𝐓⁻², Unitful.FreeUnits{(Pa,), 𝐌 𝐋⁻¹ 𝐓⁻², nothing}}}:
+    100.0 Pa
+    300.0 Pa
+  50000.0 Pa
+ 100000.0 Pa</code></pre>
+</div>
+</div>
+<p>Now <code>rgrid</code> is not just a <code>Float64</code> vector, but a vector of a different type, as evidenced by the output in the code cell above. As such, we can no longer simply copy the contents of <code>rgrid</code> into the contents of <code>atm.pressure_levels</code>, since Julia would throw an error due to the two types being incompatible. We must first make an appropriate conversion, and then extract the numerical values that we can then copy to <code>atm.pressure_levels</code>.</p>
+<div id="c6380809" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels[<span class="op">:</span>] <span class="op">=</span> <span class="fu">ustrip</span>(rgrid <span class="op">.|&gt;</span> atm.pressure_unit);</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>atm.pressure_levels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>4-element Vector{Float64}:
+    1.0
+    3.0
+  500.0
+ 1000.0</code></pre>
+</div>
+</div>
+<p>The code above handles performs two operations. First, the vector <code>rgrid</code> is being converted into a new vector with units of <code>atm.pressure_unit</code> (hectopascal in our case). The <code>|&gt;</code> is an infix operator in Julia which applies some function on the right-hand side to some expression on the left-hand side. Since <code>rgrid</code> is a vector rather than a number, we must pre-fix with a <code>.</code> to call the broadcast operation which in turn will apply the infix operation on all elements of <code>rgrid</code>. This first operation leaves us with a new vector in which the numerical contents have been appropriately converted from the original units (Pa) to the new ones (hPa). Feel free to experiment with different, compatible units:</p>
+<div id="253452bc" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>rgrid <span class="op">.|&gt;</span> u<span class="st">"atm"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>4-element Vector{Quantity{Float64, 𝐌 𝐋⁻¹ 𝐓⁻², Unitful.FreeUnits{(atm,), 𝐌 𝐋⁻¹ 𝐓⁻², nothing}}}:
+ 0.0009869232667160128 atm
+ 0.0029607698001480384 atm
+ 0.4934616333580064 atm
+ 0.9869232667160128 atm</code></pre>
+</div>
+</div>
+<p>Note that after such a conversion has taken place, the resulting vector is still a vector whose elements are of some <code>Unitful</code>-type which are not compatible with the contents of <code>atm.pressure_levels</code>. The last step takes care of this: the <code>ustrip</code> function (provided by <code>Unitful.jl</code>) returns a view of the vector that allows copying over the numerical contents only.</p>
+<div id="206248b3" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ustrip</span>(rgrid <span class="op">.|&gt;</span> u<span class="st">"atm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>4-element reinterpret(Float64, ::Vector{Quantity{Float64, 𝐌 𝐋⁻¹ 𝐓⁻², Unitful.FreeUnits{(atm,), 𝐌 𝐋⁻¹ 𝐓⁻², nothing}}}):
+ 0.0009869232667160128
+ 0.0029607698001480384
+ 0.4934616333580064
+ 0.9869232667160128</code></pre>
+</div>
+</div>
+<p>Note that the <code>ustrip</code> function, when called on an array (or vector), returns a view onto the underlying array data, whereas calling <code>ustrip</code> on a scalar <code>Unitful</code>-type object returns a new value:</p>
+<div id="72d84d4b" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ustrip</span>(<span class="fl">5.7</span>u<span class="st">"km"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>5.7</code></pre>
+</div>
+</div>
+<p>The advatage of this approach is clear: our retrieval application now automatically handles the unit conversion. Think of other examples. Meteorological data tends to come in netCDF formats (or similar) in which each variable contains appropriate metadata that describes its units. The lack of hard-coding these units makes the retrieval application more resilient against these conversion errors which could arise when, for example, changing data sources.</p>
+</section>
+<section id="summary-and-take-aways" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="summary-and-take-aways"><span class="header-section-number">1.3</span> Summary and Take-aways!</h2>
+<p>This section introduces some very important concepts, hence we want to emphasize the key take-aways.</p>
+<ul>
+<li><p>RetrievalToolbox is designed such that certain objects must be created (allocated) once and then fed with appriate numerical values.</p>
+<ul>
+<li><p>Due to Julia’s lack of manual memory management (we cannot explicitly free memory), creating large arrays over and over again leads to dramatic performance loss when the garbage collector has to be called repeatedly<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p></li>
+<li><p>In general, this requires that retrieval applications built with RetrievalToolbox must do some up-front work to create necessary objects and then change the values inside those objects, as appropriate.</p></li>
+<li><p>Some parametric types offered by RetrievalToolbox are <strong>mutable</strong>, whereas others are not. There is no good rule as to which type is mutable or immutable, but a good rule of thumb is: <em>if you cannot change a value after creating the object, you probably shouldn’t</em>. Mutability of RetrievalToolbox types is subject to change due to updates. For example, the <code>EarthScene</code> type is mutable, since it contains solar anlges, the scene location and time - all quantities that one might want to change after instantiation (when performing retrievals for many scenes).</p></li>
+</ul></li>
+<li><p>Many RetrievalToolbox objects have unit fields that describe the unit of their corresponding fields, and they can be leveraged to produce unit-aware algorithms.</p>
+<ul>
+<li>This feature can be used to dynamically incorporate the units of source data (e.g.&nbsp;meteorological model ouptut) and match it with user-preferred units on the algorithm side.</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="layers-and-levels" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Layers and Levels</h1>
+<p>In the last section, we filled our atmosphere object with values for the retrieval pressure grid: <code>atm.pressure_levels</code>. Inspecting the type documentation [ADD LINK], we can see that there is a field <code>atm.pressure_layers</code>, which still contains only zeros:</p>
+<div id="4f2afcae" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>atm.pressure_layers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>3-element Vector{Float64}:
+ 0.0
+ 0.0
+ 0.0</code></pre>
+</div>
+</div>
+<p>Again, there is no function that is called automatically when we assign new values to <code>atm.pressure_levels</code>, so we have to manually calculate and ingest the mid-layer pressure values. One rather explicit way of doing it would be the following:</p>
+<div id="2a1518a8" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>atm.N_layer</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    atm.pressure_layers[i] <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (atm.pressure_levels[i] <span class="op">+</span> atm.pressure_levels[i<span class="op">+</span><span class="fl">1</span>])</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>atm.pressure_layers <span class="op">*</span> atm.pressure_unit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>3-element Vector{Quantity{Float64, 𝐌 𝐋⁻¹ 𝐓⁻², Unitful.FreeUnits{(hPa,), 𝐌 𝐋⁻¹ 𝐓⁻², nothing}}}:
+   2.0 hPa
+ 251.5 hPa
+ 750.0 hPa</code></pre>
+</div>
+</div>
+<p>Since this is a common operation, RetrievalToolbox has a convenice function <code>levels_to_layers</code> which calculates the mid-layer values for a given level-based profile.</p>
+<div id="ca676742" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">levels_to_layers</span>(atm.pressure_levels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>3-element Vector{Float64}:
+   2.0
+ 251.5
+ 750.0</code></pre>
+</div>
+</div>
+<p>We can plot the location of level and layer values and visually “check” that they are correct:</p>
+<div id="02da9c10" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the pressure level/layer values over level numbers</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter</span>(</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span>atm.N_level),</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    atm.pressure_levels,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    markershape<span class="op">=:</span>square, label<span class="op">=</span><span class="st">"Levels"</span>,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">400</span>, <span class="fl">300</span>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span>atm.N_layer) <span class="op">.+</span> <span class="fl">0.5</span>, <span class="co"># set x coordinate of layer center to be in the middle</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    atm.pressure_layers,</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    seriescolor<span class="op">=:</span>black, seriestype<span class="op">=:</span>stepmid,</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    markershape<span class="op">=:</span>circle, label<span class="op">=</span><span class="st">"Layers"</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="fu">title!</span>(<span class="st">"Retrieval grid"</span>)</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="fu">xlabel!</span>(<span class="st">"Level number"</span>)</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ylabel!</span>(<span class="st">"Pressure [</span><span class="sc">$</span>(atm.pressure_unit)<span class="st">]"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<!--?xml version="1.0" encoding="utf-8"?-->
+<svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="400" height="300" viewbox="0 0 1600 1200">
+<defs>
+  <clippath id="clip280">
+    <rect x="0" y="0" width="1600" height="1200"></rect>
+  </clippath>
+</defs>
+<path clip-path="url(#clip280)" d="M0 1200 L1600 1200 L1600 0 L0 0  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<defs>
+  <clippath id="clip281">
+    <rect x="320" y="0" width="1121" height="1121"></rect>
+  </clippath>
+</defs>
+<path clip-path="url(#clip280)" d="M248.9 1021.74 L1552.76 1021.74 L1552.76 127.477 L248.9 127.477  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<defs>
+  <clippath id="clip282">
+    <rect x="248" y="127" width="1305" height="895"></rect>
+  </clippath>
+</defs>
+<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="285.802,1021.74 285.802,127.477 "></polyline>
+<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="695.819,1021.74 695.819,127.477 "></polyline>
+<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1105.84,1021.74 1105.84,127.477 "></polyline>
+<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1515.85,1021.74 1515.85,127.477 "></polyline>
+<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,997.28 1552.76,997.28 "></polyline>
+<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,786.156 1552.76,786.156 "></polyline>
+<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,575.033 1552.76,575.033 "></polyline>
+<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,363.91 1552.76,363.91 "></polyline>
+<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="248.9,152.786 1552.76,152.786 "></polyline>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,1021.74 1552.76,1021.74 "></polyline>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="285.802,1021.74 285.802,1002.85 "></polyline>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="695.819,1021.74 695.819,1002.85 "></polyline>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1105.84,1021.74 1105.84,1002.85 "></polyline>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1515.85,1021.74 1515.85,1002.85 "></polyline>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 285.802, 1076.61)" x="285.802" y="1076.61">1</text>
+</g>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 695.819, 1076.61)" x="695.819" y="1076.61">2</text>
+</g>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 1105.84, 1076.61)" x="1105.84" y="1076.61">3</text>
+</g>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 1515.85, 1076.61)" x="1515.85" y="1076.61">4</text>
+</g>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:65px; text-anchor:middle;" transform="rotate(0, 900.828, 1152.83)" x="900.828" y="1152.83">Level number</text>
+</g>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,1021.74 248.9,127.477 "></polyline>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,997.28 267.798,997.28 "></polyline>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,786.156 267.798,786.156 "></polyline>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,575.033 267.798,575.033 "></polyline>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,363.91 267.798,363.91 "></polyline>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="248.9,152.786 267.798,152.786 "></polyline>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 211.963, 1014.78)" x="211.963" y="1014.78">0</text>
+</g>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 186.09, 803.656)" x="186.09" y="803.656">250</text>
+</g>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 186.09, 592.533)" x="186.09" y="592.533">500</text>
+</g>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 186.09, 381.41)" x="186.09" y="381.41">750</text>
+</g>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 173.153, 170.286)" x="173.153" y="170.286">1000</text>
+</g>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:65px; text-anchor:middle;" transform="rotate(-90, 87.4513, 574.611)" x="87.4513" y="574.611">Pressure [hPa]</text>
+</g>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:83px; text-anchor:middle;" transform="rotate(0, 900.828, 73.2)" x="900.828" y="73.2">Retrieval grid</text>
+</g>
+<path clip-path="url(#clip282)" d="M269.802 980.435 L269.802 1012.44 L301.802 1012.44 L301.802 980.435 L269.802 980.435 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip282)" d="M679.819 978.746 L679.819 1010.75 L711.819 1010.75 L711.819 978.746 L679.819 978.746 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip282)" d="M1089.84 559.033 L1089.84 591.033 L1121.84 591.033 L1121.84 559.033 L1089.84 559.033 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip282)" d="M1499.85 136.786 L1499.85 168.786 L1531.85 168.786 L1531.85 136.786 L1499.85 136.786 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<circle clip-path="url(#clip282)" cx="490.81" cy="995.591" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip282)" cx="900.828" cy="784.89" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip282)" cx="1310.85" cy="363.91" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<polyline clip-path="url(#clip282)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="490.81,995.591 695.819,995.591 695.819,784.89 1105.84,784.89 1105.84,363.91 1310.85,363.91 "></polyline>
+<path clip-path="url(#clip280)" d="M292.362 304.68 L563.79 304.68 L563.79 157.286 L292.362 157.286  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="292.362,304.68 563.79,304.68 563.79,157.286 292.362,157.286 292.362,304.68 "></polyline>
+<path clip-path="url(#clip280)" d="M327.555 183.662 L327.555 229.173 L373.067 229.173 L373.067 183.662 L327.555 183.662 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.41333"></path>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:start;" transform="rotate(0, 408.26, 223.917)" x="408.26" y="223.917">Levels</text>
+</g>
+<polyline clip-path="url(#clip280)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="306.849,255.548 393.773,255.548 "></polyline>
+<g clip-path="url(#clip280)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:start;" transform="rotate(0, 408.26, 273.048)" x="408.26" y="273.048">Layers</text>
+</g>
+</svg>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>GKS: could not find font cmss.ttf</code></pre>
+</div>
+</div>
+<p>At this point, the atmosphere object <code>atm</code> has reasonable values for retrieval pressure grid, but we must also make sure we add data to represent the meteorological grid. Remember, that we initialized the atmosphere object with two more levels than the retrieval grid:</p>
+<div id="c4df0231" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>mgrid <span class="op">=</span> [<span class="fl">5</span>., <span class="fl">65</span>., <span class="fl">200</span>., <span class="fl">400</span>., <span class="fl">650</span>., <span class="fl">950</span>.]u<span class="st">"hPa"</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>atm.met_pressure_levels[<span class="op">:</span>] <span class="op">=</span> <span class="fu">ustrip</span>(mgrid <span class="op">.|&gt;</span> atm.pressure_unit);</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>atm.met_pressure_layers[<span class="op">:</span>] <span class="op">=</span> RE.<span class="fu">levels_to_layers</span>(atm.met_pressure_levels);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="41d6b2f3" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the pressure level/layer values over level numbers</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span>atm.N_met_level),</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    atm.met_pressure_levels,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    markershape<span class="op">=:</span>square, label<span class="op">=</span><span class="st">"Levels"</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">400</span>, <span class="fl">300</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span>atm.N_met_layer) <span class="op">.+</span> <span class="fl">0.5</span>,</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    atm.met_pressure_layers,</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    seriescolor<span class="op">=:</span>black, seriestype<span class="op">=:</span>stepmid,</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>    markershape<span class="op">=:</span>circle, label<span class="op">=</span><span class="st">"Layers"</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="fu">title!</span>(<span class="st">"Meteorological grid"</span>)</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="fu">xlabel!</span>(<span class="st">"Level number"</span>)</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ylabel!</span>(<span class="st">"Pressure [</span><span class="sc">$</span>(atm.pressure_unit)<span class="st">]"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<!--?xml version="1.0" encoding="utf-8"?-->
+<svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="400" height="300" viewbox="0 0 1600 1200">
+<defs>
+  <clippath id="clip370">
+    <rect x="0" y="0" width="1600" height="1200"></rect>
+  </clippath>
+</defs>
+<path clip-path="url(#clip370)" d="M0 1200 L1600 1200 L1600 0 L0 0  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<defs>
+  <clippath id="clip371">
+    <rect x="320" y="0" width="1121" height="1121"></rect>
+  </clippath>
+</defs>
+<path clip-path="url(#clip370)" d="M223.027 1021.74 L1552.76 1021.74 L1552.76 127.477 L223.027 127.477  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<defs>
+  <clippath id="clip372">
+    <rect x="223" y="127" width="1331" height="895"></rect>
+  </clippath>
+</defs>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="260.66,1021.74 260.66,127.477 "></polyline>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="511.553,1021.74 511.553,127.477 "></polyline>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="762.445,1021.74 762.445,127.477 "></polyline>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1013.34,1021.74 1013.34,127.477 "></polyline>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1264.23,1021.74 1264.23,127.477 "></polyline>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1515.12,1021.74 1515.12,127.477 "></polyline>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,1000.9 1552.76,1000.9 "></polyline>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,822.349 1552.76,822.349 "></polyline>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,643.799 1552.76,643.799 "></polyline>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,465.249 1552.76,465.249 "></polyline>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="223.027,286.699 1552.76,286.699 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,1021.74 1552.76,1021.74 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="260.66,1021.74 260.66,1002.85 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="511.553,1021.74 511.553,1002.85 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="762.445,1021.74 762.445,1002.85 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1013.34,1021.74 1013.34,1002.85 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1264.23,1021.74 1264.23,1002.85 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1515.12,1021.74 1515.12,1002.85 "></polyline>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 260.66, 1076.61)" x="260.66" y="1076.61">1</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 511.553, 1076.61)" x="511.553" y="1076.61">2</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 762.445, 1076.61)" x="762.445" y="1076.61">3</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 1013.34, 1076.61)" x="1013.34" y="1076.61">4</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 1264.23, 1076.61)" x="1264.23" y="1076.61">5</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 1515.12, 1076.61)" x="1515.12" y="1076.61">6</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:65px; text-anchor:middle;" transform="rotate(0, 887.891, 1152.83)" x="887.891" y="1152.83">Level number</text>
+</g>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,1021.74 223.027,127.477 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,1000.9 241.924,1000.9 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,822.349 241.924,822.349 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,643.799 241.924,643.799 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,465.249 241.924,465.249 "></polyline>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="223.027,286.699 241.924,286.699 "></polyline>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 186.09, 1018.4)" x="186.09" y="1018.4">0</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 160.217, 839.849)" x="160.217" y="839.849">200</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 160.217, 661.299)" x="160.217" y="661.299">400</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 160.217, 482.749)" x="160.217" y="482.749">600</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:middle;" transform="rotate(0, 160.217, 304.199)" x="160.217" y="304.199">800</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:65px; text-anchor:middle;" transform="rotate(-90, 87.4513, 574.611)" x="87.4513" y="574.611">Pressure [hPa]</text>
+</g>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:83px; text-anchor:middle;" transform="rotate(0, 887.891, 73.2)" x="887.891" y="73.2">Meteorological grid</text>
+</g>
+<path clip-path="url(#clip372)" d="M244.66 980.435 L244.66 1012.44 L276.66 1012.44 L276.66 980.435 L244.66 980.435 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip372)" d="M495.553 926.87 L495.553 958.87 L527.553 958.87 L527.553 926.87 L495.553 926.87 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip372)" d="M746.445 806.349 L746.445 838.349 L778.445 838.349 L778.445 806.349 L746.445 806.349 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip372)" d="M997.337 627.799 L997.337 659.799 L1029.34 659.799 L1029.34 627.799 L997.337 627.799 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip372)" d="M1248.23 404.611 L1248.23 436.611 L1280.23 436.611 L1280.23 404.611 L1248.23 404.611 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<path clip-path="url(#clip372)" d="M1499.12 136.786 L1499.12 168.786 L1531.12 168.786 L1531.12 136.786 L1499.12 136.786 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="2.4"></path>
+<circle clip-path="url(#clip372)" cx="386.107" cy="969.653" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip372)" cx="636.999" cy="882.61" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip372)" cx="887.891" cy="733.074" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip372)" cx="1138.78" cy="532.205" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<circle clip-path="url(#clip372)" cx="1389.68" cy="286.699" r="14.4" fill="#000000" fill-rule="evenodd" fill-opacity="1" stroke="none"></circle>
+<polyline clip-path="url(#clip372)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="386.107,969.653 511.553,969.653 511.553,882.61 762.445,882.61 762.445,733.074 1013.34,733.074 1013.34,532.205 1264.23,532.205 1264.23,286.699 1389.68,286.699 "></polyline>
+<path clip-path="url(#clip370)" d="M267.351 304.68 L541.366 304.68 L541.366 157.286 L267.351 157.286  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="267.351,304.68 541.366,304.68 541.366,157.286 267.351,157.286 267.351,304.68 "></polyline>
+<path clip-path="url(#clip370)" d="M303.694 183.662 L303.694 229.173 L349.206 229.173 L349.206 183.662 L303.694 183.662 Z" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.41333"></path>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:start;" transform="rotate(0, 385.549, 223.917)" x="385.549" y="223.917">Levels</text>
+</g>
+<polyline clip-path="url(#clip370)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="282.126,255.548 370.774,255.548 "></polyline>
+<g clip-path="url(#clip370)">
+<text style="fill:#000000; fill-opacity:1; font-family:Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:47px; text-anchor:start;" transform="rotate(0, 385.549, 273.048)" x="385.549" y="273.048">Layers</text>
+</g>
+</svg>
+</div>
+</div>
+<p>Moving on, we should also add some reasonable values to represent both the temperature and the specific humidity profiles. Earlier, we chose the units for specific humidity to be <code>u"kg/kg"</code>, which is a special type of unit in <code>Unitful</code>, namely a <code>DimensionlessUnits</code> type. It signifies that the resulting unit is effectively “1”, and objects with dimensionless units can always be cast onto “naked” Julia types.</p>
+<p>To demonstrate, let us create two vectors that we want to fill in with some values:</p>
+<div id="43d46559" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>demo_a <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">3</span>);</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>demo_b <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">3</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And let us assume we have another two vectors that represent some quantities that have units attached:</p>
+<div id="5e41c138" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>uv_a <span class="op">=</span> [<span class="fl">1</span>., <span class="fl">2</span>., <span class="fl">3</span>.]u<span class="st">"mbar/m"</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>uv_b <span class="op">=</span> [<span class="fl">4</span>., <span class="fl">5</span>., <span class="fl">6</span>.]u<span class="st">"g/kg"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>3-element Vector{Quantity{Float64, NoDims, Unitful.FreeUnits{(g, kg⁻¹), NoDims, nothing}}}:
+ 4.0 g kg⁻¹
+ 5.0 g kg⁻¹
+ 6.0 g kg⁻¹</code></pre>
+</div>
+</div>
+<p>The first quantity has units of pressure over length and cannot be reduced much; the second quantity, however, is effectively just a factor. If we try to cast the values of <code>uv_a</code> into the contents of <code>demo_a</code>, an error is thrown:</p>
+<div id="39423074" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>demo_a[<span class="op">:</span>] <span class="op">.=</span> uv_a[<span class="op">:</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre>DimensionError:  and mbar m⁻¹ are not dimensionally compatible.
+
+Stacktrace:
+  [1] <span class="ansi-bold">#s104#131</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">~/.julia/packages/Unitful/GMTL8/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">conversion.jl:7</span><span class="ansi-bright-black-fg"> [inlined]</span>
+  [2] <span class="ansi-bold">var"#s104#131"</span><span class="ansi-bold">(</span>::Any, <span class="ansi-bright-black-fg">s</span>::Any, <span class="ansi-bright-black-fg">t</span>::Any<span class="ansi-bold">)</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-magenta-fg">Unitful</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">none:0</span>
+  [3] <span class="ansi-bold">(::Core.GeneratedFunctionStub)</span><span class="ansi-bold">(</span>::UInt64, ::LineNumberNode, ::Any, ::Vararg<span class="ansi-bright-black-fg">{Any}</span><span class="ansi-bold">)</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Core</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">boot.jl:707</span>
+  [4] <span class="ansi-bold">convfact</span><span class="ansi-bold">(</span>::Type<span class="ansi-bright-black-fg">{Float64}</span>, <span class="ansi-bright-black-fg">s</span>::Unitful.FreeUnits<span class="ansi-bright-black-fg">{(), NoDims, nothing}</span>, <span class="ansi-bright-black-fg">t</span>::Unitful.FreeUnits<span class="ansi-bright-black-fg">{(mbar, m⁻¹), 𝐌 𝐋⁻² 𝐓⁻², nothing}</span><span class="ansi-bold">)</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-magenta-fg">Unitful</span> <span class="ansi-bright-black-fg">~/.julia/packages/Unitful/GMTL8/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">conversion.jl:54</span>
+  [5] <span class="ansi-bold">uconvert</span><span class="ansi-bold">(</span><span class="ansi-bright-black-fg">a</span>::Unitful.FreeUnits<span class="ansi-bright-black-fg">{(), NoDims, nothing}</span>, <span class="ansi-bright-black-fg">x</span>::Quantity<span class="ansi-bright-black-fg">{Float64, 𝐌 𝐋⁻² 𝐓⁻², Unitful.FreeUnits{(mbar, m⁻¹), 𝐌 𝐋⁻² 𝐓⁻², nothing}}</span><span class="ansi-bold">)</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-magenta-fg">Unitful</span> <span class="ansi-bright-black-fg">~/.julia/packages/Unitful/GMTL8/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">conversion.jl:102</span>
+  [6] <span class="ansi-bold">convert</span><span class="ansi-bold">(</span>::Type<span class="ansi-bright-black-fg">{Float64}</span>, <span class="ansi-bright-black-fg">y</span>::Quantity<span class="ansi-bright-black-fg">{Float64, 𝐌 𝐋⁻² 𝐓⁻², Unitful.FreeUnits{(mbar, m⁻¹), 𝐌 𝐋⁻² 𝐓⁻², nothing}}</span><span class="ansi-bold">)</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-magenta-fg">Unitful</span> <span class="ansi-bright-black-fg">~/.julia/packages/Unitful/GMTL8/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">conversion.jl:167</span>
+  [7] <span class="ansi-bold">setindex!</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">array.jl:976</span><span class="ansi-bright-black-fg"> [inlined]</span>
+  [8] <span class="ansi-bold">setindex!</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">subarray.jl:384</span><span class="ansi-bright-black-fg"> [inlined]</span>
+  [9] <span class="ansi-bold">copyto_unaliased!</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">abstractarray.jl:1081</span><span class="ansi-bright-black-fg"> [inlined]</span>
+ [10] <span class="ansi-bold">copyto!</span><span class="ansi-bold">(</span><span class="ansi-bright-black-fg">dest</span>::SubArray<span class="ansi-bright-black-fg">{Float64, 1, Vector{Float64}, Tuple{Base.Slice{Base.OneTo{Int64}}}, true}</span>, <span class="ansi-bright-black-fg">src</span>::Vector<span class="ansi-bright-black-fg">{Quantity{Float64, 𝐌 𝐋⁻² 𝐓⁻², Unitful.FreeUnits{(mbar, m⁻¹), 𝐌 𝐋⁻² 𝐓⁻², nothing}}}</span><span class="ansi-bold">)</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Base</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">abstractarray.jl:1061</span>
+ [11] <span class="ansi-bold">copyto!</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">broadcast.jl:961</span><span class="ansi-bright-black-fg"> [inlined]</span>
+ [12] <span class="ansi-bold">copyto!</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">broadcast.jl:920</span><span class="ansi-bright-black-fg"> [inlined]</span>
+ [13] <span class="ansi-bold">materialize!</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">broadcast.jl:878</span><span class="ansi-bright-black-fg"> [inlined]</span>
+ [14] <span class="ansi-bold">materialize!</span><span class="ansi-bold">(</span><span class="ansi-bright-black-fg">dest</span>::SubArray<span class="ansi-bright-black-fg">{Float64, 1, Vector{Float64}, Tuple{Base.Slice{Base.OneTo{Int64}}}, true}</span>, <span class="ansi-bright-black-fg">bc</span>::Base.Broadcast.Broadcasted<span class="ansi-bright-black-fg">{Base.Broadcast.DefaultArrayStyle{1}, Nothing, typeof(identity), Tuple{Vector{Quantity{Float64, 𝐌 𝐋⁻² 𝐓⁻², Unitful.FreeUnits{(mbar, m⁻¹), 𝐌 𝐋⁻² 𝐓⁻², nothing}}}}}</span><span class="ansi-bold">)</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Base.Broadcast</span> <span class="ansi-bright-black-fg">./</span><span style="text-decoration:underline" class="ansi-bright-black-fg">broadcast.jl:875</span>
+ [15] top-level scope
+<span class="ansi-bright-black-fg">    @</span> <span style="text-decoration:underline" class="ansi-bright-black-fg">In[24]:1</span></pre>
+</div>
+</div>
+</div>
+<p>The important portions of the error log are found at the top, but one needs to look closely. Dimenionless units in <code>Unitful</code> are unfortunately not displayed as <code>1</code>, but as an empty character <code></code>. The above error log mentions a <code>DimensionError</code> followed by the statement that <code></code> and the pressure unit <code>mbar/m</code> are not compatible. This is the behavior we truly want! We use <code>Unitful</code> such that unit conversion errors do not happen in the first place!</p>
+<p>Performing this operation on the second set of vectors, however, succeeds as we expect. More importantly, <code>Unitful</code> has correctly used the conversion factor 1000 that stems from kg/g before copying over the values.</p>
+<div id="4038309e" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>demo_b[<span class="op">:</span>] <span class="op">.=</span> uv_b[<span class="op">:</span>];</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>demo_b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>3-element Vector{Float64}:
+ 0.004
+ 0.005
+ 0.006</code></pre>
+</div>
+</div>
+<p>With this knowledge, we can fill in the specific humidity profile with a unit-carrying vector, and we also make sure to not forget to calculate the mid-layer values.</p>
+<div id="0668721a" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> [<span class="fl">0.0001</span>, <span class="fl">0.0002</span>, <span class="fl">0.00035</span>, <span class="fl">0.00035</span>, <span class="fl">0.00075</span>, <span class="fl">0.0020</span>]u<span class="st">"kg/kg"</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_levels[<span class="op">:</span>] <span class="op">.=</span> q</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_layers[<span class="op">:</span>] <span class="op">=</span> RE.<span class="fu">levels_to_layers</span>(</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    atm.specific_humidity_levels</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>But wait, this is wrong! An important lesson follows!</strong></p>
+</div>
+</div>
+<p>First, we look at vector <code>q</code> again, which we have defined just above to represent a profile in units of kg/kg. Note that the vector does not carry any units, since <code>Unitful.jl</code> implicitly casts the resulting vector as a “normal” vector</p>
+<div id="83a10b5b" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>6-element Vector{Float64}:
+ 0.0001
+ 0.0002
+ 0.00035
+ 0.00035
+ 0.00075
+ 0.002</code></pre>
+</div>
+</div>
+<p>If we perform the assigment in the obvious way, such as</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_levels[<span class="op">:</span>] <span class="op">.=</span> q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>the field <code>specific_humidity_levels</code> of our atmosphere object is filled with values that represent a quantity in unitless dimensions of kg/kg. The atmosphere object, however, was earlier defined in g/kg, as can be inferred:</p>
+<div id="984a2926" class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_unit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<pre><code>g kg⁻¹</code></pre>
+</div>
+</div>
+<p>This discrepancy between unit and quantity will result in errors in following computations!</p>
+<p>The solution to this is to <strong>always</strong> perform an explicit unit conversion when setting unit-valued object fields. The correct, explicit assignment is</p>
+<div id="d97e56ea" class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_levels[<span class="op">:</span>] <span class="op">.=</span> q <span class="op">.|&gt;</span> atm.specific_humidity_unit <span class="op">.|&gt;</span> ustrip</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_layers[<span class="op">:</span>] <span class="op">=</span> RE.<span class="fu">levels_to_layers</span>(atm.specific_humidity_levels)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co"># This should now be in g/kg!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<pre><code>5-element Vector{Float64}:
+ 0.15000000000000002
+ 0.275
+ 0.35
+ 0.55
+ 1.375</code></pre>
+</div>
+</div>
+<p>The output in the above section confirms that the correction conversion was performed before the values were copied into <code>atm.specific_humidity_levels</code>.</p>
+<p>The last quantity to be covered in this section is the temperature profile. We can use the same recipes that we have learned before to add a temperature profile. Temperature units, however, require a litte more care than other units. A well-written article is found within the <code>Unitful.jl</code> documentation: <a href="https://painterqubits.github.io/Unitful.jl/stable/temperature/">link</a>. In short, there are ambiguities with respect to mathematical operations that involve temperatures with different units, in particular if one mixes absolute (Kelvin, Rankine) and relative (Celcius, Fahrenheit) scales. To avoid downstream issues, the functions and objects that currently accept temperature units will force users to use absolute temperature units, such as K, mK, Ra, etc.</p>
+<div id="ea02d785" class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> [<span class="fl">253</span>., <span class="fl">233</span>., <span class="fl">238</span>., <span class="fl">253</span>., <span class="fl">278</span>., <span class="fl">293</span>.]u<span class="st">"K"</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>atm.temperature_levels[<span class="op">:</span>] <span class="op">=</span> <span class="fu">ustrip</span>(T <span class="op">.|&gt;</span> atm.temperature_unit)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>atm.temperature_layers[<span class="op">:</span>] <span class="op">=</span> RE.<span class="fu">levels_to_layers</span>(</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    atm.temperature_levels</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It is good practice to keep all temperature quantities in units of K, mostly to minimize potential (unknown) issues.</p>
+</div>
+</div>
+<section id="summary-and-a-useful-convenience-function" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="summary-and-a-useful-convenience-function"><span class="header-section-number">2.1</span> Summary and a Useful Convenience Function</h2>
+<p>The prior section intends to emphasize the role of units and how they are used within RE. To summarize:</p>
+<ol type="1">
+<li>Quantities that have units are stored as “normal” number-types (or number-type arrays). A corresponding field states the units of those.</li>
+</ol>
+<p>Using number-type arrays, e.g.&nbsp;of <code>Matrix{Float64}</code>, allows certain mathematical operations to be performed much faster, which is why RetrievalToolbox takes the approach of using a seperate variable that stores unit information. In principle, it is possible to make use of arrays with attached units - but early tests have shown that the current approach is more performant.</p>
+<ol start="2" type="1">
+<li>At all times, users must be aware of units, which quantities have units attached, and how they enter various RetrievalToolbox objects.</li>
+</ol>
+<p>As per the design goals of RetrievalToolbox, there is no over-arching mechanism that controls how quantities flow from data source to be part of RetrievalToolbox-provided objects or functions. Users are free to design that route themselves as they see fit for their application. However, users must always make sure they understand which quantities have units attached to them. Lack of awareness can lead to calcluation errors.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>RetrievalToolbox does not evaluate users’ handling of unit-attached quantities. It is the user’s responsibility to ensure that the RetrievalToolbox object units and the corresponding numerical values match!</p>
+</div>
+</div>
+<p>While we have used explicit formulations in the section above to learn about how to deal with units, there is a helpful convience function provided by RetrievalToolbox that makes the typing a little more compact.</p>
+<p>Instead of writing</p>
+<div id="4c7ba868" class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>atm.specific_humidity_levels[<span class="op">:</span>] <span class="op">.=</span> q <span class="op">.|&gt;</span> atm.specific_humidity_unit <span class="op">.|&gt;</span> ustrip</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<pre><code>6-element view(::Vector{Float64}, :) with eltype Float64:
+ 0.1
+ 0.2
+ 0.35
+ 0.35
+ 0.75
+ 2.0</code></pre>
+</div>
+</div>
+<p>we can use the convenience function <code>ingest!</code> to copy over a numerical value (or the contents of some array) into a RetrievalToolbox object. The unit conversion is handled by the function itself.</p>
+<div id="ecaf3efb" class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">ingest!</span>(atm, <span class="op">:</span>specific_humidity_levels, q)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that there are two specialized implementations of the function, so bother number-type and array-type quantities can be ingested into RetrievalToolbox objects very efficiently this way. Also, the target must be valid in the sense that the RetrievalToolbox object must possess both a field, say <code>obj.field</code>, and the accompanying <code>obj.field_unit</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It is a Julia convention, that functions which modify one or more of its arguments, have an exclamation mark at the end. Users can spot immediately that <code>ingest!</code> modifies the <code>atm</code> object!</p>
+</div>
+</div>
+</section>
+</section>
+<section id="altitude-and-gravity" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Altitude and Gravity</h1>
+<p>Looking at <a href="#eq-gas-tau" class="quarto-xref">Equation&nbsp;1</a>, we can see that we will likely require the local acceleration due to Earth’s gravity at various points in our atmosphere. The <code>EarthAtmosphere</code> object holds the level-resolved value for <span class="math inline">g</span> in its own field, named <code>.gravity</code>. Users have the option to use their own method to calculate this profile via their own function, e.g.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>atm.gravity_levels[<span class="op">:</span>] <span class="op">.=</span> <span class="fu">my_own_gravity_function</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Since this is such a common operation, RetrievalToolbox ships with a function to calculate the location-based local gravity profile which takes into account the latitude and altitude of the observation point at which we want to create a model atmosphere. However, that function requires additional inputs (scene latitude and altitude), hence we will skip that particular functionality for now and use dummy values instead:</p>
+<div id="b4ae6ec6" class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>atm.gravity_levels[<span class="op">:</span>] <span class="op">.=</span> <span class="fl">9.81</span>; <span class="co"># this will be in m/s^2</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>atm.altitude_levels[<span class="op">:</span>] <span class="op">.=</span> [<span class="fl">45.0</span>, <span class="fl">20.0</span>, <span class="fl">10.0</span>, <span class="fl">7.0</span>, <span class="fl">3.5</span>, <span class="fl">0.6</span>]; <span class="co"># this will be in "km"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Finally, to make things a little more quick, we use a convenience function <code>calculate_layers!</code> that acts on an <code>EarthAtmosphere</code> object and calculates all mid-layer quantities. We could have, equivalently, used <code>RE.levels_to_layers</code>, as was introduced earlier and manually calculate and assign the mid-layer quantities for <code>gravity_layers</code>, <code>altitude_layers</code>, etc.</p>
+<div id="cf623f5f" class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">calculate_layers!</span>(atm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="adding-atmosphere-elements" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Adding Atmosphere Elements</h1>
+<p>We have added everything needed for a functioning atmosphere: we defined a pressure level grid for the retrieval (<code>pressure_levels</code>), and then another pressure level grid for our meteorological profiles (<code>met_pressure_levels</code>). We then assigned our temperature and specific humidity profiles (<code>temperature_levels</code>, <code>specific_humidity_levels</code>) as well as altitude and gravity (<code>altitude_levels</code>, <code>gravity_levels</code>). Finally, we calculate the mid-layer values using a helpful convenience function (<code>calculate_layers</code>).</p>
+<p>This atmosphere object would work just fine within a retrieval set-up, although this model atmosphere would be somewhat empty. When we initially created the <code>EarthAtmosphere</code> object, with the function <code>create_empty_EarthAtmosphere</code>, we specified number of layers and some units, but we did not add “actors” so to speak.</p>
+<p>In RetrievalToolbox, Earth atmosphere objects contain a list of “atmosphere elements”. These atmosphere elements can be thought of as items which characterize the atmosphere in the sense that they modify the radiance when calculated through one of the provided radiative transfer schemes. This is the place where we could insert, for example, a few aerosols or clouds, or gases. We can inspect this list by typing:</p>
+<div id="9a8afbc6" class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>atm.atm_elements</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="35">
+<pre><code>AbstractAtmosphereElement[]</code></pre>
+</div>
+</div>
+<p>We notice that this list is empty, and it is of type <code>AbstractAtmosphereElements</code>. We will revisit type hierarchy at a later stage, but for now we will note that <code>AbstractAtmosphereElements</code> encompasses all of the above mentioned concepts (gases, aerosols and more). Being an empty vector of some type also means that we can only add elements to this vector whose type matches!</p>
+<p>For the sake of simplicity, we can add atmosphere element to this atmosphere that requires no additional set-up: Rayleigh scattering. We can instantiate new Rayleigh scattering object by typing <code>RE.RayleighScattering()</code>, which produces a mostly empty object:</p>
+<div id="a9e4a7b1" class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>ray <span class="op">=</span> RE.<span class="fu">RayleighScattering</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="36">
+<pre><code>RayleighScattering</code></pre>
+</div>
+</div>
+<p>And we can push this into the vector of atmosphere elements in our atmosphere:</p>
+<div id="04cd93ba" class="cell" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">push!</span>(atm.atm_elements, ray)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="37">
+<pre><code>1-element Vector{AbstractAtmosphereElement}:
+ RayleighScattering</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>push!</code> is a very general Julia function that adds an element (or multiple elements) to some collection. This works for almost all types of vectors or lists. E.g. <code>x = [1,2,3]; push!(x, 4)</code> would add <code>4</code> to the vector <code>x</code>.</p>
+</div>
+</div>
+<p>Inspecting the type definition of <code>RayleighScattering</code> reveals that it is actually fully empty - there is no field inside this particular type, you can try it yourself by typing <code>?RE.RayleighScattering</code> in a Julia prompt. So how does RetrievalToolbox calculate the appropriate quantities when the time comes, such as the Rayleigh scattering optical depth, or the Rayleigh scattering phase matrix?</p>
+<p>In this case, RetrievalToolbox is simply interrogating the list of atmosphere elements. Functions internal to RetrievalToolbox will see if certain objects or objects of certain types are part of <code>atm.atm_elements</code>, and then act accordingly. For example, the code snippet below is taken straight from the routine which calculates all the optical properties for our retrieval. When performing the calculations, RetrievalToolbox will inquire whether any of the types of the objects in <code>atm.atm_elements</code> belong to the <code>AbstractRayleighScattering</code> class. This indicates to the overall program logic that the user wants Rayleigh scattering to be computed, and thus the appropriate function is called.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="fu">findanytype</span>(atm.atm_elements, AbstractRayleighScattering)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if we have Rayleigh scattering as an atmospheric element..</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate OD profiles</span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">calculate_rayleigh_optical_depth_profiles!</span>(opt, scene)</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>findanytype</code> is a function of RetrievalToolbox that allows to quickly iterate over some vector to see if any of the elements belong to some type, so this first code will evaluate to <code>true</code> (the second element is of <code>String</code> type)</p>
+<div id="ef356ecd" class="cell" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">findanytype</span>([<span class="fl">1</span>, <span class="st">"test"</span>, <span class="fl">2.0</span>, <span class="fl">5.25im</span>], <span class="dt">String</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="38">
+<pre><code>true</code></pre>
+</div>
+</div>
+<p>whereas this next code bit evaluates to <code>false</code>, since the third element is a <code>Float64</code>, rather than a <code>Float32</code>, and thus there is no 64-bit float type in this vector.</p>
+<div id="a6a938ce" class="cell" data-execution_count="38">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">findanytype</span>([<span class="fl">1</span>, <span class="st">"test"</span>, <span class="fl">2.0</span>, <span class="fl">5.25im</span>], <span class="dt">Float32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="39">
+<pre><code>false</code></pre>
+</div>
+</div>
+<p>The idea behind this design pattern is the following: atmospheric elements contain all the necessary information about them, which can be very little. In the case of Rayleigh scattering, we have no need for additional information, as RetrievalToolbox (for now) only knows one particular realization of this phenomenon and it does not need any more parameters. It is enough to know that the Earth atmosphere object contains a <code>RayleighScattering</code> instance, which then signals to relevant functions that certain computations must be performed.</p>
+<p>We can also add a gas to our atmosphere, using what we have learned in the last tutorial:</p>
+<div id="13971b64" class="cell" data-execution_count="39">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the spectroscopy</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>absco_o2 <span class="op">=</span> RE.<span class="fu">load_ABSCO_spectroscopy</span>(</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">joinpath</span>(<span class="st">"data"</span>, <span class="st">"o2_spectroscopy_demo.h5"</span>)</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the gas object</span></span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>gas_o2 <span class="op">=</span> RE.<span class="fu">GasAbsorber</span>(</span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"O2"</span>,</span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>    absco_o2,</span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.2095</span>, <span class="fl">0.2095</span>, <span class="fl">0.2095</span>, <span class="fl">0.2095</span>],</span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>    Unitful.NoUnits</span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a><span class="co"># push into our list of atmosphere objects</span></span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a><span class="fu">push!</span>(atm.atm_elements, gas_o2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="40">
+<pre><code>2-element Vector{AbstractAtmosphereElement}:
+ RayleighScattering
+ GasAbsorber: O2</code></pre>
+</div>
+</div>
+<p>Now our atmosphere contains both Rayleigh scattering and molecular oxygen as an absorber. As we have learned in the last tutorial, populating a list such as <code>atm.atm_elements</code> does not automatically create a new copy of some element. In the example above, <strong>only one instance</strong> of <code>gas_o2</code> exists. We can check that again by looking at the element in the list and comparing it with <code>gas_o2</code> using the <code>===</code> operator:</p>
+<div id="9fd266fc" class="cell" data-execution_count="40">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># `end` refers to the last element in some list</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>atm.atm_elements[<span class="kw">end</span>] <span class="op">===</span> gas_o2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="41">
+<pre><code>true</code></pre>
+</div>
+</div>
+<p>Since the above line evaluates to <code>true</code>, we can be sure that both symbols point to the same object in memory! This remains an important aspect of working with RetrievalToolbox! The name <code>gas_o2</code> could easily be clobbered, for example we could create a new <code>gas_o2</code> object with some slightly different oxygent volume mixing ratio:</p>
+<div id="44fc9ad4" class="cell" data-execution_count="41">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>gas_o2 <span class="op">=</span> RE.<span class="fu">GasAbsorber</span>(</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"O2"</span>,</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>    absco_o2,</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.22</span>, <span class="fl">0.22</span>, <span class="fl">0.22</span>, <span class="fl">0.22</span>],</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>    Unitful.NoUnits</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="42">
+<pre><code>Gas absorber: O2
+Associated spectroscopy: data/o2_spectroscopy_demo.h5</code></pre>
+</div>
+</div>
+<p>And we can see that those two symbols now <strong>do not</strong> point to the same obect in memory:</p>
+<div id="7a9e3f5f" class="cell" data-execution_count="42">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># `end` refers to the last element in some list</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>atm.atm_elements[<span class="kw">end</span>] <span class="op">===</span> gas_o2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="43">
+<pre><code>false</code></pre>
+</div>
+</div>
+<p>Or we can look at the VMR levels:</p>
+<div id="03139ce1" class="cell" data-execution_count="43">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(gas_o2.vmr_levels)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(atm.atm_elements[<span class="kw">end</span>].vmr_levels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.22, 0.22, 0.22, 0.22]
+[0.2095, 0.2095, 0.2095, 0.2095]</code></pre>
+</div>
+</div>
+<p>Again, we repeat the same important lesson as in <a href="./tutorial_01.html">Tutorial 1</a>: be careful when managing these objects of interest! There are not just downsides such as possible confusion of objects - the fact that these “down-the-line”-objects only reference the original objects can be very effectively used!</p>
+<p>First, let us make sure we have our correct gas absorber:</p>
+<div id="c60000b4" class="cell" data-execution_count="44">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>gas_o2 <span class="op">=</span> atm.atm_elements[<span class="kw">end</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="45">
+<pre><code>Gas absorber: O2
+Associated spectroscopy: data/o2_spectroscopy_demo.h5</code></pre>
+</div>
+</div>
+<p>Now think of a situation in which we might want to be able to change the contents of <code>gas_o2</code>, but do not want to re-create all of the other objects that initially depended on it. For example, we could want to study the impact of slightly different oxygen columns to a top-of-atmosphere radiance, as calculated by our model. We could simply cast the relevant functions into a loop such as so:</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> o2_vmr <span class="kw">in</span> [<span class="fl">0.2095</span>, <span class="fl">0.2065</span>, <span class="fl">0.2035</span>]</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>    gas_o2.vmr_levels[<span class="op">:</span>] <span class="op">.=</span> o2_vmr</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">run_forward_model</span>(atm) <span class="co"># this is a placeholder dummy function</span></span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The above code illustrates how we would update the gas object volume mixing ratio, then call some function to do the radiative transfer. Since <code>gas_o2</code> is being (implicitly) referenced by <code>atm</code>, the atmosphere object, when interrogated, would show varying oxygen columns at each loop iteration. Of course this all depends on <code>run_forward_model</code> actually re-calculating the optical properties, which we assume would happen. This method would obviously not produce the intended result if the symbol <code>gas_o2</code> had been clobbered or overwritten by some other object in the meantime!</p>
+<p>Move on to the next tutorial! <a href="./tutorial_03.html">Tutorial 3</a></p>
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Rodgers2000" class="csl-entry" role="listitem">
+Rodgers, Clive D. 2000. <em>Inverse Methods for Atmospheric Sounding: Theory and Practice</em>. Vol. 2. World scientific.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>See e.g.&nbsp;<a href="https://docs.julialang.org/en/v1/manual/performance-tips/#Pre-allocating-outputs" class="uri">https://docs.julialang.org/en/v1/manual/performance-tips/#Pre-allocating-outputs</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // default icon
+          link.classList.add("external");
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
