@@ -1,18 +1,20 @@
 project:
   type: website
+  output-dir: docs
 
 bibliography: bibliography.bib
 bibliographystyle: apa
 number-sections: true
 
 website:
-  title: "G3RT-Tutorials"
+  title: "RetrievalToolbox-Tutorials"
   navbar:
     left:
       - href: index.qmd
         text: Home
       - tutorial_01.qmd
       - tutorial_02.qmd
+      - tutorial_03.qmd
       - about.qmd
 
 format:
@@ -27,14 +29,14 @@ format:
     link-external-icon: true
     #mainfont: Georgia
     fontsize: 14px
-  pdf:
-    toc: true
-    colorlinks: true
-    mainfont: "Times New Roman"
-    monofont: "JuliaMono"
+  #pdf:
+  #  toc: true
+  #  colorlinks: true
+  #  mainfont: "Times New Roman"
+  #  monofont: "JuliaMono"
 
 execute:
-  cache: true
+  cache: false
   freeze: auto
 
 
