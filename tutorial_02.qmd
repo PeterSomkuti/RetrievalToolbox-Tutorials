@@ -3,10 +3,11 @@ title: "Tutorial 2: Creating an Atmosphere and Working with Physical Units"
 ---
 
 ```{julia}
+#| output: false
 # Some set-up for this document
 using RetrievalToolbox;
 const RE = RetrievalToolbox;
-using Plots; default(fontfamily="Helvetica")
+using Plots; default(fontfamily="Helvetica", titlefontsize=10, labelfontsize=10)
 using Unitful;
 ```
 

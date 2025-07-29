@@ -3,10 +3,11 @@ title: "Tutorial 3: Spectral Windows, Scenes and Optical Properties"
 ---
 
 ```{julia}
+#| output: false
 # Some set-up for this document
 using RetrievalToolbox;
 const RE = RetrievalToolbox;
-using Plots; default(fontfamily="Helvetica")
+using Plots; default(fontfamily="Helvetica", titlefontsize=10, labelfontsize=10)
 using Unitful;
 ```
 
@@ -428,4 +429,79 @@ classDiagram
     SpectralWindow --> surfaces
     LambertianPolynomialSurface --> surfaces
 
+```
+
+The above schematic shows a stripped-down version of the actual objects and their fields, done mostly for clarity. The `EarthScene` object is situated at the top right of the diagram, and there are two arrows pointing inward to it. One of the paths show the atmosphere, as defined by the `EarthAtmosphere` object that contains the various retrieval and meteorological grids and profiles (see [Tutorial 2](./tutorial_02.qmd)). The atmosphere may have some `AtmosphereElements`, such as a `GasAbsorber` which itself needs underlying spectrosopic data. The other arrow shows how surfaces are introduced into the scene. We must first create a surface of type `AbstractSurface`, in this case we use a `LambertianPolynomialSurface` - one that has some spectral variability through polynomial coefficients. Then we must have a spectral window to which the surface is attached to. The relationship between surface and spectral window is then determined by the dictionary which maps the spectral window to the surface.
+
+Similarly to what we have done before, the convenience of this hierarchy becomes clear when we want to refer to any of the important quantities. Some function that gets passed a `EarthScene` object `scene`, can access all these data through the scene itself. For the solar zenith angle, a simple `scene.solar_zenith` is enough, the retrieval grid, for example, is accessed by `scene.atm.pressure_levels`. One can keep chaning the dot-operator to get lower-level data. For example, if one needed to write a small function that lists all the spectroscopy file paths for all gases used in this scene, one can do the following:
+
+```{julia}
+
+function list_all_spec_fnames(scene::RE.EarthScene)
+
+    # Loop through all atmosphere elements in the atmosphere
+    for ele in scene.atmosphere.atm_elements
+        # Check if this atmosphere element is a GasAbsorber type
+        if ele isa RE.GasAbsorber
+            # Finally, print out the gas name and the spectroscopy file name
+            println("Gas $(ele.gas_name) is read from: $(ele.spectroscopy.file_name)")
+        end
+    end
+
+end
+
+# Note that `scene` was defined above in the collapsed code cell
+list_all_spec_fnames(scene)
+```
+
+Now the above example highlights the way one can walk down the object hiearchy, starting from the uppermost available object (in this case the scene). Observant readers will notice, however, that this particular function does not need anything beyond the list of atmosphere elements, so one could have written the function so that it accepts either the `scene.atmosphere` or even `scene.atmosphere.atm_elements` as its argument. In general, most functions inside RetrievalToolbox are set up this way such that functions will operate on the "highest" **required** object, which in this case would be the atmosphere. Sometimes it is simply more convenient to have a function act on an object much higher in the hierarchy, for example when it reduces typing. To illustrate this on our example here, we define our function again, but let it act on the atmosphere object:
+
+```{julia}
+
+function list_all_spec_fnames(atmosphere::RE.EarthAtmosphere)
+    # Loop through all atmosphere elements in the atmosphere
+    for ele in atmosphere.atm_elements
+        # Check if this atmosphere element is a GasAbsorber type
+        if ele isa RE.GasAbsorber
+            # Finally, print out the gas name and the spectroscopy file name
+            println("Gas $(ele.gas_name) is read from: $(ele.spectroscopy.file_name)")
+        end
+    end
+end
+
+```
+
+Now, we can create a very simply wrapper function that calls this for a scene object:
+```{julia}
+# This now overwrites our very fist function
+list_all_spec_fnames(scene::EarthScene) = list_all_spec_fnames(scene.atmosphere)
+```
+
+This way, we now have two functions at our disposal. We can use this for an atmosphere object (when no scene has yet been created), and we can also use this for the scene itself to which the atmosphere is attached to. Further, the actual code that does the work is only implemented once, so we will only have to edit the code in one place to extend or improve the function, and the changes will occur for any other wrapper function!
+
+```{julia}
+list_all_spec_fnames(scene.atmosphere)
+list_all_spec_fnames(scene)
+```
+
+# Optical Properties
+
+With the `EarthScene` object in place (including all objects within), we likely have everything needed that define an atmospheric and a surface state, from the point of view of an atmospheric retrieval. Between those states and an observable measurement lies the most major component of a retrieval algorithm: the radiative transfer - the mathematical description that provides a way of calculating how light interacts with an absorbing and potentially scattering atmosphere. Between a scene and the output of a radiative transfer calculation usually lies a more fundamental set of quantities, which we shall call **optical properties**. These represent mostly the raw inputs to the radiative transfer solvers. For now, RetrievalToolbox can utilize the [XRTM](https://github.com/gmcgarragh/xrtm) (atmopsheric) radiative transfer model, which takes as inputs **total optical properties**, meaning that the RT code does not care about what molecule causes absorption, or what type of scatterer causes scattering. We have to break down our atmospheric state and calculate the resulting total optical properties to then feed into the RT model.
+
+Since it is also very useful to be able to inspect these optical properties, RetrievalToolbox has an explicit type that holds all of this information: `EarthAtmosphereOpticalProperties`. Right below this paragraph is the documentation of the type including its fields.
+
+::: {.callout-note title="EarthAtmosphereOpticalProperties"}
+```{julia}
+#| echo: false
+@doc RE.EarthAtmosphereOpticalProperties
+```
+:::
+
+
+
+
+```{julia}
+opt = RE.create_empty_EarthAtmosphereOpticalProperties(
+    swin1, scene, RE.RetrievalStateVector([]), RE.ScalarRadiance, Float64
+)
 ```

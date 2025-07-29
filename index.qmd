@@ -6,10 +6,61 @@ Welcome to RetrievalToolbox tutorials! These are a set of tutorials that are mea
 
 We recommend prospective users to start with this set of tutorials to get a good idea of how to work with RetrievalToolbox, since some of the intended use patterns might run contrary to software packages they have used before. One of the main features of RetrievalToolbox is that it **does not provide an explicit forward model** - as per the design philosophy of this toolset, we want users to be able to better control the flow of data from their sources into their new retrieval algorithm that they build with RetrievalToolbox. Obviously, many of the main moving parts will be taken care of by RetrievalToolbox, users will not have to re-invent the wheel necessarily. Two algorithms built with RetrievalToolbox with the same conceptual ideas will likely produce very similar results. However, users must still write an explicit forward model that is called by one of the RetrievalToolbox solvers. New users will not have to start from scratch, however. Aside from the tutorials, several example implementations of varying degrees of difficulty exist that can guide them to achieve their goals!
 
+The tutorials can be read as an online document, however the recommendation is that users follow step by step interactively and experiment along way! To do so, you will need a functioning installation of Julia and have the software library loaded.
+
 # Installing RetrievalToolbox
 
+RetrievalToolbox is written in Julia and requires a Julia installation with version >1.10. We recommend using the **JuliaUp** installation management software that can be downloaded [here](https://github.com/JuliaLang/juliaup) for various platforms. Once installed, we recommend to create a directory somewhere, and then navigate into it, for example `~/my_tutorials`. In there, call Julia from your shell with `julia --proejct=./` (for Linux and MacOS). The `--project` flag tells Julia that you intend to have an isolated project environment into which you will add certain packages. When you start Julia with that flag, you will only have access to the packages that you installed *while being in this project state*.
+
+From within the active Julia session, type the following to download and install the RetrievalToolbox package:
+
+```julia
+using Pkg
+Pkg.add(path="https://www.github.com/US-GHG-Center/RetrievalToolbox.jl")
+```
+
+This will add the package to this new Julia environment, and also add all required packages that RetrievalToolbox itself needs. For now, the base installation is all that is needed. Feel free to read the instructions at the [GitHub page](https://github.com/US-GHG-Center/RetrievalToolbox.jl) on how to also install the XRTM radiative transfer library, which is required for more advanced scenarios.
 
 # Installing required modules
 
+In the tutorials, we make use of additional packages that we recommend to be installed as well:
+```julia
+using Pkg
+Pkg.add(["Unitful", "Plots"])
+```
+
+`Plots` is seemingly the most popular Julia library for plotting at the moment, so we chose it to produce most of the in-line figures in the tutorials. If for some reason you cannot successfully install the `Plots` package, you can still execute most of the demonstrated calls in the tutorials, but will have to skip those that involve creating figures.
 
 # Obtaining example data
+
+There is a small number of extra files that are required to follow some of the steps in the tutorials. The following steps are needed to download those into your tutorial directory (assuming you are in your tutorial directory already, and that `wget` is available on your computer):
+
+```bash
+mkdir data
+cd data
+wget https://github.com/PeterSomkuti/RetrievalToolbox-Tutorials/blob/main/data/o2_spectroscopy_demo.h5
+```
+
+Alternatively, users can simply clone the full repository some where and link the `data` directory within (still inside e.g. `~/my_tutorials`):
+```bash
+git clone --depth 1 https://github.com/PeterSomkuti/RetrievalToolbox-Tutorials
+ln -s RetrievalToolbox-Tutorials/data data
+```
+
+# Using Jupyter notebooks
+
+A very convenient way of experimenting with Julia and RetrievalToolbox is a [Jupyter notebook environment](https://jupyter.org). These interactive notebooks provide an environment that allows for very convenient execution of Julia commands, as well as produce in-line figures next to program code. Within Julia, one can install and run the environment like so:
+
+```julia
+using Pkg
+Pkg.add("IJulia")
+using Julia
+notebook(dir="./") # This launches jupyter-lab instance
+```
+
+Users who do not have `Jupyter` installed, will be prompted during the first run. For more information on `IJulia`, visit [here](https://github.com/JuliaLang/IJulia.jl).
+
+
+# Start the tutorial series
+
+After setting up the required software, start the tutorial series with the first lesson: [Tutorial 1](./tutorial_01.qmd).
