@@ -535,7 +535,7 @@ Now think of a situation in which we might want to be able to change the content
 
 ```julia
 for o2_vmr in [0.2095, 0.2065, 0.2035]
-    gas_o2.vmr_levels[:] .= o2_vmr
+    gas_o2.vmr_levels[:] .= o2_vmr # Set the VMR for the entire column
 
     run_forward_model(atm) # this is a placeholder dummy function
 end
