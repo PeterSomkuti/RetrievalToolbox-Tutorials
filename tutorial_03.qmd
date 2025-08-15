@@ -7,7 +7,7 @@ title: "Tutorial 3: Spectral Windows, Scenes and Optical Properties"
 # Some set-up for this document
 using RetrievalToolbox;
 const RE = RetrievalToolbox;
-using Plots; default(fontfamily="Helvetica", titlefontsize=10, labelfontsize=10)
+using Plots; default(fontfamily="JuliaMono-Medium", titlefontsize=10, labelfontsize=10)
 using Unitful;
 ```
 
@@ -41,6 +41,7 @@ It is easier to understand the workings of the `SpectralWindow` type by example.
 
 ```{julia}
 wl_unit = u"nm"
+
 wl_min = 759.95
 wl_max = 760.25
 wl_buffer = 0.03
@@ -329,12 +330,12 @@ atm = RE.create_empty_EarthAtmosphere(
     4, # number of levels for retrieval grid
     6, # number of levels for MET grid
     Float64, # data type for all arrays
-    u"hPa", # pressure unit for retrieval grid
-    u"Pa", # pressure unit for MET grid
-    u"K", # unit for temperature profile
-    u"g/kg", # unit for specific humidity profile
-    u"km", # unit for altitude profile
-    u"m/s^2", # unit for local gravity profile
+    pressure_unit=u"hPa", # pressure unit for retrieval grid
+    met_pressure_unit=u"Pa", # pressure unit for MET grid
+    temperature_unit=u"K", # unit for temperature profile
+    specific_humidity_unit=u"g/kg", # unit for specific humidity profile
+    altitude_unit=u"km", # unit for altitude profile
+    gravity_unit=u"m/s^2", # unit for local gravity profile
 );
 
 RE.ingest!(atm, :pressure_levels, [1., 100., 500., 1000.]u"hPa")
@@ -484,6 +485,26 @@ list_all_spec_fnames(scene.atmosphere)
 list_all_spec_fnames(scene)
 ```
 
+
+To finish up, we have one last step to do before we calculate optical properties. Optical depths calculations require knowledge of at least the local gravity at the various pressure levels, so we must perform this calculation before doing any further steps:
+```{julia}
+RE.calculate_altitude_and_gravity!(scene)
+```
+
+The above function performs the calculation, stores the results in-place with the correct units, and then also provides those values at the mid-layer pressures. We can have a quick look at the profiles:
+
+```{julia}
+p1 = plot(atm.altitude_levels * atm.altitude_unit, collect(1:atm.N_met_level),
+    lw=2.0, marker=:circle, label="Altitude profile", legend=:bottomright)
+ylabel!("Met profile level #");
+yflip!()
+p2 = plot(atm.gravity_levels * atm.gravity_unit, collect(1:atm.N_met_level),
+    lw=2.0, marker=:circle, label="Gravity profile", legend=:bottomleft)
+yflip!()
+plot(p1, p2, layout=(1, 2))
+```
+
+
 # Optical Properties
 
 With the `EarthScene` object in place (including all objects within), we likely have everything needed that define an atmospheric and a surface state, from the point of view of an atmospheric retrieval. Between those states and an observable measurement lies the most major component of a retrieval algorithm: the radiative transfer - the mathematical description that provides a way of calculating how light interacts with an absorbing and potentially scattering atmosphere. Between a scene and the output of a radiative transfer calculation usually lies a more fundamental set of quantities, which we shall call **optical properties**. These represent mostly the raw inputs to the radiative transfer solvers. For now, RetrievalToolbox can utilize the [XRTM](https://github.com/gmcgarragh/xrtm) (atmopsheric) radiative transfer model, which takes as inputs **total optical properties**, meaning that the RT code does not care about what molecule causes absorption, or what type of scatterer causes scattering. We have to break down our atmospheric state and calculate the resulting total optical properties to then feed into the RT model.
@@ -497,11 +518,112 @@ Since it is also very useful to be able to inspect these optical properties, Ret
 ```
 :::
 
+In the above documentation, we see that there are in fact quite a few fields inside an `EarthAtmosphereOpticalProperties` object, and we have not yet discussed the meaning of most. For now, we just note some important aspects:
+
+* Currently, an `EarthAtmosphereOpticalProperties` object contains explicit fields for following atmospheric constituents or properties: gases, aerosols and Rayleigh scattering
+  + Should any new constituent or property be included in the future, it will likely result in a change of the type definition and have an impact on applications
+* Some of fields are dictionary types that use objects as keys to link the corresponding optical properties to them. For example, if we want to access the layer-resolved optical depth for a specific `gas` object, we would use the `gas_tau` dictionary like so: `gas_tau[gas]`.
+* The `EarthAtmosphereOpticalProperties` type also defines a few "temporary" vectors and arrays. These are used for computations that require vectors or arrays of a certain shape, and are very convenient since we do not have to allocate a new vector or array to act as storage. Note that by design, the contents of these vectors and arrays have no meaning outside any function.
 
 
+We could instantiate a new `EarthAtmosphereOpticalProperties` object in the usual way by creating all required quantities and then call `EarthAtmosphereOpticalProperties(...)` with a lengthy list of arguments. However, a slightly more elegant way exists via a convenience function that creates the object with the correct shapes and dictonary keys:
 
 ```{julia}
+
+# First we have to create a spectral window that fits into the range of
+# the demo spectroscopy data we have. The example we made before, unfortuantely
+# does not work here.
+
+swin = RE.spectralwindow_from_ABSCO(
+    "my_window", # name
+    0.76455, # wavelength range start
+    0.76485, # wavelength range end
+    0.7645, # reference wavelength (can be anything really)
+    0.00001, # buffer (we can make this small here, true applications might need a big buffer..)
+    absco_o2, # The ABSCO object
+    u"µm" # Using micro meter units
+);
+
+# Then, we have to make sure to create surface and the surface dictionary:
+new_surface = RE.LambertianPolynomialSurface(swin, [0.15])
+new_surf_dict = Dict(swin => new_surface)
+
+# And swap out the one used in the scene:
+scene.surfaces = new_surf_dict
+
 opt = RE.create_empty_EarthAtmosphereOpticalProperties(
-    swin1, scene, RE.RetrievalStateVector([]), RE.ScalarRadiance, Float64
-)
+    swin, # The spectral window that this optical property object is assigned to
+    scene, # The scene that contains the needed atmosphere elements
+    RE.RetrievalStateVector([]), # We can leave this empty for now
+    RE.ScalarRadiance, # The type of radiance used - either a RE.ScalarRadiance or RE.VectorRadiance
+    Float64 # The number type for the arrays
+);
 ```
+
+
+The `opt` object at this point is iniitialized with mostly zeros, so there are no meaningful values present in the various containers. Calculations are performed in-place by calling the `calculate_earth_optical_properties!` function with `opt` as the leading argument, the scene we want to calculate the optical properties for - and it also needs a state vector, which for now we keep empty (the state vector is needed to make the function aware of which derivatives should be computed, if any).
+
+```{julia}
+RE.calculate_earth_optical_properties!(opt, scene, RE.RetrievalStateVector([]))
+```
+
+::: {.callout-tip}
+Note that there is no history attached to objects. There is (unfortunately) no way to track whether the optical properties have been already computed or not!
+:::
+
+A quick reminder as to what we have just done, and how it fits into the whole work flow:
+
+1. We created an empty atmosphere object with `create_empty_EarthAtmosphere`, defining the number of levels for the retrieval grid and the meteorological grid, as well as the physical units for each of the profiles. This creates the `EarthAtmosphere` object with correctly-sized vectors, that are all zeros.
+2. With the `ingest!` function, we filled the profiles with sensible values, taking into account units.
+3. We added a `GasAbsorber` object for molecular oxygen by adding `gas_o2` into atmosphere's `atm_elements` list.
+4. We created an `EarthScene` object, which contains the atmosphere we created before (including the `gas_o2` constituent), as well as a `SatelliteObserver` and an `EarthLocation`. Further, the scene contains the solar angles and the time which this scene represents.
+5. Important! We have to calculate (or supply) the altitude and gravity profiles. The `calculate_altitude_and_gravity!` function allows to conveniently perform this calculation consistently with the pressure and humidity profiles.
+6. For optical properties, we must have a `SpectralWindow` - since all the optical property quantities will share its spectral grid.
+7. We then instantiated the `EarthAtmosphereOpticalProperties` object, that brings together the spectral window and the scene.
+8. Since we have already done all the work to fill the various objects with meaningful data (met profiles etc.), we can call `calculate_earth_optical_properties!` and let the function compute all of the quantities needed later on for radiative transfer calculations. In our example, this is only the optical depth profile due to `gas_o2`.
+
+We can visualize the layer optical depths as a function of wavelength in the figure below.
+
+```{julia}
+p = plot()
+for l in 1:atm.N_layer
+    plot!(p, swin.wavelength_grid, opt.gas_tau[gas_o2][:,l], label="Layer $(l)")
+end
+ylabel!("$(gas_o2.gas_name) layer optical depth")
+xlabel!("Wavelength [$(swin.wavelength_unit)]")
+display(p)
+```
+
+What is the usefulness of this object type? Other retrieval frameworks might not store optical properties in an explicit container that can be inspected at any given time. The general design is that new objects are used for some explicit points, at which intermediate results of significance are stored. Optical properties are the fundamental inputs to the type of radiative transfer solvers that we use with RetrievalToolbox, and we want to give users full control over the calculation. Users might want to perform additional calculations on top of what `calculate_earth_optical_properties!` provides - and having the results stored this way allows to easily introduce a new function into users' forward models that performs whatever computation they want.
+
+We will round up this tutorial with an example of how the optical property object can be used to perform some simple radiative transfer. Suppose we want to obtain the sun-normalized top-of-atmosphere radiance at nadir given the parameters of our scene, only considering absorption. The equation to do that is the following
+
+$$
+I^\mathrm{TOA}_\lambda = \exp(\sum_{l=1}^{N_\mathrm{lay}} -\frac{\tau_{\lambda,l}}{\cos\theta_0}) \cdot \frac{\rho\cdot\cos\theta_0}{\pi} \cdot \exp(\sum_{l=1}^{N_\mathrm{lay}} -\frac{\tau_l}{\cos 0})
+$$
+
+with $\tau_l$ being the optical depth for layer $l$, $\theta_0$ being the solar zenith angle (we assume 0 for the viewing zenith) and $\rho$ being the Lambertian surface albedo. The wavelength index $\lambda$ signifies a spectral dependence.
+
+Inside the `EarthAtmosphereOpticalProperties` object, the per-gas layer-resolved optical depths are found in the dictionary `.gas_tau[GAS_OBJECT]`. however, it is more convenient to get the **total** layer-resolved optical depths, which can be accessed by `.total_tau`, which containts the extinction profiles of all constituents in the model atmosphere. The code snipped below shows how the Beer-Lambert absorption-only model would be implemented, and is not very different from what the interal radiative solver does.
+
+```{julia}
+# Placeholder for the result
+I_toa = zeros(swin.N_hires)
+
+# Spectral loop
+for λ in 1:swin.N_hires
+    ρ = evaluate_surface_at_idx(new_surface, λ)
+    I_toa[λ] = exp(-sum(opt.total_tau[λ,:]) / cosd(scene.solar_zenith)) *
+        ρ * cosd(scene.solar_zenith) / pi * exp(-sum(opt.total_tau[λ,:]) / cosd(0.0))
+end
+
+plot(
+    swin.wavelength_grid,
+    I_toa,
+    label=nothing,
+)
+ylabel!("Sun-normalized TOA")
+xlabel!("Wavelength [$(swin.wavelength_unit)]")
+```
+
+The figure above shows the high-resolution TOA radiance as produced by the native resolution of the underlying spectroscopy, which our `SpectralWindow` derived from.
