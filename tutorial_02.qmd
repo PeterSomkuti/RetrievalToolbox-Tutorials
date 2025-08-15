@@ -84,17 +84,17 @@ atm = RE.create_empty_EarthAtmosphere(
     4, # number of levels for retrieval grid
     6, # number of levels for MET grid
     Float64, # data type for all arrays
-    u"hPa", # pressure unit for retrieval grid
-    u"Pa", # pressure unit for MET grid
-    u"K", # unit for temperature profile
-    u"g/kg", # unit for specific humidity profile
-    u"km", # unit for altitude profile
-    u"m/s^2", # unit for local gravity profile
+    pressure_unit=u"hPa", # pressure unit for retrieval grid
+    met_pressure_unit=u"Pa", # pressure unit for MET grid
+    temperature_unit=u"K", # unit for temperature profile
+    specific_humidity_unit=u"g/kg", # unit for specific humidity profile
+    altitude_unit=u"km", # unit for altitude profile
+    gravity_unit=u"m/s^2", # unit for local gravity profile
 );
 
 ```
 
-The parameters to the function `create_empty_EarthAtmosphere` are rather self-explanatory: we first pass the number of levels we want for both retrieval and meteorological grid. Then we must also decide on the data type that we want the arrays of the object to be; 64-bit floats are a good choice in almost all cases. The remaining 6 parameters define the units of the quantities that object contains. Two major things are of note here. First, we can see that there are two different units for the two pressure grids! This means that the retrieval grid could be specified in, e.g., pascal, and the meteorological grid could be specified in, e.g., torr. They can be the same of course.
+The parameters to the function `create_empty_EarthAtmosphere` are rather self-explanatory: we first pass the number of levels we want for both retrieval and meteorological grid. Then we must also decide on the data type that we want the arrays of the object to be; 64-bit floats are a good choice in almost all cases. The remaining 6 parameters define the units of the quantities that object contains. Two major things are of note here. First, we can see that there are two different units for the two pressure grids! This means that the retrieval grid could be specified in, e.g., pascal, and the meteorological grid could be specified in, e.g., torr. They can be the same of course. Supplying units explicitly is optional, the function has defined default values.
 
 ## Ingesting Values with Units
 
