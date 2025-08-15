@@ -8,9 +8,13 @@ We recommend prospective users to start with this set of tutorials to get a good
 
 The tutorials can be read as an online document, however the recommendation is that users follow step by step interactively and experiment along way! To do so, you will need a functioning installation of Julia and have the software library loaded.
 
+::: {.callout-note title="Note"}
+RetrievalToolbox is, as of now, still under heavy development. Bugs and issues are expected at this stage - users that come across any are encouraged to report them at the [GitHub page](https://www.github.com/US-GHG-Center/RetrievalToolbox.jl) by filing an issue. Feature requests should be done at the same place.
+:::
+
 # Installing RetrievalToolbox
 
-RetrievalToolbox is written in Julia and requires a Julia installation with version >1.10. We recommend using the **JuliaUp** installation management software that can be downloaded [here](https://github.com/JuliaLang/juliaup) for various platforms. Once installed, we recommend to create a directory somewhere, and then navigate into it, for example `~/my_tutorials`. In there, call Julia from your shell with `julia --proejct=./` (for Linux and MacOS). The `--project` flag tells Julia that you intend to have an isolated project environment into which you will add certain packages. When you start Julia with that flag, you will only have access to the packages that you installed *while being in this project state*.
+RetrievalToolbox is written in Julia and requires a Julia installation with version >1.10. We recommend using the **JuliaUp** installation management software that can be downloaded [here](https://github.com/JuliaLang/juliaup) for various platforms. Once installed, we recommend to create a directory somewhere, and then navigate into it, for example `~/my_tutorials`. In there, call Julia from your shell with `julia --project=./` (for Linux and MacOS). The `--project` flag tells Julia that you intend to have an isolated project environment into which you will add certain packages. When you start Julia with that flag, you will only have access to the packages that you installed *while being in this project state*.
 
 From within the active Julia session, type the following to download and install the RetrievalToolbox package:
 
