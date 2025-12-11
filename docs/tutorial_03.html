@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -67,14 +67,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9aba71ceb801e9d98f5b9f4027c933d2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ed7edb17aaa2816d0dc2299deb165c61.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -137,7 +138,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -249,11 +250,11 @@ window.Quarto = {
 
 
 <div id="5babc550" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Some set-up for this document</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Some set-up for this document</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">RetrievalToolbox;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> RE <span class="op">=</span> RetrievalToolbox;</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots;</span> default(fontfamily="JuliaMono-Medium", <span class="bu">titlefontsize=10</span>, <span class="bu">labelfontsize=10)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Unitful;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Unitful;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
@@ -264,7 +265,7 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Goal of this tutorial
+<span class="screen-reader-only">Tip</span>Goal of this tutorial
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -285,7 +286,7 @@ Goal of this tutorial
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-SpectralWindow
+<span class="screen-reader-only">Note</span>SpectralWindow
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -307,7 +308,7 @@ SpectralWindow
 </div>
 <p>It is easier to understand the workings of the <code>SpectralWindow</code> type by example. First, we simply create a new object by calling the type constructor. The example below creates a window that is 1 nm wide with a rather crude spacing of 0.1 nm for demonstration purposes.</p>
 <div id="cd01bbc3" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wl_unit <span class="op">=</span> u<span class="st">"nm"</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wl_unit <span class="op">=</span> u<span class="st">"nm"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>wl_min <span class="op">=</span> <span class="fl">759.95</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>wl_max <span class="op">=</span> <span class="fl">760.25</span></span>
@@ -322,7 +323,7 @@ SpectralWindow
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    wl_grid, <span class="co"># Hires-grid</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    wl_unit, <span class="co"># Wavelength unit</span></span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    (wl_min <span class="op">+</span> wl_max) <span class="op">/</span> <span class="fl">2</span> <span class="co"># Reference at center</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="86">
 <pre><code>Spectral window: O2A
 Boundaries: 759.95 to 760.25, in nm.
@@ -331,7 +332,7 @@ N = 37</code></pre>
 </div>
 <p>We can peek into the <code>swin1</code> object as usual, for example we can look at the actual underlying wavelength grid.</p>
 <div id="48c05653" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(swin1.ww_grid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(swin1.ww_grid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[759.9200000000001, 759.9300000000001, 759.94, 759.95, 759.96, 759.97, 759.98, 759.9900000000001, 760.0000000000001, 760.0100000000001, 760.0200000000001, 760.0300000000001, 760.0400000000001, 760.0500000000001, 760.0600000000001, 760.07, 760.08, 760.09, 760.1, 760.1100000000001, 760.1200000000001, 760.1300000000001, 760.1400000000001, 760.1500000000001, 760.1600000000001, 760.1700000000001, 760.1800000000001, 760.19, 760.2, 760.21, 760.22, 760.23, 760.2400000000001, 760.2500000000001, 760.2600000000001, 760.2700000000001, 760.2800000000001]</code></pre>
 </div>
@@ -343,20 +344,20 @@ N = 37</code></pre>
 <p>RetrievalToolbox supports both wavelength and wavenumbers as choices for the spectral dimension natively. Additional details are also found in the RetrievalToolbox documentation at [ADD LINK].</p>
 <p>Users should be able to access the spectral dimension in an explicit way that reflects their initial choice and that helps other users to be constantly aware of whether this particular bit of code was intended for wavelength or wavenumber space. We can access the wavelength-based grid in <code>swin1</code> as we have done above (<code>swin1.ww_grid</code>), but it is much cleaner to write <code>.wavelength_grid</code>!</p>
 <div id="3043a403" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(swin1.wavelength_grid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(swin1.wavelength_grid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[759.9200000000001, 759.9300000000001, 759.94, 759.95, 759.96, 759.97, 759.98, 759.9900000000001, 760.0000000000001, 760.0100000000001, 760.0200000000001, 760.0300000000001, 760.0400000000001, 760.0500000000001, 760.0600000000001, 760.07, 760.08, 760.09, 760.1, 760.1100000000001, 760.1200000000001, 760.1300000000001, 760.1400000000001, 760.1500000000001, 760.1600000000001, 760.1700000000001, 760.1800000000001, 760.19, 760.2, 760.21, 760.22, 760.23, 760.2400000000001, 760.2500000000001, 760.2600000000001, 760.2700000000001, 760.2800000000001]</code></pre>
 </div>
 </div>
 <div id="ad3fafd9" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(swin1.λ_grid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(swin1.λ_grid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[759.9200000000001, 759.9300000000001, 759.94, 759.95, 759.96, 759.97, 759.98, 759.9900000000001, 760.0000000000001, 760.0100000000001, 760.0200000000001, 760.0300000000001, 760.0400000000001, 760.0500000000001, 760.0600000000001, 760.07, 760.08, 760.09, 760.1, 760.1100000000001, 760.1200000000001, 760.1300000000001, 760.1400000000001, 760.1500000000001, 760.1600000000001, 760.1700000000001, 760.1800000000001, 760.19, 760.2, 760.21, 760.22, 760.23, 760.2400000000001, 760.2500000000001, 760.2600000000001, 760.2700000000001, 760.2800000000001]</code></pre>
 </div>
 </div>
 <p>With both the unicode lowercase “lambda” (<code>λ_grid</code>) and <code>wavelength_grid</code> we can access the underlying wavelength grid. The same holds for wavenumber-based spectral windows. Let us define a new window:</p>
 <div id="f2d6553d" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>wn_unit <span class="op">=</span> u<span class="st">"cm^-1"</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>wn_unit <span class="op">=</span> u<span class="st">"cm^-1"</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>wn_min <span class="op">=</span> <span class="fl">5000.0</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>wn_max <span class="op">=</span> <span class="fl">5001.0</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>wn_buffer <span class="op">=</span> <span class="fl">0.1</span></span>
@@ -370,7 +371,7 @@ N = 37</code></pre>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    wn_grid, <span class="co"># Hires-grid</span></span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    wn_unit, <span class="co"># Wavenumber unit</span></span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    (wn_min <span class="op">+</span> wn_max) <span class="op">/</span> <span class="fl">2</span> <span class="co"># Reference at center</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="90">
 <pre><code>Spectral window: just_test
 Boundaries: 5000.0 to 5001.0, in cm⁻¹.
@@ -379,20 +380,20 @@ N = 121</code></pre>
 </div>
 <p>and now access the underlying grid using <code>wavenumber_grid</code> or the lower case greek nu <code>ν_grid</code>:</p>
 <div id="b52edbc8" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(swin2.wavenumber_grid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(swin2.wavenumber_grid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[4999.9, 4999.91, 4999.92, 4999.93, 4999.94, 4999.95, 4999.96, 4999.97, 4999.98, 4999.99, 5000.0, 5000.01, 5000.02, 5000.03, 5000.04, 5000.05, 5000.06, 5000.07, 5000.08, 5000.09, 5000.1, 5000.11, 5000.12, 5000.13, 5000.14, 5000.15, 5000.16, 5000.17, 5000.18, 5000.19, 5000.2, 5000.21, 5000.22, 5000.23, 5000.24, 5000.25, 5000.26, 5000.27, 5000.28, 5000.29, 5000.3, 5000.31, 5000.32, 5000.33, 5000.34, 5000.35, 5000.36, 5000.37, 5000.38, 5000.39, 5000.4, 5000.41, 5000.42, 5000.43, 5000.44, 5000.45, 5000.46, 5000.47, 5000.48, 5000.49, 5000.5, 5000.51, 5000.52, 5000.53, 5000.54, 5000.55, 5000.56, 5000.57, 5000.58, 5000.59, 5000.6, 5000.61, 5000.62, 5000.63, 5000.64, 5000.65, 5000.66, 5000.67, 5000.68, 5000.69, 5000.7, 5000.71, 5000.72, 5000.73, 5000.74, 5000.75, 5000.76, 5000.77, 5000.78, 5000.79, 5000.8, 5000.81, 5000.82, 5000.83, 5000.84, 5000.85, 5000.86, 5000.87, 5000.88, 5000.89, 5000.9, 5000.91, 5000.92, 5000.93, 5000.94, 5000.95, 5000.96, 5000.97, 5000.98, 5000.99, 5001.0, 5001.01, 5001.02, 5001.03, 5001.04, 5001.05, 5001.06, 5001.07, 5001.08, 5001.09, 5001.1]</code></pre>
 </div>
 </div>
 <div id="31b45ded" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(swin2.ν_grid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(swin2.ν_grid)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[4999.9, 4999.91, 4999.92, 4999.93, 4999.94, 4999.95, 4999.96, 4999.97, 4999.98, 4999.99, 5000.0, 5000.01, 5000.02, 5000.03, 5000.04, 5000.05, 5000.06, 5000.07, 5000.08, 5000.09, 5000.1, 5000.11, 5000.12, 5000.13, 5000.14, 5000.15, 5000.16, 5000.17, 5000.18, 5000.19, 5000.2, 5000.21, 5000.22, 5000.23, 5000.24, 5000.25, 5000.26, 5000.27, 5000.28, 5000.29, 5000.3, 5000.31, 5000.32, 5000.33, 5000.34, 5000.35, 5000.36, 5000.37, 5000.38, 5000.39, 5000.4, 5000.41, 5000.42, 5000.43, 5000.44, 5000.45, 5000.46, 5000.47, 5000.48, 5000.49, 5000.5, 5000.51, 5000.52, 5000.53, 5000.54, 5000.55, 5000.56, 5000.57, 5000.58, 5000.59, 5000.6, 5000.61, 5000.62, 5000.63, 5000.64, 5000.65, 5000.66, 5000.67, 5000.68, 5000.69, 5000.7, 5000.71, 5000.72, 5000.73, 5000.74, 5000.75, 5000.76, 5000.77, 5000.78, 5000.79, 5000.8, 5000.81, 5000.82, 5000.83, 5000.84, 5000.85, 5000.86, 5000.87, 5000.88, 5000.89, 5000.9, 5000.91, 5000.92, 5000.93, 5000.94, 5000.95, 5000.96, 5000.97, 5000.98, 5000.99, 5001.0, 5001.01, 5001.02, 5001.03, 5001.04, 5001.05, 5001.06, 5001.07, 5001.08, 5001.09, 5001.1]</code></pre>
 </div>
 </div>
 <p>Now what would happen if we tried to access a wavelength-based grid using <code>ν</code> or <code>wavenumber</code>?</p>
 <div id="846955b8" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>swin1.wavenumber_grid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>swin1.wavenumber_grid</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <div class="ansi-escaped-output">
 <pre>Wrong unit! Expected wavelength, but got ν.
@@ -459,7 +460,7 @@ Figure&nbsp;2: This figure illustrates the neccessity of the high-resolution gri
 <p>The most important component of the scene is the atmosphere, which we have discussed in the previous tutorial (<a href="./tutorial_02.html">Tutorial 2</a>). It contains the set-up for our vertical retrieval grid, meteorological profiles, gases and other constituents.</p>
 <p>Along with the atmosphere, we must also define the surface state(s). At the moment, RetrievalToolbox requires a surface object to be attached to every spectral window that will be considered. We can easily instantiate a new Lambertian surface with the following code:</p>
 <div id="6e664c8f" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>surf <span class="op">=</span> RE.<span class="fu">LambertianPolynomialSurface</span>(swin1, [<span class="fl">0.25</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>surf <span class="op">=</span> RE.<span class="fu">LambertianPolynomialSurface</span>(swin1, [<span class="fl">0.25</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="94">
 <pre><code>LambertianPolynomialSurface{Float64}(SpectralWindow: O2A, 0, [0.25])</code></pre>
 </div>
@@ -471,7 +472,7 @@ Figure&nbsp;2: This figure illustrates the neccessity of the high-resolution gri
 <p>The reference wavelength <span class="math inline">\lambda_\mathrm{ref}</span> will be taken from the <code>swin1.ww_reference</code> field.</p>
 <p>At first glance, it seems like a circular dependency, but the scene object we want to create later on requires a so-called dictionary that maps a spectral window onto a surface:</p>
 <div id="e0ab387f" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>surf_dict <span class="op">=</span> <span class="fu">Dict</span>(swin1 <span class="op">=&gt;</span> surf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>surf_dict <span class="op">=</span> <span class="fu">Dict</span>(swin1 <span class="op">=&gt;</span> surf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="95">
 <pre><code>Dict{SpectralWindow{Float64}, LambertianPolynomialSurface{Float64}} with 1 entry:
   SpectralWindow: O2A =&gt; LambertianPolynomialSurface{Float64}(SpectralWindow: O…</code></pre>
@@ -483,7 +484,7 @@ Figure&nbsp;2: This figure illustrates the neccessity of the high-resolution gri
 <h2 data-number="3.2" class="anchored" data-anchor-id="intermission-dictionaries-in-julia"><span class="header-section-number">3.2</span> Intermission: Dictionaries in Julia</h2>
 <p>Dictionaries in Julia work exactly like those in e.g.&nbsp;Python: they allow one to store the relationship between key and value pairs, mostly for the purpose of accessing some value with a given key. They can be easily created via typing e.g.</p>
 <div id="fd2dd011" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="op">=</span> <span class="fu">Dict</span>(<span class="st">"key1"</span> <span class="op">=&gt;</span> <span class="fl">1</span>, <span class="st">"key2"</span> <span class="op">=&gt;</span> <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="op">=</span> <span class="fu">Dict</span>(<span class="st">"key1"</span> <span class="op">=&gt;</span> <span class="fl">1</span>, <span class="st">"key2"</span> <span class="op">=&gt;</span> <span class="fl">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="96">
 <pre><code>Dict{String, Int64} with 2 entries:
   "key2" =&gt; 3
@@ -492,10 +493,10 @@ Figure&nbsp;2: This figure illustrates the neccessity of the high-resolution gri
 </div>
 <p>In Julia, dictionaries are objects of types, so in the example above we have created a dictionary that maps strings onto integers. This is quite different when compared to Python. If we attempt to store a new key-value pair in this already existing dictionary, we find that it only works if we provide a string-based key and an integer-based value (or one that can be implicity converted to one)!</p>
 <div id="789bd8a4" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>d1[<span class="st">"key3"</span>] <span class="op">=</span> <span class="fl">8</span> <span class="co"># This works</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>d1[<span class="st">"key3"</span>] <span class="op">=</span> <span class="fl">8</span> <span class="co"># This works</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>d1[<span class="st">"key4"</span>] <span class="op">=</span> <span class="fl">1.0</span> <span class="co"># This works too (conversion float -&gt; integer succeeds)</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>d1[<span class="fl">10</span>] <span class="op">=</span> <span class="st">"key5"</span> <span class="co"># This does not (integer -&gt; string fails, string -&gt; float fails)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>d1[<span class="fl">10</span>] <span class="op">=</span> <span class="st">"key5"</span> <span class="co"># This does not (integer -&gt; string fails, string -&gt; float fails)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <div class="ansi-escaped-output">
 <pre>MethodError: Cannot `convert` an object of type <span class="ansi-bright-green-fg">Int64</span> to an object of type <span class="ansi-bright-red-fg">String</span>
@@ -521,12 +522,12 @@ Stacktrace:
 </div>
 <p>If we want to create a dictionary that allows us to use any type for either key or value, we must initially create it as such:</p>
 <div id="88e4810c" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="op">=</span> <span class="fu">Dict</span><span class="dt">{Any,Any}</span>()</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="op">=</span> <span class="fu">Dict</span><span class="dt">{Any,Any}</span>()</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>d2[<span class="st">"key1"</span>] <span class="op">=</span> <span class="fl">123</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>d2[<span class="fl">3.2</span>] <span class="op">=</span> <span class="st">"test"</span></span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>d2[(<span class="fl">10</span>, <span class="ch">'a'</span>)] <span class="op">=</span> sin</span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>d2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>d2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="98">
 <pre><code>Dict{Any, Any} with 3 entries:
   (10, 'a') =&gt; sin
@@ -538,9 +539,9 @@ Stacktrace:
 <p>As always, when it comes to codes that are required to perform very efficiently, one would be wise to steer clear of any data type with <code>Any</code>, since the Julia compiler cannot dispatch specific functions for good performance. However, for most applications the performance for <code>Any</code>-type dictionaries is usually good enough and can be a very convenient way of organizing relationships.</p>
 <p>One can iterate over dictionaries in the following way:</p>
 <div id="316e7c85" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k,v) <span class="kw">in</span> d1 <span class="co"># The braces around k,v are required!</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k,v) <span class="kw">in</span> d1 <span class="co"># The braces around k,v are required!</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(<span class="st">"Key </span><span class="sc">$</span>(k)<span class="st"> and Value </span><span class="sc">$</span>(v)<span class="st">"</span>)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Key key2 and Value 3
 Key key3 and Value 8
@@ -564,7 +565,7 @@ Warning
 </div>
 <p>In many scripting applications, we would use dictionaries in a manner like above where we link strings or integers to other, generally simple objects. In Julia, many more types can be used as dictionary keys, not just numbers, strings or tuples. We can even use our own types! We will use a quick example by creating two new custom types, and use variables of those types as keys in dictionaries.</p>
 <div id="f3ff8879" class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> SS1</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> SS1</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    x</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> SS2</span>
@@ -573,7 +574,7 @@ Warning
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>s1 <span class="op">=</span> <span class="fu">SS1</span>([<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>])</span>
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>s2 <span class="op">=</span> <span class="fu">SS2</span>([<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">6</span>])</span>
 <span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>test_dict <span class="op">=</span> <span class="fu">Dict</span>(s1 <span class="op">=&gt;</span> <span class="st">"I am s1"</span>, s2 <span class="op">=&gt;</span> <span class="st">"I am s2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>test_dict <span class="op">=</span> <span class="fu">Dict</span>(s1 <span class="op">=&gt;</span> <span class="st">"I am s1"</span>, s2 <span class="op">=&gt;</span> <span class="st">"I am s2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="100">
 <pre><code>Dict{Any, String} with 2 entries:
   SS1([1, 2, 3]) =&gt; "I am s1"
@@ -582,7 +583,7 @@ Warning
 </div>
 <p>These are very simple user types that take one argument each. We can access the contents of the dictionary as follows:</p>
 <div id="4bdf3fe7" class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>test_dict[s1]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>test_dict[s1]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="101">
 <pre><code>"I am s1"</code></pre>
 </div>
@@ -590,8 +591,8 @@ Warning
 <p>This feels like expected behavior! We have created a dictionary with some keys, one of those keys is indeed our newly created object <code>s1</code>, so we should be able to access the value <code>"I am s1</code>” inside <code>test_dict</code> simply by writing <code>test_dict[s1]</code>. And we see that it works.</p>
 <p>Let us try something very similar: we will create a new object, that is seeminly the same object, and try to access the dictonary in exactly the same way. However, we will see that Julia raises an error!</p>
 <div id="cba85090" class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>s3 <span class="op">=</span> <span class="fu">SS1</span>([<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>])</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>test_dict[s3]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>s3 <span class="op">=</span> <span class="fu">SS1</span>([<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>])</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>test_dict[s3]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <div class="ansi-escaped-output">
 <pre>KeyError: key SS1([1, 2, 3]) not found
@@ -606,9 +607,9 @@ Stacktrace:
 </div>
 <p>The underlying reason as to why the above code raises an error is <strong>very important to understand</strong>! Julia dictionaries are, just like in Python, hash tables. We can use Julia’s <code>Base.hash</code> function to calculate the hash value of our variables <code>s1</code> and <code>s3</code>, as well as another object that we just create:</p>
 <div id="8a89630d" class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="bu">Base</span>.<span class="fu">hash</span>(s1))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="bu">Base</span>.<span class="fu">hash</span>(s1))</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="bu">Base</span>.<span class="fu">hash</span>(s3))</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="bu">Base</span>.<span class="fu">hash</span>(<span class="fu">SS1</span>([<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>])))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="bu">Base</span>.<span class="fu">hash</span>(<span class="fu">SS1</span>([<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <pre><code>0xf926f2f597a20787</code></pre>
 </div>
@@ -622,12 +623,12 @@ Stacktrace:
 <p>Even though all three objects have the same contents in the sense that the values of the arrays <code>[1,2,3]</code> are the same, they produce different hash values! This is due to the fact that the creation of the array <code>[1,2,3]</code> happens on stack memory. So whenever we type <code>[1,2,3]</code> a new array is created at some different part of the memory that is available to Julia.</p>
 <p>If wanted, we can circumvent this by first creating an array, and <em>afterwards</em> create two objects with that array as the argument:</p>
 <div id="a49a8de9" class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> [<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>]</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> [<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>]</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>s4 <span class="op">=</span> <span class="fu">SS1</span>(a)</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>s5 <span class="op">=</span> <span class="fu">SS1</span>(a)</span>
 <span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="fu">hash</span>(s4))</span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="fu">hash</span>(s5))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(<span class="fu">hash</span>(s5))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <pre><code>0x28b7944f191a2ce5</code></pre>
 </div>
@@ -637,8 +638,8 @@ Stacktrace:
 </div>
 <p>We see that the hash value for both <code>s4</code> and <code>s5</code> is the same, and Julia cannot differentiate those two objects at all. Therefore, we could use either to access a dictionary:</p>
 <div id="e29b8345" class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>test_dict2 <span class="op">=</span> <span class="fu">Dict</span>(s4 <span class="op">=&gt;</span> <span class="st">"I am s4"</span>)</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>test_dict2[s5]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>test_dict2 <span class="op">=</span> <span class="fu">Dict</span>(s4 <span class="op">=&gt;</span> <span class="st">"I am s4"</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>test_dict2[s5]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="105">
 <pre><code>"I am s4"</code></pre>
 </div>
@@ -648,7 +649,7 @@ Stacktrace:
 <h2 data-number="3.3" class="anchored" data-anchor-id="moving-on-to-scenes"><span class="header-section-number">3.3</span> Moving On To Scenes</h2>
 <p>Returning back to where we left off before the intermission. There, we created a dictionary that maps our <code>swin1</code> object of type <code>SpectralWindow</code> onto the Lambertian surface that we also created beforehand.</p>
 <div id="f7618b98" class="cell" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>surf_dict <span class="op">=</span> <span class="fu">Dict</span>(swin1 <span class="op">=&gt;</span> surf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>surf_dict <span class="op">=</span> <span class="fu">Dict</span>(swin1 <span class="op">=&gt;</span> surf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="106">
 <pre><code>Dict{SpectralWindow{Float64}, LambertianPolynomialSurface{Float64}} with 1 entry:
   SpectralWindow: O2A =&gt; LambertianPolynomialSurface{Float64}(SpectralWindow: O…</code></pre>
@@ -657,12 +658,12 @@ Stacktrace:
 <p>We now understand how <code>surf_dict</code> can be used to access the <code>surf</code> object via <code>swin1</code>. Spectral windows in RetrievalToolbox have arrays in them, so even if we have two separate windows that happen to have the same properties, our <code>swin1</code> object has a unique hash.</p>
 <p>We still need a few objects before we can create our scene. Next is the observer. We have to define what type of observation we want to connect to this scene - this is (for now) mostly for the purposes of radiative transfer computations which produce different outputs, depending on the observer type. If we want to use measurements from a space-based instrument, we can use the <code>SatelliteObserver</code> type:</p>
 <div id="94e965cb" class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>observer <span class="op">=</span> RE.<span class="fu">SatelliteObserver</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>observer <span class="op">=</span> RE.<span class="fu">SatelliteObserver</span>(</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="fl">1.0</span>, <span class="co"># Viewing zenith</span></span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="fl">110.0</span>, <span class="co"># Viewing azimuth</span></span>
 <span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">zeros</span>(<span class="fl">3</span>), <span class="co"># Satellite velocity</span></span>
 <span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">zeros</span>(<span class="fl">3</span>) <span class="co"># Satellite position</span></span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="107">
 <pre><code>SatelliteObserver{Float64, Float64}(1.0, 110.0, [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])</code></pre>
 </div>
@@ -683,12 +684,12 @@ Warning
 </div>
 <p>The next required object is a location, and for this exercise we opt for an <code>EarthLocation</code> type, which describes the position on Earth at which the instrument points. Currently, these Earth locations are considered to be point-like, meaning that they do not have any spatial extent. This notion is consistent with the utilized 1-dimensional radiative transfer, so any location represents some idea of a mean atmospheric and surface state of the area covered by the field-of-view of the ground footprint.</p>
 <div id="2a2a7f44" class="cell" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>location <span class="op">=</span> RE.<span class="fu">EarthLocation</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>location <span class="op">=</span> RE.<span class="fu">EarthLocation</span>(</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="fl">16.3713</span>,</span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="fl">48.2081</span>,</span>
 <span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="fl">200.0</span>,</span>
 <span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    u<span class="st">"m"</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="108">
 <pre><code>EarthLocation
 Longitude: 16.3713
@@ -698,8 +699,8 @@ Altitude:  200.0 m</code></pre>
 </div>
 <p>The last separate object needed is a simple <code>DateTime</code>, which is an object type that is part of the Julia standard library to represent a time. It requires loading in a module first, however:</p>
 <div id="80cbb60c" class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Dates</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>time <span class="op">=</span> <span class="fu">DateTime</span>(<span class="st">"2025-02-19T13:00:00"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Dates</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>time <span class="op">=</span> <span class="fu">DateTime</span>(<span class="st">"2025-02-19T13:00:00"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="109">
 <pre><code>2025-02-19T13:00:00</code></pre>
 </div>
@@ -709,7 +710,7 @@ Altitude:  200.0 m</code></pre>
 <div id="d26aa10c" class="cell" data-execution_count="27">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>atm <span class="op">=</span> RE.<span class="fu">create_empty_EarthAtmosphere</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>atm <span class="op">=</span> RE.<span class="fu">create_empty_EarthAtmosphere</span>(</span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    <span class="fl">4</span>, <span class="co"># number of levels for retrieval grid</span></span>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="fl">6</span>, <span class="co"># number of levels for MET grid</span></span>
 <span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Float64</span>, <span class="co"># data type for all arrays</span></span>
@@ -742,11 +743,11 @@ Altitude:  200.0 m</code></pre>
 <span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a><span class="co"># push into our list of atmosphere objects</span></span>
-<span id="cb50-34"><a href="#cb50-34" aria-hidden="true" tabindex="-1"></a><span class="fu">push!</span>(atm.atm_elements, gas_o2);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb50-34"><a href="#cb50-34" aria-hidden="true" tabindex="-1"></a><span class="fu">push!</span>(atm.atm_elements, gas_o2);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div id="b5ddd6b5" class="cell" data-execution_count="28">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>scene <span class="op">=</span> RE.<span class="fu">EarthScene</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>scene <span class="op">=</span> RE.<span class="fu">EarthScene</span>(</span>
 <span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    atm, <span class="co"># Atmosphere</span></span>
 <span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    surf_dict, <span class="co"># Surface(s)</span></span>
 <span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    observer, <span class="co"># Observer</span></span>
@@ -754,7 +755,7 @@ Altitude:  200.0 m</code></pre>
 <span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    <span class="fl">12.3</span>, <span class="co"># Solar zenith angle</span></span>
 <span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    <span class="fl">56.7</span>, <span class="co"># Solar azimuth angle</span></span>
 <span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>    time <span class="co"># Time of measurement</span></span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="111">
 <pre><code>EarthScene</code></pre>
 </div>
@@ -826,7 +827,7 @@ classDiagram
 <p>The above schematic shows a stripped-down version of the actual objects and their fields, done mostly for clarity. The <code>EarthScene</code> object is situated at the top right of the diagram, and there are two arrows pointing inward to it. One of the paths show the atmosphere, as defined by the <code>EarthAtmosphere</code> object that contains the various retrieval and meteorological grids and profiles (see <a href="./tutorial_02.html">Tutorial 2</a>). The atmosphere may have some <code>AtmosphereElements</code>, such as a <code>GasAbsorber</code> which itself needs underlying spectrosopic data. The other arrow shows how surfaces are introduced into the scene. We must first create a surface of type <code>AbstractSurface</code>, in this case we use a <code>LambertianPolynomialSurface</code> - one that has some spectral variability through polynomial coefficients. Then we must have a spectral window to which the surface is attached to. The relationship between surface and spectral window is then determined by the dictionary which maps the spectral window to the surface.</p>
 <p>Similarly to what we have done before, the convenience of this hierarchy becomes clear when we want to refer to any of the important quantities. Some function that gets passed a <code>EarthScene</code> object <code>scene</code>, can access all these data through the scene itself. For the solar zenith angle, a simple <code>scene.solar_zenith</code> is enough, the retrieval grid, for example, is accessed by <code>scene.atm.pressure_levels</code>. One can keep chaning the dot-operator to get lower-level data. For example, if one needed to write a small function that lists all the spectroscopy file paths for all gases used in this scene, one can do the following:</p>
 <div id="3b80165e" class="cell" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">list_all_spec_fnames</span>(scene<span class="op">::</span><span class="dt">RE.EarthScene</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">list_all_spec_fnames</span>(scene<span class="op">::</span><span class="dt">RE.EarthScene</span>)</span>
 <span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop through all atmosphere elements in the atmosphere</span></span>
 <span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ele <span class="kw">in</span> scene.atmosphere.atm_elements</span>
@@ -840,14 +841,14 @@ classDiagram
 <span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
 <span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Note that `scene` was defined above in the collapsed code cell</span></span>
-<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a><span class="fu">list_all_spec_fnames</span>(scene)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a><span class="fu">list_all_spec_fnames</span>(scene)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Gas O2 is read from: data/o2_spectroscopy_demo.h5</code></pre>
 </div>
 </div>
 <p>Now the above example highlights the way one can walk down the object hiearchy, starting from the uppermost available object (in this case the scene). Observant readers will notice, however, that this particular function does not need anything beyond the list of atmosphere elements, so one could have written the function so that it accepts either the <code>scene.atmosphere</code> or even <code>scene.atmosphere.atm_elements</code> as its argument. In general, most functions inside RetrievalToolbox are set up this way such that functions will operate on the “highest” <strong>required</strong> object, which in this case would be the atmosphere. Sometimes it is simply more convenient to have a function act on an object much higher in the hierarchy, for example when it reduces typing. To illustrate this on our example here, we define our function again, but let it act on the atmosphere object:</p>
 <div id="de0c06f3" class="cell" data-execution_count="30">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">list_all_spec_fnames</span>(atmosphere<span class="op">::</span><span class="dt">RE.EarthAtmosphere</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">list_all_spec_fnames</span>(atmosphere<span class="op">::</span><span class="dt">RE.EarthAtmosphere</span>)</span>
 <span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop through all atmosphere elements in the atmosphere</span></span>
 <span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ele <span class="kw">in</span> atmosphere.atm_elements</span>
 <span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Check if this atmosphere element is a GasAbsorber type</span></span>
@@ -856,23 +857,23 @@ classDiagram
 <span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>            <span class="fu">println</span>(<span class="st">"Gas </span><span class="sc">$</span>(ele.gas_name)<span class="st"> is read from: </span><span class="sc">$</span>(ele.spectroscopy.file_name)<span class="st">"</span>)</span>
 <span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
 <span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="113">
 <pre><code>list_all_spec_fnames (generic function with 2 methods)</code></pre>
 </div>
 </div>
 <p>Now, we can create a very simply wrapper function that calls this for a scene object:</p>
 <div id="edc2ec12" class="cell" data-execution_count="31">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This now overwrites our very fist function</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list_all_spec_fnames</span>(scene<span class="op">::</span><span class="dt">EarthScene</span>) <span class="op">=</span> <span class="fu">list_all_spec_fnames</span>(scene.atmosphere)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This now overwrites our very fist function</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list_all_spec_fnames</span>(scene<span class="op">::</span><span class="dt">EarthScene</span>) <span class="op">=</span> <span class="fu">list_all_spec_fnames</span>(scene.atmosphere)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="114">
 <pre><code>list_all_spec_fnames (generic function with 2 methods)</code></pre>
 </div>
 </div>
 <p>This way, we now have two functions at our disposal. We can use this for an atmosphere object (when no scene has yet been created), and we can also use this for the scene itself to which the atmosphere is attached to. Further, the actual code that does the work is only implemented once, so we will only have to edit the code in one place to extend or improve the function, and the changes will occur for any other wrapper function!</p>
 <div id="b019ca4e" class="cell" data-execution_count="32">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list_all_spec_fnames</span>(scene.atmosphere)</span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list_all_spec_fnames</span>(scene)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list_all_spec_fnames</span>(scene.atmosphere)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list_all_spec_fnames</span>(scene)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Gas O2 is read from: data/o2_spectroscopy_demo.h5
 Gas O2 is read from: data/o2_spectroscopy_demo.h5</code></pre>
@@ -880,18 +881,18 @@ Gas O2 is read from: data/o2_spectroscopy_demo.h5</code></pre>
 </div>
 <p>To finish up, we have one last step to do before we calculate optical properties. Optical depths calculations require knowledge of at least the local gravity at the various pressure levels, so we must perform this calculation before doing any further steps:</p>
 <div id="07ca8686" class="cell" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">calculate_altitude_and_gravity!</span>(scene)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">calculate_altitude_and_gravity!</span>(scene)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The above function performs the calculation, stores the results in-place with the correct units, and then also provides those values at the mid-layer pressures. We can have a quick look at the profiles:</p>
 <div id="5fc37e55" class="cell" data-execution_count="34">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="fu">plot</span>(atm.altitude_levels <span class="op">*</span> atm.altitude_unit, <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span>atm.N_met_level),</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="fu">plot</span>(atm.altitude_levels <span class="op">*</span> atm.altitude_unit, <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span>atm.N_met_level),</span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>    lw<span class="op">=</span><span class="fl">2.0</span>, marker<span class="op">=:</span>circle, label<span class="op">=</span><span class="st">"Altitude profile"</span>, legend<span class="op">=:</span>bottomright)</span>
 <span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ylabel!</span>(<span class="st">"Met profile level #"</span>);</span>
 <span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="fu">yflip!</span>()</span>
 <span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="fu">plot</span>(atm.gravity_levels <span class="op">*</span> atm.gravity_unit, <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span>atm.N_met_level),</span>
 <span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>    lw<span class="op">=</span><span class="fl">2.0</span>, marker<span class="op">=:</span>circle, label<span class="op">=</span><span class="st">"Gravity profile"</span>, legend<span class="op">=:</span>bottomleft)</span>
 <span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a><span class="fu">yflip!</span>()</span>
-<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p1, p2, layout<span class="op">=</span>(<span class="fl">1</span>, <span class="fl">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p1, p2, layout<span class="op">=</span>(<span class="fl">1</span>, <span class="fl">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="117">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
@@ -1007,13 +1008,13 @@ Gas O2 is read from: data/o2_spectroscopy_demo.h5</code></pre>
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-EarthAtmosphereOpticalProperties
+<span class="screen-reader-only">Note</span>EarthAtmosphereOpticalProperties
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <div id="a80ec3a9" class="cell" data-execution_count="35">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="118">
-<div class="sourceCode" id="cb63"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> EarthAtmosphereOpticalProperties{T} <span class="op">&lt;:</span><span class="dt"> AbstractOpticalProperties</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> EarthAtmosphereOpticalProperties{T} <span class="op">&lt;:</span><span class="dt"> AbstractOpticalProperties</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Type to hold optical property data that contain all necessary information to produce the RT inputs for a spectral window <code>spectral_window</code>.</p>
 <ul>
 <li><code>spectral_window::AbstractSpectralWindow</code>: Spectral window for which to calculate optical properties</li>
@@ -1050,7 +1051,7 @@ EarthAtmosphereOpticalProperties
 </ul>
 <p>We could instantiate a new <code>EarthAtmosphereOpticalProperties</code> object in the usual way by creating all required quantities and then call <code>EarthAtmosphereOpticalProperties(...)</code> with a lengthy list of arguments. However, a slightly more elegant way exists via a convenience function that creates the object with the correct shapes and dictonary keys:</p>
 <div id="e6b789dc" class="cell" data-execution_count="36">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First we have to create a spectral window that fits into the range of</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First we have to create a spectral window that fits into the range of</span></span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the demo spectroscopy data we have. The example we made before, unfortuantely</span></span>
 <span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="co"># does not work here.</span></span>
 <span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1077,11 +1078,11 @@ EarthAtmosphereOpticalProperties
 <span id="cb64-25"><a href="#cb64-25" aria-hidden="true" tabindex="-1"></a>    RE.<span class="fu">RetrievalStateVector</span>([]), <span class="co"># We can leave this empty for now</span></span>
 <span id="cb64-26"><a href="#cb64-26" aria-hidden="true" tabindex="-1"></a>    RE.ScalarRadiance, <span class="co"># The type of radiance used - either a RE.ScalarRadiance or RE.VectorRadiance</span></span>
 <span id="cb64-27"><a href="#cb64-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Float64</span> <span class="co"># The number type for the arrays</span></span>
-<span id="cb64-28"><a href="#cb64-28" aria-hidden="true" tabindex="-1"></a>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb64-28"><a href="#cb64-28" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The <code>opt</code> object at this point is iniitialized with mostly zeros, so there are no meaningful values present in the various containers. Calculations are performed in-place by calling the <code>calculate_earth_optical_properties!</code> function with <code>opt</code> as the leading argument, the scene we want to calculate the optical properties for - and it also needs a state vector, which for now we keep empty (the state vector is needed to make the function aware of which derivatives should be computed, if any).</p>
 <div id="fed887cd" class="cell" data-execution_count="37">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">calculate_earth_optical_properties!</span>(opt, scene, RE.<span class="fu">RetrievalStateVector</span>([]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>RE.<span class="fu">calculate_earth_optical_properties!</span>(opt, scene, RE.<span class="fu">RetrievalStateVector</span>([]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1109,13 +1110,13 @@ Tip
 </ol>
 <p>We can visualize the layer optical depths as a function of wavelength in the figure below.</p>
 <div id="af256dcd" class="cell" data-execution_count="38">
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">plot</span>()</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">plot</span>()</span>
 <span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> l <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>atm.N_layer</span>
 <span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(p, swin.wavelength_grid, opt.gas_tau[gas_o2][<span class="op">:</span>,l], label<span class="op">=</span><span class="st">"Layer </span><span class="sc">$</span>(l)<span class="st">"</span>)</span>
 <span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
 <span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ylabel!</span>(<span class="st">"</span><span class="sc">$</span>(gas_o2.gas_name)<span class="st"> layer optical depth"</span>)</span>
 <span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="fu">xlabel!</span>(<span class="st">"Wavelength [</span><span class="sc">$</span>(swin.wavelength_unit)<span class="st">]"</span>)</span>
-<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
@@ -1179,7 +1180,7 @@ I^\mathrm{TOA}_\lambda = \exp(\sum_{l=1}^{N_\mathrm{lay}} -\frac{\tau_{\lambda,l
 <p>with <span class="math inline">\tau_l</span> being the optical depth for layer <span class="math inline">l</span>, <span class="math inline">\theta_0</span> being the solar zenith angle (we assume 0 for the viewing zenith) and <span class="math inline">\rho</span> being the Lambertian surface albedo. The wavelength index <span class="math inline">\lambda</span> signifies a spectral dependence.</p>
 <p>Inside the <code>EarthAtmosphereOpticalProperties</code> object, the per-gas layer-resolved optical depths are found in the dictionary <code>.gas_tau[GAS_OBJECT]</code>. however, it is more convenient to get the <strong>total</strong> layer-resolved optical depths, which can be accessed by <code>.total_tau</code>, which containts the extinction profiles of all constituents in the model atmosphere. The code snipped below shows how the Beer-Lambert absorption-only model would be implemented, and is not very different from what the interal radiative solver does.</p>
 <div id="a53b8ef5" class="cell" data-execution_count="39">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Placeholder for the result</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Placeholder for the result</span></span>
 <span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>I_toa <span class="op">=</span> <span class="fu">zeros</span>(swin.N_hires)</span>
 <span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Spectral loop</span></span>
@@ -1195,7 +1196,7 @@ I^\mathrm{TOA}_\lambda = \exp(\sum_{l=1}^{N_\mathrm{lay}} -\frac{\tau_{\lambda,l
 <span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="cn">nothing</span>,</span>
 <span id="cb67-15"><a href="#cb67-15" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb67-16"><a href="#cb67-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ylabel!</span>(<span class="st">"Sun-normalized TOA"</span>)</span>
-<span id="cb67-17"><a href="#cb67-17" aria-hidden="true" tabindex="-1"></a><span class="fu">xlabel!</span>(<span class="st">"Wavelength [</span><span class="sc">$</span>(swin.wavelength_unit)<span class="st">]"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb67-17"><a href="#cb67-17" aria-hidden="true" tabindex="-1"></a><span class="fu">xlabel!</span>(<span class="st">"Wavelength [</span><span class="sc">$</span>(swin.wavelength_unit)<span class="st">]"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="122">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
@@ -1303,13 +1304,14 @@ I^\mathrm{TOA}_\lambda = \exp(\sum_{l=1}^{N_\mathrm{lay}} -\frac{\tau_{\lambda,l
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

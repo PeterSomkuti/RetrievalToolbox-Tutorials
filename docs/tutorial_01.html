@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -67,14 +67,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9aba71ceb801e9d98f5b9f4027c933d2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ed7edb17aaa2816d0dc2299deb165c61.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -134,7 +135,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -252,7 +253,7 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Goal of this tutorial
+<span class="screen-reader-only">Tip</span>Goal of this tutorial
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -279,17 +280,17 @@ Note
 </div>
 </div>
 <div id="3735fde2" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Some set-up for this document</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Some set-up for this document</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">RetrievalToolbox;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> RE <span class="op">=</span> RetrievalToolbox;</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots;</span> default(fontfamily="Helvetica", <span class="bu">titlefontsize=10</span>, <span class="bu">labelfontsize=10)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Unitful;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Unitful;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="ab2804d2" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the ABSCO table</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the ABSCO table</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>absco_o2 <span class="op">=</span> RE.<span class="fu">load_ABSCO_spectroscopy</span>(</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">joinpath</span>(<span class="st">"data"</span>, <span class="st">"o2_spectroscopy_demo.h5"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>4D ABSCO from file: data/o2_spectroscopy_demo.h5
 Scale factor: 1.0
@@ -315,7 +316,7 @@ Note
 </div>
 <p>With the object available in memory, we can now easily interrogate some of the contents. For example, if we would like see what the data points along the broadener dimension are, we can type the following.</p>
 <div id="860e58eb" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>absco_o2.broadener_vmrs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>absco_o2.broadener_vmrs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>3-element Vector{Float32}:
  0.0
@@ -336,13 +337,13 @@ Note
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-ABSCOSpectroscopy4D
+<span class="screen-reader-only">Note</span>ABSCOSpectroscopy4D
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <div id="1fc4fa86" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
-<div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> ABSCOSpectroscopy4D{T1<span class="op">&lt;:</span><span class="dt">Real</span>, T2<span class="op">&lt;:</span><span class="dt">Real</span>, T3<span class="op">&lt;:</span><span class="dt">Real</span>, T4<span class="op">&lt;:</span><span class="dt">Real</span>, A<span class="op">&lt;:</span><span class="dt">AbstractArray{T4&lt;:Real, 4}</span>} <span class="op">&lt;:</span><span class="dt"> ABSCOSpectroscopy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> ABSCOSpectroscopy4D{T1<span class="op">&lt;:</span><span class="dt">Real</span>, T2<span class="op">&lt;:</span><span class="dt">Real</span>, T3<span class="op">&lt;:</span><span class="dt">Real</span>, T4<span class="op">&lt;:</span><span class="dt">Real</span>, A<span class="op">&lt;:</span><span class="dt">AbstractArray{T4&lt;:Real, 4}</span>} <span class="op">&lt;:</span><span class="dt"> ABSCOSpectroscopy</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Type to hold a full 4D ABSCO spectroscopy table, with absorption coefficients as a function of a broadener gas (H2O usually), pressure, temperature, and wavelength.</p>
 <ul>
 <li><code>file_name::String</code>: Filename/path of the underlying ABSCO data</li>
@@ -367,20 +368,20 @@ ABSCOSpectroscopy4D
 <p>The first item, <code>file_name</code> simply refers to the underlying ABSCO data path, mostly for bookkeeping so that it can always be known wich file was used to construct a particular ABSCO object. Its type is simply <code>String</code>. Similarly, a string-type <code>gas_name</code> field is required, it can be used to note the name of the gas whose cross section data this object is describing.</p>
 <p><code>scale_factor</code> is an overall factor that is applied to the cross section data <strong>during read-in</strong>, such that the values stored in the ABSCO object are a multiple of the original data. Note that this value is mostly informative, none of the calculation routines later on use this value. With the convienience function, a desired scale factor can be specified. For example, we could have written:</p>
 <div id="da9f3564" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>absco_o2_scaled <span class="op">=</span> RE.<span class="fu">load_ABSCO_spectroscopy</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>absco_o2_scaled <span class="op">=</span> RE.<span class="fu">load_ABSCO_spectroscopy</span>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">joinpath</span>(<span class="st">"data"</span>, <span class="st">"o2_spectroscopy_demo.h5"</span>),</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    scale_factor<span class="op">=</span><span class="fl">1.01</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    );</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    );</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>And we can compared the un-scaled and the scaled data objects:</p>
 <div id="5729e0e9" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Unscaled: </span><span class="sc">$</span>(absco_o2.cross_section[<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>])<span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Unscaled: </span><span class="sc">$</span>(absco_o2.cross_section[<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>])<span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unscaled: 4.179243e-28</code></pre>
 </div>
 </div>
 <div id="8ff30b52" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Scaled: </span><span class="sc">$</span>(absco_o2_scaled.cross_section[<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>])<span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"Scaled: </span><span class="sc">$</span>(absco_o2_scaled.cross_section[<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>])<span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Scaled: 4.221035e-28</code></pre>
 </div>
@@ -403,12 +404,12 @@ Tip
 </div>
 <p>At first glance, array slicing is very similar to that of Numpy Python library, of Fortran array operations. If some array <code>A</code> is declared, then using the colon <code>:</code> allows to <strong>slice</strong> through one or more axes. To illustrate, we can define a matrix <code>A</code>, which we set to have four rows and 3 columns:</p>
 <div id="2985d886" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> [</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> [</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fl">1</span>. <span class="fl">2</span>. <span class="fl">3</span>.;</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fl">4</span>. <span class="fl">5</span>. <span class="fl">6</span>.;</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fl">7</span>. <span class="fl">8</span>. <span class="fl">9</span>.;</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fl">10</span>. <span class="fl">11</span>. <span class="fl">12</span>.;</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>4×3 Matrix{Float64}:
   1.0   2.0   3.0
@@ -419,7 +420,7 @@ Tip
 </div>
 <p>And we can see that Julia produces the expected object - note that <code>Matrix</code> is a Julia short-hand type for an Array with 2 dimenions. Accessing all elements of the second column, for example is done like this:</p>
 <div id="cb2cbca7" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>A[<span class="op">:</span>,<span class="fl">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>A[<span class="op">:</span>,<span class="fl">2</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>4-element Vector{Float64}:
   2.0
@@ -430,7 +431,7 @@ Tip
 </div>
 <p>Or getting all elements of the third row is done like so, with the expected result:</p>
 <div id="1231e815" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>A[<span class="fl">3</span>,<span class="op">:</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>A[<span class="fl">3</span>,<span class="op">:</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>3-element Vector{Float64}:
  7.0
@@ -440,7 +441,7 @@ Tip
 </div>
 <p>Bounds-checking is enabled by default, so attempting to access an out-of-bounds index usually results in an appropriate error:</p>
 <div id="7e058f44" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>A[<span class="fl">5</span>,<span class="op">:</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>A[<span class="fl">5</span>,<span class="op">:</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <div class="ansi-escaped-output">
 <pre>BoundsError: attempt to access 4×3 Matrix{Float64} at index [5, 1:3]
@@ -474,7 +475,7 @@ Tip
 </div>
 <p>Moving on, we can peform more advanced slicing in both dimensions, such as taking every second row from the last two columns of <code>A</code>:</p>
 <div id="79762768" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>A[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="kw">end</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>A[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="kw">end</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">3</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>2×2 Matrix{Float64}:
  2.0  3.0
@@ -484,8 +485,8 @@ Tip
 <p>Above we used the slicing notation <code>start:interval:stop</code>, and <code>end</code> can conveniently be used in Julia to access the last element of some list, vector or array.</p>
 <p>A <strong>performance-crucial</strong> aspect of array slicing is the fact that accessing arrays in this particular way generally <strong>creates a copy</strong> that is now a new object. This is a tricky concept, because depending on the statement, the slicing operation behaves in the expected manner. For example, if we want to slice the first row of array <code>A</code>, set those elements to some value, and inspect <code>A</code> again, we see that <code>A</code> has indeed changed.</p>
 <div id="8c91ef2d" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>A[<span class="fl">1</span>,<span class="op">:</span>] <span class="op">.=</span> <span class="op">-</span><span class="fl">5</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>A</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>A[<span class="fl">1</span>,<span class="op">:</span>] <span class="op">.=</span> <span class="op">-</span><span class="fl">5</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>A</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>4×3 Matrix{Float64}:
  -5.0  -5.0  -5.0
@@ -496,10 +497,10 @@ Tip
 </div>
 <p>If the slicing operation appears on the left-hand side of an equation, Julia will treat this as instruction to set those elements of A to the values of the right-hand side. This is not true when the slicing operation appears on the right-hand side of an expression like the one below:</p>
 <div id="ce4fc652" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> A[<span class="fl">1</span>,<span class="op">:</span>] <span class="co"># A new copy is created</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> A[<span class="fl">1</span>,<span class="op">:</span>] <span class="co"># A new copy is created</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>B[<span class="op">:</span>] <span class="op">.=</span> <span class="fl">0</span> <span class="co"># We set all elements of B to 0</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"B = "</span>, B) <span class="co"># B should be zero</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"A[1,:] = "</span>, A[<span class="fl">1</span>,<span class="op">:</span>]) <span class="co"># The first row of A should still be -5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"A[1,:] = "</span>, A[<span class="fl">1</span>,<span class="op">:</span>]) <span class="co"># The first row of A should still be -5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>B = [0.0, 0.0, 0.0]
 A[1,:] = [-5.0, -5.0, -5.0]</code></pre>
@@ -508,10 +509,10 @@ A[1,:] = [-5.0, -5.0, -5.0]</code></pre>
 <p>In the first line, <code>A[1,:]</code> indeed creates a new copy of the sub-array (a vector in this case), and is then assigned to the variable with name <code>B</code>. Upon changing <code>B</code>, <code>A</code> remains unaffected.</p>
 <p>Often, we do not necessarily want to create new copy, but have a convenient way of accessing a sub-section of an array via a new symbol. Julia provides the <code>@views</code> macro to do just that. The Julia documentation provides more details, but for now it is enough to know that adding <code>@views</code> to an expression (such as on the right-hand side of an assigment via <code>=</code>) instructs Julia to use views of <strong>explicit</strong> array operations, rather than producing new copies. Related to the example above, we can simply modify the first line and obtain the result we initially wanted.</p>
 <div id="0a559208" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> <span class="pp">@views</span> A[<span class="fl">1</span>,<span class="op">:</span>] <span class="co"># B is a view upon the first row of A</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> <span class="pp">@views</span> A[<span class="fl">1</span>,<span class="op">:</span>] <span class="co"># B is a view upon the first row of A</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>B[<span class="op">:</span>] <span class="op">.=</span> <span class="fl">0</span> <span class="co"># Set B to zero, and thus the first row of A also</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"B = "</span>, B) <span class="co"># B is zero</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"A[1,:] = "</span>, A[<span class="fl">1</span>,<span class="op">:</span>]) <span class="co"># The first row of A is now also zero</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"A[1,:] = "</span>, A[<span class="fl">1</span>,<span class="op">:</span>]) <span class="co"># The first row of A is now also zero</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>B = [0.0, 0.0, 0.0]
 A[1,:] = [0.0, 0.0, 0.0]</code></pre>
@@ -551,7 +552,7 @@ Note
 <p>Finally, the absorption cross section data is easily accessed via <code>absco_o2.cross_section</code>, and should be indexed in the order that is stated in the in-line comment of the type. ABSCO tables, as provided by NASA JPL, are tabulated in a non-uniform manner, so we will first explore the data a little bit.</p>
 <p>The wavelength and broadener VMR axes are straightforward. As we have seen before, this particular data table was pre-computed for three different H2O VMRs:</p>
 <div id="8f6a6ce8" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>absco_o2.broadener_vmrs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>absco_o2.broadener_vmrs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="17">
 <pre><code>3-element Vector{Float32}:
  0.0
@@ -561,27 +562,27 @@ Note
 </div>
 <p>So accessing all pre-computed cross sections for all available wavelengths, temperatures and pressures, for a fixed water vapor VMR of 0.03 can be done via (lengthy output is suppressed here via the semi-colon at the end of the expression):</p>
 <div id="e374ec9b" class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>idx_h2o <span class="op">=</span> <span class="fl">2</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>absco_o2.cross_section[<span class="op">:</span>,idx_h2o,<span class="op">:</span>,<span class="op">:</span>];</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>idx_h2o <span class="op">=</span> <span class="fl">2</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>absco_o2.cross_section[<span class="op">:</span>,idx_h2o,<span class="op">:</span>,<span class="op">:</span>];</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The pressure dimension corresponds to the last index. For the sake of simplicity, we can check the size of the pressure dimension via</p>
 <div id="6cade9dd" class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">size</span>(absco_o2.pressures)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">size</span>(absco_o2.pressures)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>(64,)</code></pre>
 </div>
 </div>
 <p>and then simply opt to pick out the 60th element, which corresponds to the following pressure value.</p>
 <div id="88cc888a" class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>idx_p <span class="op">=</span> <span class="fl">60</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>absco_o2.pressures[idx_p]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>idx_p <span class="op">=</span> <span class="fl">60</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>absco_o2.pressures[idx_p]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
 <pre><code>97267.98f0</code></pre>
 </div>
 </div>
 <p>Note that the ABSCO object also carries a <code>pressures_unit</code> field, which tells us in which units the corresponding pressure values are stored in:</p>
 <div id="11fd130b" class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>absco_o2.pressures_unit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>absco_o2.pressures_unit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
 <pre><code>Pa</code></pre>
 </div>
@@ -601,7 +602,7 @@ Note
 </div>
 <p>Just like before, we could inspect all cross sections for a broadener VMR of 0.03 that were also calculated for the specific pressure value shown above:</p>
 <div id="39fb12ee" class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>absco_o2.cross_section[<span class="op">:</span>,idx_h2o,<span class="op">:</span>,idx_p]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>absco_o2.cross_section[<span class="op">:</span>,idx_h2o,<span class="op">:</span>,idx_p]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="22">
 <pre><code>600×17 Matrix{Float32}:
  6.04593f-26  6.0069f-26   5.95135f-26  …  4.68517f-26  4.58305f-26
@@ -635,7 +636,7 @@ Note
 <p>The temperature axis handles differently than the other three axes. Since these gas absorption cross sections were computed for applications in Earth’s atmosphere, there is an innate relationship between temperature and pressure. In order to make the storage of these cross sections more efficient, the temperature axis was chosen to be two-dimensional: for each pressure grid point, the temperature axis is different.</p>
 <p>Below, we illustrate this two-dimensional temperature axis (<a href="#fig-temperature-dimension" class="quarto-xref">Figure&nbsp;1</a>). The next piece of code plots a line connecting all temperature grid points for each distinct pressure grid point. The first vertical line near 1.0 Pa, colored in blue, spans a temperature range between ~115 K through ~280 K. The next temperature range, valid for the pressure grid point of ~45 Pa spans a different range between ~175 K through ~335 K. The pressure grid itself is not uniform, and absorption cross sections are sampled much more densely in pressure space when entering the tropospheric pressure regime of a few thousand Pascals.</p>
 <div id="cell-fig-temperature-dimension" class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    xticks<span class="op">=</span>[<span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span>, <span class="fl">10000</span>, <span class="fl">100000</span>],</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">"Pressure [Pa]"</span>,</span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="st">"Temperature [K]"</span>,</span>
@@ -669,7 +670,7 @@ Note
 <span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=:</span>dash,</span>
 <span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.25</span>,</span>
 <span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="cn">nothing</span></span>
-<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="fig-temperature-dimension" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="23">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-temperature-dimension-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1941,14 +1942,14 @@ Figure&nbsp;1: ABSCO temperature axes
 </div>
 <p>For example, if we want to obtain the cross sections for a given point in the atmosphere, we must first pick our pressure grid point. For the sake of simplicity, we can just assume that this pressure corresponds exactly to the third pressure grid point at</p>
 <div id="7862f19b" class="cell" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"p = </span><span class="sc">$</span>(absco_o2.pressures[<span class="fl">3</span>])<span class="st"> Pa"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="st">"p = </span><span class="sc">$</span>(absco_o2.pressures[<span class="fl">3</span>])<span class="st"> Pa"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>p = 252.48628 Pa</code></pre>
 </div>
 </div>
 <p>This means we have to look at the third vertical line from the left in <a href="#fig-temperature-dimension" class="quarto-xref">Figure&nbsp;1</a> (blue) and move to the grid point on that line which corresponds to the temperature of our chosen point in the atmosphere. The temperatures corresponding to that particular pressure grid point are easily found via typing</p>
 <div id="4ad837ea" class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>absco_o2.temperatures[<span class="op">:</span>, <span class="fl">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>absco_o2.temperatures[<span class="op">:</span>, <span class="fl">3</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
 <pre><code>17-element Vector{Float32}:
  171.4374
@@ -1972,19 +1973,19 @@ Figure&nbsp;1: ABSCO temperature axes
 </div>
 <p>Again, assuming a convenient case in which the temperature we are looking for falls exactly onto a grid point, for example the 10th temperature value, we can thus obtain all cross section values belonging to this (p,T)-pair like so:</p>
 <div id="7c42d0f8" class="cell" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>absco_o2.cross_section[<span class="op">:</span>, <span class="op">:</span>, <span class="fl">10</span>, <span class="fl">3</span>];</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Output surpressed here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>absco_o2.cross_section[<span class="op">:</span>, <span class="op">:</span>, <span class="fl">10</span>, <span class="fl">3</span>];</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Output surpressed here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Here it is important to realize that this 2-dimensional pressure grid has consequences for traversing the ABSCO table when moving to a neighbouring point. For example, we have selected now <code>10</code> for the temperature index, and <code>3</code> for the pressure index. If we move to the next available pressure grid point at index <code>4</code>, <strong>the temperatue value implicitly changes</strong>! This can be easily verified by comparing the two temperatue values at</p>
 <div id="2ee50666" class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>absco_o2.temperatures[<span class="fl">10</span>, <span class="fl">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>absco_o2.temperatures[<span class="fl">10</span>, <span class="fl">3</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="27">
 <pre><code>261.43738f0</code></pre>
 </div>
 </div>
 <p>and</p>
 <div id="7945f770" class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>absco_o2.temperatures[<span class="fl">10</span>, <span class="fl">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>absco_o2.temperatures[<span class="fl">10</span>, <span class="fl">4</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="28">
 <pre><code>240.6375f0</code></pre>
 </div>
@@ -1993,14 +1994,14 @@ Figure&nbsp;1: ABSCO temperature axes
 <p>Lastly, we can look at the spectral dependence of the cross sections. In addition to the temperature-pressure pair we already picked before <code>[10,3]</code> we select the first value in the water vapor broadener axis (equal to a H2O VMR of <code>0.0</code>). The only remaining axis is the spectral axis equal to the first dimension.</p>
 <p>Since this is a small subset of the full ABSCO table originally devised to cover the full oxygen A-band, we only see two major oxygen absorption lines.</p>
 <div id="cell-fig-spectral-dimension-1" class="cell" data-execution_count="28">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    absco_o2.λ,</span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    absco_o2.cross_section[<span class="op">:</span>,<span class="fl">1</span>,<span class="fl">10</span>,<span class="fl">4</span>],</span>
 <span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="cn">nothing</span>,</span>
 <span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">"Wavelength [µm]"</span>,</span>
 <span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="st">"Cross section [cm²/molecule]"</span>,</span>
 <span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>    yticks<span class="op">=</span>[<span class="fl">0</span>, <span class="fl">1e-22</span>, <span class="fl">2.0e-22</span>]</span>
-<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="fig-spectral-dimension-1" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="29">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-spectral-dimension-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -2098,7 +2099,7 @@ Figure&nbsp;2: ABSCO spectral axis
 </div>
 <p>We can further zoom into towards the first of the two major absorption lines, and sample the cross section table at different pressure grid points (and implicitly therefore also different temperature grid point values). We see in <a href="#fig-spectral-dimension-2" class="quarto-xref">Figure&nbsp;3</a> that the cross section for this absorption line becomes shallower but also wider with increasing pressure due to Doppler broadening.</p>
 <div id="cell-fig-spectral-dimension-2" class="cell" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>()</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>()</span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> [<span class="fl">4</span>, <span class="fl">20</span>, <span class="fl">50</span>]</span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot!</span>(</span>
 <span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>        absco_o2.λ,</span>
@@ -2114,7 +2115,7 @@ Figure&nbsp;2: ABSCO spectral axis
 <span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
 <span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a><span class="fu">xlims!</span>(<span class="fl">0.76461</span>, <span class="fl">0.76465</span>)</span>
 <span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Needed to display the resulting plot since we used `plot!` inside a loop</span></span>
-<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="fu">current</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="fu">current</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="fig-spectral-dimension-2" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="30">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-spectral-dimension-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -2453,7 +2454,7 @@ Figure&nbsp;3: ABSCO spectral axis
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-GasAbsorber
+<span class="screen-reader-only">Note</span>GasAbsorber
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -2485,19 +2486,19 @@ Figure&nbsp;4: Relationship between <code>GasAbsorber</code> and the underlying 
 <p>Conceptually, the idea behind this formulation is simple: in the end we want to be able to describe a gaseous absorber in our model atmosphere, that gas must have a name and a volume mixing ratio profile associated with it. But in order to compute spectra, we must also attach some spectroscopic information which will be called up when the optical properties are computed.</p>
 <p>It is much more straightforward to instantiate a new object of type <code>GasAbsorber</code>, so a convience function is not provided. We can create the object manually, so to speak. In Julia, a new object of a user-type, a <strong>parametric type</strong>, is simply created by calling the new type with appropriate parameters corresponding to the field types, in correct order. For example, we can think of a new type <code>MyType</code> that only contains two numbers, such as</p>
 <div id="8c6c69b0" class="cell" data-execution_count="31">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> MyType</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> MyType</span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    a<span class="op">::</span><span class="dt">Float64 </span><span class="co"># A 64-bit float number</span></span>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    b<span class="op">::</span><span class="dt">Int </span><span class="co"># A 64-bit integer number</span></span>
 <span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
 <span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>new_obj <span class="op">=</span> <span class="fu">MyType</span>(<span class="fl">5.0</span>, <span class="fl">10</span>) <span class="co"># Create the new type with a=5.0 and b=10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>new_obj <span class="op">=</span> <span class="fu">MyType</span>(<span class="fl">5.0</span>, <span class="fl">10</span>) <span class="co"># Create the new type with a=5.0 and b=10</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="32">
 <pre><code>MyType(5.0, 10)</code></pre>
 </div>
 </div>
 <p>The instantiation will fail if the types of the parameters are not correct, or in a wrong order:</p>
 <div id="8013113b" class="cell" data-execution_count="32">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>new_obj <span class="op">=</span> <span class="fu">MyType</span>([<span class="fl">10</span>,<span class="fl">9</span>,<span class="fl">8</span>], <span class="fl">5.0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>new_obj <span class="op">=</span> <span class="fu">MyType</span>([<span class="fl">10</span>,<span class="fl">9</span>,<span class="fl">8</span>], <span class="fl">5.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <div class="ansi-escaped-output">
 <pre>MethodError: Cannot `convert` an object of type <span class="ansi-bright-green-fg">Vector{Int64}</span> to an object of type <span class="ansi-bright-red-fg">Float64</span>
@@ -2524,14 +2525,14 @@ Stacktrace:
 <p>In the example above, the instantiation of a new object fails because <code>MyType</code> requires the first field <code>a</code> to be of type <code>Float64</code>, and field <code>b</code> of type <code>Int</code> (short-hand for 64-bit integer), but we passed a vector of 64-bit integers (<code>Vector{Int}</code>) which cannot be implicitly converted to the expected types.</p>
 <p>Note that implicit conversions happen, when possible! Doing the following, for example, does not raise an error, due to the fact that <code>10</code> can be converted to a <code>Float64</code>, and <code>5.0</code> can be converted into an <code>Int</code> without meaningful loss of precision:</p>
 <div id="77665881" class="cell" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>new_obj <span class="op">=</span> <span class="fu">MyType</span>(<span class="fl">10</span>, <span class="fl">5.0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>new_obj <span class="op">=</span> <span class="fu">MyType</span>(<span class="fl">10</span>, <span class="fl">5.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="34">
 <pre><code>MyType(10.0, 5)</code></pre>
 </div>
 </div>
 <p>Of course trying to instantiate this new object with the second parameter being <code>5.1</code> instead of <code>5.0</code> now raises an error because <code>5.1</code> cannot be converted into an integer.</p>
 <div id="3d7c0fcd" class="cell" data-execution_count="34">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>new_obj <span class="op">=</span> <span class="fu">MyType</span>(<span class="fl">10</span>, <span class="fl">5.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>new_obj <span class="op">=</span> <span class="fu">MyType</span>(<span class="fl">10</span>, <span class="fl">5.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <div class="ansi-escaped-output">
 <pre>InexactError: Int64(5.1)
@@ -2550,14 +2551,14 @@ Stacktrace:
 </div>
 <p>Moving on with our gas object, we first have to give it a name - <code>"O2"</code> seems like a sensible choice as it compactly describes the molecular oxygen gas for which we happen to posses the spectroscopic tables for.</p>
 <div id="01e9bce3" class="cell" data-execution_count="35">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>gas_name <span class="op">=</span> <span class="st">"O2"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>gas_name <span class="op">=</span> <span class="st">"O2"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="36">
 <pre><code>"O2"</code></pre>
 </div>
 </div>
 <p>Moving on, we must also generate a vector that represents the volume mixing ratio profile on pressure levels. Note that in a full algorithm built with RetrievalToolbox, the profile must of course be of the same length as the retrieval pressure grid. In abscence of those other parts, we can simple create a 4-level vector with repeated entries like so:</p>
 <div id="fcb851c6" class="cell" data-execution_count="36">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>vmr_levels <span class="op">=</span> <span class="fu">repeat</span>([<span class="fl">0.2095</span>], <span class="fl">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>vmr_levels <span class="op">=</span> <span class="fu">repeat</span>([<span class="fl">0.2095</span>], <span class="fl">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="37">
 <pre><code>4-element Vector{Float64}:
  0.2095
@@ -2568,12 +2569,12 @@ Stacktrace:
 </div>
 <p>Now we understand <code>0.2095</code> to be the volume mixing ratio in units of <code>1</code>, but we must explicitly specify that to the gas object. Again, we must specify the units here, which is best done by specifying <code>Unitful.NoUnits</code>, which is equal to having a quantity of unit <code>1</code>. Note that <code>GasAbsorber</code> <strong>requires</strong> a compatible dimensionless unit descriptor, so omitting the unit information is not allowed.</p>
 <div id="866da813" class="cell" data-execution_count="37">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>gas_o2 <span class="op">=</span> RE.<span class="fu">GasAbsorber</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>gas_o2 <span class="op">=</span> RE.<span class="fu">GasAbsorber</span>(</span>
 <span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>    gas_name,</span>
 <span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>    absco_o2,</span>
 <span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>    vmr_levels,</span>
 <span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>    Unitful.NoUnits</span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="38">
 <pre><code>Gas absorber: O2
 Associated spectroscopy: data/o2_spectroscopy_demo.h5</code></pre>
@@ -2581,14 +2582,14 @@ Associated spectroscopy: data/o2_spectroscopy_demo.h5</code></pre>
 </div>
 <p>We have now successfully instantated a new <code>GasAbsorber</code> object, and called it <code>gas_o2</code>. And as before, we can access the associated fields of our object via the dot-syntax, so we can recall the name of the gas by typing</p>
 <div id="7c839950" class="cell" data-execution_count="38">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>gas_o2.gas_name</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>gas_o2.gas_name</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="39">
 <pre><code>"O2"</code></pre>
 </div>
 </div>
 <p>We supplied the spectroscopy object of the first section of this tutorial, named <code>absco_o2</code> to this new <code>GasAbsorber</code> object named <code>gas_o2</code>. And we can freely access it in the expected manner. Dot-syntax can be chained, so we can display the pressure grid points of the spectroscopy object via accessing it from the gas object.</p>
 <div id="12cf3ee0" class="cell" data-execution_count="39">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>gas_o2.spectroscopy.pressures</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>gas_o2.spectroscopy.pressures</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="40">
 <pre><code>64-element Vector{Float32}:
       1.0609014
@@ -2635,7 +2636,7 @@ Important
 <p>The above reminder is of immense importance when working with RetrievalToolbox! To elaborate on the point, let us remind ourselves that we first created several objects, such as the vector <code>vmr_levels</code>, or before that <code>absco_o2</code>. When we called <code>GasAbsorber(..)</code> to instantiate a new object of the <code>GasAbsorber</code> type, those objects remain in memory, and no new copies were made. What this means, in turn, is that when modifying those objects, they will appear to be modified when accessing them via <code>gas_o2</code>.</p>
 <p>For example, the gas VMR profile was initially created to have repeated values of <code>0.2095</code>. At this point, we can confirm that be displaying their values:</p>
 <div id="991d1b1e" class="cell" data-execution_count="40">
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>vmr_levels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>vmr_levels</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="41">
 <pre><code>4-element Vector{Float64}:
  0.2095
@@ -2646,14 +2647,14 @@ Important
 </div>
 <p>Now, the entries of this vector are not protected in any way, so we are free to simply modify them.</p>
 <div id="8c048abf" class="cell" data-execution_count="41">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>vmr_levels[<span class="fl">2</span>] <span class="op">=</span> <span class="fl">0.15</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>vmr_levels[<span class="fl">2</span>] <span class="op">=</span> <span class="fl">0.15</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="42">
 <pre><code>0.15</code></pre>
 </div>
 </div>
 <p>Since the <code>gas_o2</code> object stores only a reference to the <code>vmr_levels</code> vector, we will see that when we try to display the gas VMR levels of <code>gas_o2</code>, the values have changed!</p>
 <div id="ef1998df" class="cell" data-execution_count="42">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>gas_o2.vmr_levels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>gas_o2.vmr_levels</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="43">
 <pre><code>4-element Vector{Float64}:
  0.2095
@@ -2664,7 +2665,7 @@ Important
 </div>
 <p>In fact, we can ask Julia whether the two objects are the same with the <code>===</code> operator. This operator confirms that <code>vmr_levels</code>, created beforehand, and <code>gas_o2.vmr_levels</code> are, as far as Julia is concerned, indistinguishable from each other!</p>
 <div id="2da8a3dd" class="cell" data-execution_count="43">
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>vmr_levels <span class="op">===</span> gas_o2.vmr_levels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>vmr_levels <span class="op">===</span> gas_o2.vmr_levels</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="44">
 <pre><code>true</code></pre>
 </div>
@@ -2672,7 +2673,7 @@ Important
 <p>This is fully expected behavior and also rather convenient in terms of performance. Spectroscopy tables, for examples, can be rather big and occupy a significant amount of space in memory. Once loaded, however, instantiating a new <code>GasAbsorber</code> object using an already existing <code>ABSCOSpectroscopy4D</code> object does not use significant memory.</p>
 <p>We can actually see this by observing how much memory Julia has to allocate when producing a new <code>GasAbsorber</code> object:</p>
 <div id="25563cbb" class="cell" data-execution_count="44">
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> RE.<span class="fu">GasAbsorber</span>(gas_name, absco_o2, vmr_levels, Unitful.NoUnits);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> RE.<span class="fu">GasAbsorber</span>(gas_name, absco_o2, vmr_levels, Unitful.NoUnits);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  0.000004 seconds (2 allocations: 160 bytes)</code></pre>
 </div>
@@ -2740,13 +2741,14 @@ Important
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

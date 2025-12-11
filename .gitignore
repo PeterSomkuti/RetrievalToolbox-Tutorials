@@ -17,3 +17,5 @@ figures/*.table
 
 /.quarto/
 JuliaMono-Medium.ttf
+
+**/*.quarto_ipynb
