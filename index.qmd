@@ -42,12 +42,12 @@ There is a small number of extra files that are required to follow some of the s
 ```bash
 mkdir data
 cd data
-wget https://github.com/PeterSomkuti/RetrievalToolbox-Tutorials/blob/main/data/o2_spectroscopy_demo.h5
+wget https://github.com/RetrievalToolbox/RetrievalToolbox-Tutorials/blob/main/data/o2_spectroscopy_demo.h5
 ```
 
 Alternatively, users can simply clone the full repository some where and link the `data` directory within (still inside e.g. `~/my_tutorials`):
 ```bash
-git clone --depth 1 https://github.com/PeterSomkuti/RetrievalToolbox-Tutorials
+git clone --depth 1 https://github.com/RetrievalToolbox/RetrievalToolbox-Tutorials
 ln -s RetrievalToolbox-Tutorials/data data
 ```
 
