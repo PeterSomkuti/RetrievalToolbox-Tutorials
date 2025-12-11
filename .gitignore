@@ -16,3 +16,4 @@ figures/*.gnuplot
 figures/*.table
 
 /.quarto/
+JuliaMono-Medium.ttf
