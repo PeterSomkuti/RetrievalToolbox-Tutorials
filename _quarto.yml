@@ -6,29 +6,42 @@ bibliography: bibliography.bib
 bibliographystyle: apa
 number-sections: true
 
+engines: ['julia']
+#jupyter: julia-1.12
+
 website:
   title: "RetrievalToolbox-Tutorials"
   navbar:
-    left:
+      left:
+        - href: index.qmd
+          text: Home
+        - about.qmd
+  sidebar:
+    style: docked
+    id: docs
+    collapse-level: 2
+    contents:
       - href: index.qmd
         text: Home
-      - tutorial_01.qmd
-      - tutorial_02.qmd
-      - tutorial_03.qmd
+      - href: tutorial_01.qmd
+        text: 1 - Spectroscopy, Gases
+      - href: tutorial_02.qmd
+        text: 2 - Atmospheres, Units
+      - href: tutorial_03.qmd
+        text: 3 - Windows, Scenes
       - about.qmd
 
 format:
   html:
     theme:
-      - cosmo
-      - brand
+      - minty
     css: styles.css
     toc: true
     toc-location: right
     html-math-method: katex
     link-external-icon: true
     #mainfont: Georgia
-    fontsize: 14px
+    fontsize: 16px
   #pdf:
   #  toc: true
   #  colorlinks: true
@@ -37,6 +50,6 @@ format:
 
 execute:
   cache: false
-  freeze: auto
+  freeze: false
 
 
