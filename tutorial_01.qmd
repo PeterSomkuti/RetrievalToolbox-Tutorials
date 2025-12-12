@@ -26,17 +26,21 @@ In this tutorial, we make use of so-called **ABSCO** files which contain these p
 We can start by reading in the full table file located in `data/o2_spectroscopy_demo.h5`.
 
 ::: {.callout-note}
-Currently, only the NASA JPL-type ABSCO data format is accepted. To learn more about ABSCO tables, visit <https://disc.gsfc.nasa.gov/information/glossary?title=OCO-2%20ABSCO>.
+Currently, only the NASA JPL-type ABSCO data format is accepted, and those produced by the ReFRACtor/ABSCO toolset found [here](https://github.com/ReFRACtor/ABSCO). To learn more about ABSCO tables, visit <https://disc.gsfc.nasa.gov/information/glossary?title=OCO-2%20ABSCO>.
 :::
+
+The code cell below imports needed modules and sets some good default values for plotting occasional figures. Note that these tutorials use the [JuliaMono font](https://juliamono.netlify.app), since that font has good support for many of the Unicode glyphs that we make use of (e.g. Greek letters). Adjust these parameters if you are not able to install the JuliaMono font, or the figures do not look optimal on your computer.
 
 ```{julia}
 #| output: false
 # Some set-up for this document
 using RetrievalToolbox;
 const RE = RetrievalToolbox;
-using Plots; default(fontfamily="Helvetica", titlefontsize=10, labelfontsize=10)
+using Plots; default(fontfamily="JuliaMono-Medium", titlefontsize=10, labelfontsize=10, fmt=:svg)
 using Unitful;
 ```
+
+A reminder: to obtain the file below, download it from [https://github.com/RetrievalToolbox/RetrievalToolbox-Tutorials/blob/main/data/o2_spectroscopy_demo.h5](https://github.com/RetrievalToolbox/RetrievalToolbox-Tutorials/blob/main/data/o2_spectroscopy_demo.h5), and place it in a `data` subdirectory, or adjust the code below to reflect the path on your computer.
 
 ```{julia}
 # Load the ABSCO table
@@ -107,7 +111,7 @@ This is a good opportunity to mention some aspects about array slicing in Julia,
 Reminder! Julia, by default, uses 1-based indexing for enumerations or vectors, arrays, and lists.
 :::
 
-At first glance, array slicing is very similar to that of Numpy Python library, of Fortran array operations. If some array `A` is declared, then using the colon `:` allows to **slice** through one or more axes. To illustrate, we can define a matrix `A`, which we set to have four rows and 3 columns:
+At first glance, array slicing is very similar to that of the Numpy Python library, or Fortran array operations. If some array `A` is declared, then using the colon `:` allows to **slice** through one or more axes. To illustrate, we can define a matrix `A`, which we set to have four rows and 3 columns:
 
 ```{julia}
 A = [
@@ -265,7 +269,7 @@ for p in 1:size(absco_o2.pressures, 1)
         markerstrokecolor=color,
         markercolor=color,
         label=nothing,
-        xscale=:log10,
+        xscale=:log10
     )
 end
 plot!(

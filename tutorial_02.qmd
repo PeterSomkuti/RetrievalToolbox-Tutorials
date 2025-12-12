@@ -7,7 +7,7 @@ title: "Tutorial 2: Creating an Atmosphere and Working with Physical Units"
 # Some set-up for this document
 using RetrievalToolbox;
 const RE = RetrievalToolbox;
-using Plots; default(fontfamily="Helvetica", titlefontsize=10, labelfontsize=10)
+using Plots; default(fontfamily="JuliaMono-Medium", titlefontsize=10, labelfontsize=10, fmt=:svg)
 using Unitful;
 ```
 
@@ -194,7 +194,7 @@ This section introduces some very important concepts, hence we want to emphasize
 
 # Layers and Levels
 
-In the last section, we filled our atmosphere object with values for the retrieval pressure grid: `atm.pressure_levels`. Inspecting the type documentation [ADD LINK], we can see that there is a field `atm.pressure_layers`, which still contains only zeros:
+In the last section, we filled our atmosphere object with values for the retrieval pressure grid: `atm.pressure_levels`. Inspecting the type documentation ([link](https://us-ghg-center.github.io/RetrievalToolbox.jl/dev/types/atmosphere_types/)), we can see that there is a field `atm.pressure_layers`, which still contains only zeros:
 
 ```{julia}
 atm.pressure_layers

@@ -7,14 +7,14 @@ title: "Tutorial 3: Spectral Windows, Scenes and Optical Properties"
 # Some set-up for this document
 using RetrievalToolbox;
 const RE = RetrievalToolbox;
-using Plots; default(fontfamily="JuliaMono-Medium", titlefontsize=10, labelfontsize=10)
+using Plots; default(fontfamily="JuliaMono-Medium", titlefontsize=10, labelfontsize=10, fmt=:svg)
 using Unitful;
 ```
 
 
 # Introduction
 
-In the previous tutorial ([Tutorial 2](./tutorial_02.qmd)), we have learned about atmospheres and which types of profiles and other objects they contain. Further, we have learned about the importance of dealing with physical units correctly, such that RetrievalToolbox can correctly do the necessary unit conversions for us.
+In the previous tutorial ([Tutorial 2](./tutorial_02.qmd)), we have learned about atmospheres and which types of profiles and other objects they contain. Further, we have learned about the importance of dealing with physical units, such that RetrievalToolbox can correctly perform the necessary unit conversions for us.
 
 ::: {.callout-tip title="Goal of this tutorial"}
 In this tutorial we will move to creating an actual retrieval scene, and define the extent of our spectral region of interest. This provides us with everything needed to peform some basic calculations that we then use to produce top-of-atmosphere radiances. We will also learn how RetrievalToolbox internally links objects of interest to establish some of the needed relationships between them.
@@ -37,7 +37,7 @@ Below is the list of type fields for the `SpectralWindow` type. Note that the ba
 ```
 :::
 
-It is easier to understand the workings of the `SpectralWindow` type by example. First, we simply create a new object by calling the type constructor. The example below creates a window that is 1 nm wide with a rather crude spacing of 0.1 nm for demonstration purposes.
+It is easier to understand the workings of the `SpectralWindow` type by example. First, we simply create a new object by calling the type constructor. The example below creates a window that is 0.3 nm wide with a spacing of 0.01 nm. Remember, in Julia, the `collect` function can explicitly produce a vector from some range object, so `collect(1:3)` becomes `[1,2,3]`, or `collect(1:2:10)` becomes `[1,3,5,7,9]`, according to the pattern of `start:skip:stop`. We use `collect` below to produce the high-resolution wavelength grid that starts at `wl_min - wl_buffer`, has the spacing of `wl_spacing`, and stops at `wl_max + wl_buffer`. Note that we must supply `wl_max + wl_buffer + wl_spacing` to ensure that `collect` truly includes `wl_max + wl_buffer` in the produced vector.
 
 ```{julia}
 wl_unit = u"nm"
@@ -385,24 +385,24 @@ config:
 ---
 classDiagram
 
-    class SpectralWindow["SpectralWindow\n(shortened)"]{
+    class SpectralWindow["SpectralWindow\\n(shortened)"]{
         Number λ_min
         Number λ_max
     }
 
     class surfaces
 
-    class LambertianPolynomialSurface["LambertianPolynomialSurface\n(shortened)"]
+    class LambertianPolynomialSurface["LambertianPolynomialSurface\\n(shortened)"]
 
-    class ABSCOSpectroscopy["ABSCOSpectroscopy\n(shortened)"]{
+    class ABSCOSpectroscopy["ABSCOSpectroscopy\\n(shortened)"]{
         String filename
     }
 
-    class GasAbsorber["GasAbsorber\n(shortened)"]{
+    class GasAbsorber["GasAbsorber\\n(shortened)"]{
         ABSCOSpectroscopy spectroscopy
     }
 
-    class EarthAtmosphere["EarthAtmosphere\n(shortened)"]{
+    class EarthAtmosphere["EarthAtmosphere\\n(shortened)"]{
         AtmosphereElements
 
         retrieval_pressure_grid
