@@ -1,6 +1,7 @@
 _freeze
 _site
 .quarto
+.cache
 /.quarto/*
 .jupyter_cache/
 .ipynb_checkpoints/
@@ -19,3 +20,5 @@ figures/*.table
 JuliaMono-Medium.ttf
 
 **/*.quarto_ipynb
+
+Manifest.toml
