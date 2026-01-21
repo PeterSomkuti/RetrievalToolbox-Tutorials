@@ -215,7 +215,7 @@ We can already notice something interesting! The order in which the key-value pa
 Dictionaries in Python (3.7 and up) preserve the order of insertion! In Julia, this is not the case, and the **iteration order is not guaranteed!**
 :::
 
-In many scripting applications, we would use dictionaries in a manner like above where we link strings or integers to other, generally simple objects. In Julia, many more types can be used as dictionary keys, not just numbers, strings or tuples. We can even use our own types! We will use a quick example by creating two new custom types, and use variables of those types as keys in dictionaries.
+In many scripting applications, we would use dictionaries in a manner like above where we link strings or integers to other, generally simple objects. In Julia, many more types can be used as dictionary keys, not just numbers, strings or tuples. In Python, only immutable objects may by hashable, whereas in Julia, even arrays can be hashed, and their hash will obviously change depending on the contents of the arrays. To create dictionaries in Julia, we can even use our own types! We will use a quick example by creating two new custom types, and use variables of those types as keys in dictionaries.
 
 ```{julia}
 struct SS1
