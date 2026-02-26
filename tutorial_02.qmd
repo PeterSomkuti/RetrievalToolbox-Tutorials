@@ -21,11 +21,11 @@ In this tutorial we will focus on constructing an atmosphere object with Retriev
 
 
 
-## The `EarthAtmosphere` Object
+# The `EarthAtmosphere` Object
 
 RetrievalToolbox features a type that represents a typical atmosphere found here on Earth, of course only containing information that is relevant for typical retrieval applications. Within RetrievalToolbox, we follow the general model of a layered atmosphere in which we assume all relevant quantities to be constant inside that layer. **Here we already must make an important observation!** The `EarthAtmosphere` object contains not just one, but two layer systems: one representing the vertical grid which the inversion will see, and a second one on which meteorological quantities are defined. While possibly confusing at first, this set-up allows us to be much more flexible with respect to our choices in setting up the retrieval algorithm.
 
-### The Retrieval and Meteorological Grids
+## The Retrieval and Meteorological Grids
 
 The choice of pressure grid in a given retrieval application is based on a number of factors, such as computational performance, type of instrument from whose measurements we are trying to retrieve gases, and so on. More layers usually means slower forward model, as the radiative transfer solver has to do more work. On the other hand, we might find that we need more vertical layers to account for e.g. scatterers that are located in different parts of the atmosphere and a coarse layering structure would not allow us to reasonably model those. We recommend reading the appropriate section in [@Rodgers2000, sec. 10.3.1] to learn more about optimal choices for the retrieval grid.
 
@@ -63,7 +63,7 @@ Lastly, the evaluation of the gas cross section $k(p)$ is actually performed in 
 
 Note however the following. When we have to evaluate the integrand in @eq-gas-tau at some arbitrary $p$, we must also look up $k(p)$. Earlier, we learned that $k(p)$ is really $k(p,T,c_\text{H$_2$O})$, so we must also know what the temperature and the water vapor mole fraction is for any given pressure in the model atmosphere. The temperature profile is defined on the MET grid, so we can easily infer $T \rightarrow T(p)$. While the water vapor mole fraction $c_\text{H$_2$O}$ is not explicitly stored, we can first infer the specific humidity at any given $p$ as $q \rightarrow q(p)$ and then calculate $c_\text{H$_2$O}(q)$, so that we can finally evaluate the cross section $k$ as $k(p, T(p), c_\text{H$_2$O}(q(p)))$.
 
-### Type definition
+## Type definition
 
 The definition of the `EarthAtmosphere` object is shown below, with all type fields having verbose names to make it clear what they represent - especially whether they belong to pressure layers or pressure levels.
 
@@ -96,7 +96,7 @@ atm = RE.create_empty_EarthAtmosphere(
 
 The parameters to the function `create_empty_EarthAtmosphere` are rather self-explanatory: we first pass the number of levels we want for both retrieval and meteorological grid. Then we must also decide on the data type that we want the arrays of the object to be; 64-bit floats are a good choice in almost all cases. The remaining 6 parameters define the units of the quantities that object contains. Two major things are of note here. First, we can see that there are two different units for the two pressure grids! This means that the retrieval grid could be specified in, e.g., pascal, and the meteorological grid could be specified in, e.g., torr. They can be the same of course. Supplying units explicitly is optional, the function has defined default values.
 
-## Ingesting Values with Units
+# Ingesting Values with Units
 
 From here on, we can inspect the object fields in the known manner - for example we can look at vector representing the retrieval pressure grid variables and see that they are all zeros.
 ```{julia}
@@ -289,7 +289,7 @@ The first quantity has units of pressure over length and cannot be reduced much;
 demo_a[:] .= uv_a[:]
 ```
 
-The important portions of the error log are found at the top, but one needs to look closely. Dimenionless units in `Unitful` are unfortunately not displayed as `1`, but as an empty character ` `. The above error log mentions a `DimensionError` followed by the statement that ` ` and the pressure unit `mbar/m` are not compatible.
+The important portions of the error log are found at the top, but one needs to look closely. Dimenionless units in `Unitful` are unfortunately not displayed as `1`, but as an empty character ` `. The above error log mentions a `DimensionError` followed by the statement that ` ` and the pressure per length unit `mbar/m` are not compatible.
 This is the behavior we truly want! We use `Unitful` such that unit conversion errors do not happen in the first place!
 
 Performing this operation on the second set of vectors, however, succeeds as we expect. More importantly, `Unitful` has correctly used the conversion factor 1000 that stems from kg/g before copying over the values.
