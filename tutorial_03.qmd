@@ -64,11 +64,11 @@ We can peek into the `swin1` object as usual, for example we can look at the act
 show(swin1.ww_grid)
 ```
 
-The role of the wavelength grid is quite important: all optical property and radiative transfer calculations will be performed on that grid. Overall computing performance tends to scale linearly with the number of points in the spectral grid - so doubling the number of points of the spectral window rougly leads to a doubling of the overall forward model execution time.
+The role of the wavelength grid is quite important: all optical property and radiative transfer calculations will be performed on that grid. Overall computing performance tends to scale linearly with the number of points in the spectral grid - so doubling the number of points of the spectral window roughly leads to a doubling of the overall forward model execution time.
 
 ## Wavelengths and Wavenumbers
 
-RetrievalToolbox supports both wavelength and wavenumbers as choices for the spectral dimension natively. Additional details are also found in the RetrievalToolbox documentation at [ADD LINK].
+RetrievalToolbox supports both wavelength and wavenumbers as choices for the spectral dimension natively. Additional details are also found in the [RetrievalToolbox documentation](https://us-ghg-center.github.io/RetrievalToolbox.jl/dev/design/design/#Wavelengths-and-wavenumbers).
 
 Users should be able to access the spectral dimension in an explicit way that reflects their initial choice and that helps other users to be constantly aware of whether this particular bit of code was intended for wavelength or wavenumber space. We can access the wavelength-based grid in `swin1` as we have done above (`swin1.ww_grid`), but it is much cleaner to write `.wavelength_grid`!
 
@@ -238,7 +238,7 @@ test_dict[s1]
 
 This feels like expected behavior! We have created a dictionary with some keys, one of those keys is indeed our newly created object `s1`, so we should be able to access the value `"I am s1`" inside `test_dict` simply by writing `test_dict[s1]`. And we see that it works.
 
-Let us try something very similar: we will create a new object, that is seeminly the same object, and try to access the dictonary in exactly the same way. However, we will see that Julia raises an error!
+Let us try something very similar: we will create a new object, that is seemingly the same object, and try to access the dictonary in exactly the same way. However, we will see that Julia raises an error!
 
 ```{julia}
 #| error: true
@@ -295,7 +295,7 @@ observer = RE.SatelliteObserver(
 )
 ```
 
-We fill these in with some plausible values. Note that the satellite velocity and satellite position fields are currently unused, so we can safely fill them with zeros. Here we also want to point users the RetrievalToolbox documentation about the problematic ambiguities regarding angular units: [link to RetrievalToolbox doc]. All angular units, such as zenith and azimuth angles, should be entered as degrees without any `Unitful` units attached to them as to avoid any implicit unwanted unit conversions between degrees and radians.
+We fill these in with some plausible values. Note that the satellite velocity and satellite position fields are currently unused, so we can safely fill them with zeros. Here we also want to point users the RetrievalToolbox documentation about the problematic ambiguities regarding angular units: [see here](https://us-ghg-center.github.io/RetrievalToolbox.jl/dev/pitfalls/pitfalls/#Angles-and-trigonometric-functions-with-Unitful.jl). All angular units, such as zenith and azimuth angles, should be entered as degrees without any `Unitful` units attached to them as to avoid any implicit unwanted unit conversions between degrees and radians.
 
 :::{.callout-warning}
 Be aware of implicit angular unit conversions when using `Unitful` degree units!
@@ -561,7 +561,7 @@ opt = RE.create_empty_EarthAtmosphereOpticalProperties(
 ```
 
 
-The `opt` object at this point is iniitialized with mostly zeros, so there are no meaningful values present in the various containers. Calculations are performed in-place by calling the `calculate_earth_optical_properties!` function with `opt` as the leading argument, the scene we want to calculate the optical properties for - and it also needs a state vector, which for now we keep empty (the state vector is needed to make the function aware of which derivatives should be computed, if any).
+The `opt` object at this point is initialized with mostly zeros, so there are no meaningful values present in the various containers. Calculations are performed in-place by calling the `calculate_earth_optical_properties!` function with `opt` as the leading argument, the scene we want to calculate the optical properties for - and it also needs a state vector, which for now we keep empty (the state vector is needed to make the function aware of which derivatives should be computed, if any).
 
 ```{julia}
 RE.calculate_earth_optical_properties!(opt, scene, RE.RetrievalStateVector([]))

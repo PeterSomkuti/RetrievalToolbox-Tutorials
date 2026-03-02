@@ -187,7 +187,7 @@ Explicit array slicing in expressions, of either full (e.g. `[:,:,:]`) or partia
 
 ## ABSCO object dimensions {#sec-ABSCO-dimensions}
 
-The four axes of the absorption cross sections are accessed via `absco_o2.temperature`, `absco_o2.pressure`, `absco_o2.broadener_vmrs` and `absco_o2.wavelength`.
+The four axes of the absorption cross sections are accessed via `absco_o2.temperatures`, `absco_o2.pressures`, `absco_o2.broadener_vmrs` and `absco_o2.wavelength`.
 
 ::: {.callout-note}
 The spectral dimension, be it either wavenumber or wavelength, is generally accessed in a special way (more on that in a differentn tutorial). For now, it is sufficient to know that the spectral dimension axis can be accessed with `absco_o2.wavelength` or `absco_o2.ww`, both methods are equivalent and return the spectral axis in wavelength units.

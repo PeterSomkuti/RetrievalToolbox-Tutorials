@@ -209,7 +209,7 @@ end
 atm.pressure_layers * atm.pressure_unit
 ```
 
-Since this is a common operation, RetrievalToolbox has a convenice function `levels_to_layers` which calculates the mid-layer values for a given level-based profile.
+Since this is a common operation, RetrievalToolbox has a convenience function `levels_to_layers` which calculates the mid-layer values for a given level-based profile.
 
 ```{julia}
 RE.levels_to_layers(atm.pressure_levels)
@@ -343,7 +343,7 @@ atm.specific_humidity_layers[:] = RE.levels_to_layers(atm.specific_humidity_leve
 The output in the above section confirms that the correction conversion was performed before the values were copied into `atm.specific_humidity_levels`.
 
 
-The last quantity to be covered in this section is the temperature profile. We can use the same recipes that we have learned before to add a temperature profile. Temperature units, however, require a litte more care than other units. A well-written article is found within the `Unitful.jl` documentation: [link](https://painterqubits.github.io/Unitful.jl/stable/temperature/). In short, there are ambiguities with respect to mathematical operations that involve temperatures with different units, in particular if one mixes absolute  (Kelvin, Rankine) and relative (Celcius, Fahrenheit) scales. To avoid downstream issues, the functions and objects that currently accept temperature units will force users to use absolute temperature units, such as K, mK, Ra, etc.
+The last quantity to be covered in this section is the temperature profile. We can use the same recipes that we have learned before to add a temperature profile. Temperature units, however, require a litte more care than other units. A well-written article is found within the `Unitful.jl` documentation: [link](https://juliaphysics.github.io/Unitful.jl/stable/temperature/). In short, there are ambiguities with respect to mathematical operations that involve temperatures with different units, in particular if one mixes absolute  (Kelvin, Rankine) and relative (Celcius, Fahrenheit) scales. To avoid downstream issues, the functions and objects that currently accept temperature units will force users to use absolute temperature units, such as K, mK, Ra, etc.
 
 ```{julia}
 T = [253., 233., 238., 253., 278., 293.]u"K"
@@ -389,7 +389,7 @@ we can use the convenience function `ingest!` to copy over a numerical value (or
 RE.ingest!(atm, :specific_humidity_levels, q)
 ```
 
-Note that there are two specialized implementations of the function, so bother number-type and array-type quantities can be ingested into RetrievalToolbox objects very efficiently this way. Also, the target must be valid in the sense that the RetrievalToolbox object must possess both a field, say `obj.field`, and the accompanying `obj.field_unit`.
+Note that there are two specialized implementations of the function, so both the number-type and array-type quantities can be ingested into RetrievalToolbox objects very efficiently this way. Also, the target must be valid in the sense that the RetrievalToolbox object must possess both a field, say `obj.field`, and the accompanying `obj.field_unit`.
 
 ::: {.callout-tip}
 It is a Julia convention, that functions which modify one or more of its arguments, have an exclamation mark at the end. Users can spot immediately that `ingest!` modifies the `atm` object!

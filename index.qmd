@@ -58,7 +58,7 @@ A very convenient way of experimenting with Julia and RetrievalToolbox is a [Jup
 ```julia
 using Pkg
 Pkg.add("IJulia")
-using Julia
+using IJulia
 notebook(dir="./") # This launches jupyter-lab instance
 ```
 
