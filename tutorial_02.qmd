@@ -236,35 +236,23 @@ xlabel!("Level number")
 ylabel!("Pressure [$(atm.pressure_unit)]")
 ```
 
-At this point, the atmosphere object `atm` has reasonable values for retrieval pressure grid, but we must also make sure we add data to represent the meteorological grid. Remember, that we initialized the atmosphere object with two more levels than the retrieval grid:
+At this point, the atmosphere object `atm` has reasonable values for retrieval pressure grid.
 
+::: {.callout-warning}
+**Important information on the meteorological profiles follows!**
+:::
+
+While we explicitly differentiate between levels and layers for the **retrieval grid**, there is **no such distinction for the metorological profiles**. Meteorological profiles are often derived from weather or climate models which often use term "levels" in a different manner. In the NWP community, a "model level" often refers to a slab with finite thickness, whereas a retrieval grid level here has no vertical extent.
+
+For data from models such as NASA's GEOS or ECWMF's IFS, quantities like specific humidity or temperature are reported on these model levels that are related to some *mid-level pressure*, despite the fact they generally represent the mean of the model slab with finite thickness. We recommend to simply use those (model) mid-level pressures to become the vertical coordinate of your meteorological profiles. In our `EarthAtmosphere` object, that vertical coordinate is accessed through `.met_pressure`. Note that `.met_pressure` does not have a *level* or *layer* aspect here, to avoid confusion. Internally, RetrievalToolbox performs interpolation to obtain the meteorological quantities at any pressure, thus assuming that those quantities are smoothly varying between the known points of these mid-level pressures.
+
+Remember, that we initialized the atmosphere object with two more levels than the retrieval grid:
 
 ```{julia}
 mgrid = [5., 65., 200., 400., 650., 950.]u"hPa"
 
-atm.met_pressure_levels[:] = ustrip(mgrid .|> atm.pressure_unit);
-atm.met_pressure_layers[:] = RE.levels_to_layers(atm.met_pressure_levels);
+atm.met_pressure[:] = ustrip(mgrid .|> atm.met_pressure_unit);
 ```
-
-```{julia}
-# Plot the pressure level/layer values over level numbers
-scatter(
-    collect(1:atm.N_met_level),
-    atm.met_pressure_levels,
-    markershape=:square, label="Levels",
-    size=(400, 300)
-)
-plot!(
-    collect(1:atm.N_met_layer) .+ 0.5,
-    atm.met_pressure_layers,
-    seriescolor=:black, seriestype=:stepmid,
-    markershape=:circle, label="Layers"
-)
-title!("Meteorological grid")
-xlabel!("Level number")
-ylabel!("Pressure [$(atm.pressure_unit)]")
-```
-
 
 Moving on, we should also add some reasonable values to represent both the temperature and the specific humidity profiles. Earlier, we chose the units for specific humidity to be `u"kg/kg"`, which is a special type of unit in `Unitful`, namely a `DimensionlessUnits` type. It signifies that the resulting unit is effectively "1", and objects with dimensionless units can always be cast onto "naked" Julia types.
 
@@ -299,14 +287,11 @@ demo_b[:] .= uv_b[:];
 demo_b
 ```
 
-With this knowledge, we can fill in the specific humidity profile with a unit-carrying vector, and we also make sure to not forget to calculate the mid-layer values.
+With this knowledge, we can fill in the specific humidity profile with a unit-carrying vector, and we also make sure to not forget to calculate the mid-layer values. Note again that the specific humidity profile is accessed through `.specific_humidity`, without a notion of level or layer.
 
 ```{julia}
 q = [0.0001, 0.0002, 0.00035, 0.00035, 0.00075, 0.0020]u"kg/kg"
-atm.specific_humidity_levels[:] .= q
-atm.specific_humidity_layers[:] = RE.levels_to_layers(
-    atm.specific_humidity_levels
-);
+atm.specific_humidity[:] .= q
 ```
 
 ::: {.callout-important}
@@ -321,10 +306,10 @@ q
 If we perform the assigment in the obvious way, such as
 
 ```julia
-atm.specific_humidity_levels[:] .= q
+atm.specific_humidity[:] .= q
 ```
 
-the field `specific_humidity_levels` of our atmosphere object is filled with values that represent a quantity in unitless dimensions of kg/kg. The atmosphere object, however, was earlier defined in g/kg, as can be inferred:
+the field `specific_humidity` of our atmosphere object is filled with values that represent a quantity in unitless dimensions of kg/kg. The atmosphere object, however, was earlier defined in g/kg, as can be inferred:
 
 ```{julia}
 atm.specific_humidity_unit
@@ -335,22 +320,18 @@ This discrepancy between unit and quantity will result in errors in following co
 The solution to this is to **always** perform an explicit unit conversion when setting unit-valued object fields. The correct, explicit assignment is
 
 ```{julia}
-atm.specific_humidity_levels[:] .= q .|> atm.specific_humidity_unit .|> ustrip
-atm.specific_humidity_layers[:] = RE.levels_to_layers(atm.specific_humidity_levels)
+atm.specific_humidity[:] .= q .|> atm.specific_humidity_unit .|> ustrip
 # This should now be in g/kg!
 ```
 
-The output in the above section confirms that the correction conversion was performed before the values were copied into `atm.specific_humidity_levels`.
+The output in the above section confirms that the correction conversion was performed before the values were copied into `atm.specific_humidity`.
 
 
 The last quantity to be covered in this section is the temperature profile. We can use the same recipes that we have learned before to add a temperature profile. Temperature units, however, require a litte more care than other units. A well-written article is found within the `Unitful.jl` documentation: [link](https://juliaphysics.github.io/Unitful.jl/stable/temperature/). In short, there are ambiguities with respect to mathematical operations that involve temperatures with different units, in particular if one mixes absolute  (Kelvin, Rankine) and relative (Celcius, Fahrenheit) scales. To avoid downstream issues, the functions and objects that currently accept temperature units will force users to use absolute temperature units, such as K, mK, Ra, etc.
 
 ```{julia}
 T = [253., 233., 238., 253., 278., 293.]u"K"
-atm.temperature_levels[:] = ustrip(T .|> atm.temperature_unit)
-atm.temperature_layers[:] = RE.levels_to_layers(
-    atm.temperature_levels
-);
+atm.temperature[:] = ustrip(T .|> atm.temperature_unit)
 ```
 
 ::: {.callout-tip}
@@ -380,13 +361,13 @@ While we have used explicit formulations in the section above to learn about how
 Instead of writing
 
 ```{julia}
-atm.specific_humidity_levels[:] .= q .|> atm.specific_humidity_unit .|> ustrip
+atm.specific_humidity[:] .= q .|> atm.specific_humidity_unit .|> ustrip
 ```
 
 we can use the convenience function `ingest!` to copy over a numerical value (or the contents of some array) into a RetrievalToolbox object. The unit conversion is handled by the function itself.
 
 ```{julia}
-RE.ingest!(atm, :specific_humidity_levels, q)
+RE.ingest!(atm, :specific_humidity, q)
 ```
 
 Note that there are two specialized implementations of the function, so both the number-type and array-type quantities can be ingested into RetrievalToolbox objects very efficiently this way. Also, the target must be valid in the sense that the RetrievalToolbox object must possess both a field, say `obj.field`, and the accompanying `obj.field_unit`.
@@ -401,25 +382,19 @@ It is a Julia convention, that functions which modify one or more of its argumen
 Looking at @eq-gas-tau, we can see that we will likely require the local acceleration due to Earth's gravity at various points in our atmosphere. The `EarthAtmosphere` object holds the level-resolved value for $g$ in its own field, named `.gravity`. Users have the option to use their own method to calculate this profile via their own function, e.g.
 
 ```julia
-atm.gravity_levels[:] .= my_own_gravity_function()
+atm.gravity[:] .= my_own_gravity_function()
 ```
 
 Since this is such a common operation, RetrievalToolbox ships with a function to calculate the location-based local gravity profile which takes into account the latitude and altitude of the observation point at which we want to create a model atmosphere. However, that function requires additional inputs (scene latitude and altitude), hence we will skip that particular functionality for now and use dummy values instead:
 
 ```{julia}
-atm.gravity_levels[:] .= 9.81; # this will be in m/s^2
-atm.altitude_levels[:] .= [45.0, 20.0, 10.0, 7.0, 3.5, 0.6]; # this will be in "km"
-```
-
-Finally, to make things a little more quick, we use a convenience function `calculate_layers!` that acts on an `EarthAtmosphere` object and calculates all mid-layer quantities. We could have, equivalently, used `RE.levels_to_layers`, as was introduced earlier and manually calculate and assign the mid-layer quantities for `gravity_layers`, `altitude_layers`, etc.
-
-```{julia}
-RE.calculate_layers!(atm)
+atm.gravity[:] .= 9.81; # this will be in m/s^2
+atm.altitude[:] .= [45.0, 20.0, 10.0, 7.0, 3.5, 0.6]; # this will be in "km"
 ```
 
 # Adding Atmosphere Elements
 
-We have added everything needed for a functioning atmosphere: we defined a pressure level grid for the retrieval (`pressure_levels`), and then another pressure level grid for our meteorological profiles (`met_pressure_levels`). We then assigned our temperature and specific humidity profiles (`temperature_levels`, `specific_humidity_levels`) as well as altitude and gravity (`altitude_levels`, `gravity_levels`). Finally, we calculate the mid-layer values using a helpful convenience function (`calculate_layers`).
+We have added everything needed for a functioning atmosphere: we defined a pressure level grid for the retrieval (`pressure_levels`), and then another pressure level grid for our meteorological profiles (`met_pressure`). We then assigned our temperature and specific humidity profiles (`temperature`, `specific_humidity`) as well as altitude and gravity (`altitude`, `gravity`).
 
 This atmosphere object would work just fine within a retrieval set-up, although this model atmosphere would be somewhat empty. When we initially created the `EarthAtmosphere` object, with the function `create_empty_EarthAtmosphere`, we specified number of layers and some units, but we did not add "actors" so to speak.
 
@@ -452,11 +427,11 @@ Inspecting the type definition of `RayleighScattering` reveals that it is actual
 In this case, RetrievalToolbox is simply interrogating the list of atmosphere elements. Functions internal to RetrievalToolbox will see if certain objects or objects of certain types are part of `atm.atm_elements`, and then act accordingly. For example, the code snippet below is taken straight from the routine which calculates all the optical properties for our retrieval. When performing the calculations, RetrievalToolbox will inquire whether any of the types of the objects in `atm.atm_elements` belong to the `AbstractRayleighScattering` class. This indicates to the overall program logic that the user wants Rayleigh scattering to be computed, and thus the appropriate function is called.
 
 ```julia
-if findanytype(atm.atm_elements, AbstractRayleighScattering)
+if RE.findanytype(atm.atm_elements, AbstractRayleighScattering)
     # Check if we have Rayleigh scattering as an atmospheric element..
 
     # Calculate OD profiles
-    calculate_rayleigh_optical_depth_profiles!(opt, scene)
+    RE.calculate_rayleigh_optical_depth_profiles!(opt, scene)
 end
 ```
 
