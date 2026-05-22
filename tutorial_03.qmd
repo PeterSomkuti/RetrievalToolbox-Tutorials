@@ -339,9 +339,9 @@ atm = RE.create_empty_EarthAtmosphere(
 );
 
 RE.ingest!(atm, :pressure_levels, [1., 100., 500., 1000.]u"hPa")
-RE.ingest!(atm, :met_pressure_levels, [5., 65., 200., 400., 650., 950.]u"hPa")
-RE.ingest!(atm, :specific_humidity_levels, [0.0001, 0.0002, 0.00035, 0.00035, 0.00075, 0.0020]u"kg/kg")
-RE.ingest!(atm, :temperature_levels, [253., 233., 238., 253., 278., 293.]u"K")
+RE.ingest!(atm, :met_pressure, [5., 65., 200., 400., 650., 950.]u"hPa")
+RE.ingest!(atm, :specific_humidity, [0.0001, 0.0002, 0.00035, 0.00035, 0.00075, 0.0020]u"kg/kg")
+RE.ingest!(atm, :temperature, [253., 233., 238., 253., 278., 293.]u"K")
 
 RE.calculate_layers!(atm)
 
@@ -494,11 +494,11 @@ RE.calculate_altitude_and_gravity!(scene)
 The above function performs the calculation, stores the results in-place with the correct units, and then also provides those values at the mid-layer pressures. We can have a quick look at the profiles:
 
 ```{julia}
-p1 = plot(atm.altitude_levels * atm.altitude_unit, collect(1:atm.N_met_level),
+p1 = plot(atm.altitude * atm.altitude_unit, collect(1:atm.N_met_level),
     lw=2.0, marker=:circle, label="Altitude profile", legend=:bottomright)
 ylabel!("Met profile level #");
 yflip!()
-p2 = plot(atm.gravity_levels * atm.gravity_unit, collect(1:atm.N_met_level),
+p2 = plot(atm.gravity * atm.gravity_unit, collect(1:atm.N_met_level),
     lw=2.0, marker=:circle, label="Gravity profile", legend=:bottomleft)
 yflip!()
 plot(p1, p2, layout=(1, 2))
